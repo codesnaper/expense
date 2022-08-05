@@ -1,4 +1,7 @@
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Fab, FormControl, FormControlLabel, FormGroup, FormLabel, InputLabel, Grid, Select, Switch, TextField } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import React from "react";
 export default function AccountModal(props) {
     const [name, setName] = React.useState('');
@@ -38,7 +41,8 @@ export default function AccountModal(props) {
             bank: {
                 ID: props.bank.ID,
                 accounts: parseInt(props.bank.accounts) + 1
-            }
+            },
+            openDate: value? value: props.account.openDate
         };
         if (isInterest) {
             data.bank.debitAmount = parseFloat(props.bank.debitAmount);
@@ -122,6 +126,18 @@ export default function AccountModal(props) {
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
+                            <LocalizationProvider dateAdapter={AdapterMoment}>
+                                <DatePicker
+                                    label="Account Opening Date"
+                                    value={value}
+                                    onChange={(newValue) => {
+                                        setValue(newValue);
+                                    }}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
                             <FormGroup>
                                 <FormControlLabel control={<Switch onChange={handleInterestType} checked={props.account.loanAccount} />} label="Interest" />
                             </FormGroup>
@@ -136,24 +152,24 @@ export default function AccountModal(props) {
                         {(!loanType && isInterest) &&
                             <>
                                 <Grid item xs={12}>
-                                    <FormControl style ={{display: 'table'}}>
+                                    <FormControl style={{ display: 'table' }}>
                                         <FormLabel component="legend">Interest Type</FormLabel>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox name="Simple interest" />
-                                                }
-                                                checked={!isCompoundSaving}
-                                                onChange={handleSavingInterest}
-                                                label="Simple Interest"
-                                            />
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox name="Compound Interest" />
-                                                }
-                                                onChange={handleCompoundSavingInterest}
-                                                label="Compound Interest"
-                                                checked={isCompoundSaving}
-                                            />
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox name="Simple interest" />
+                                            }
+                                            checked={!isCompoundSaving}
+                                            onChange={handleSavingInterest}
+                                            label="Simple Interest"
+                                        />
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox name="Compound Interest" />
+                                            }
+                                            onChange={handleCompoundSavingInterest}
+                                            label="Compound Interest"
+                                            checked={isCompoundSaving}
+                                        />
                                     </FormControl>
                                 </Grid>
                             </>
