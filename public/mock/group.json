@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Group 1",
+        "password": "sample",
+        "userid": [1,2]
+    },
+    {
+        "name": "Group 2",
+        "password": "sample",
+        "userid": []
+    }
+]
