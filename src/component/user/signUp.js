@@ -19,7 +19,7 @@ import { blue } from '@mui/material/colors';
 
 const theme = createTheme();
 
-export default function SignUp() {
+export default function SignUp(props) {
     const { loader, setLoader } = React.useState(false);
     const handleSubmit = (event) => {
         event.preventDefault();
