@@ -16,20 +16,22 @@ import { Auth } from 'aws-amplify';
 import configure from '../../service/cognitoService';
 import { CircularProgress } from '@mui/material';
 import { grey } from '@mui/material/colors';
+import useAlert from "../alert/alertHook";
 
 export default function Login(props) {
     const [loginLoader, setLoginLoader] = React.useState(false);
-
+    const { setAlert } = useAlert();
     const login = async (userData) => {
         configure();
         setLoginLoader(true);
         try {
             const user = await Auth.signIn(userData.Username, userData.password);
+            setAlert(`Welcome ${user.attributes.name} !!!`, 'success');
             sessionStorage.setItem('user', JSON.stringify(user));
             props.loggedInCallback();
             setLoginLoader(false);
         } catch (error) {
-            console.log('error signing in', error);
+            setAlert( error.message,'error')
             setLoginLoader(false);
         }
     }

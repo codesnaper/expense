@@ -75,11 +75,9 @@ export default class Bank extends React.Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:3000/bank', {
-            headers: {
-                'user-id': '13232'
-            }
-        }).then(res => res.json())
+        fetch('http://localhost:3000/bank',{headers: {
+            'user-id': '13232'
+        }}).then(res => res.json())
             .then(res => {
                 let data = [];
                 res.Items.forEach(item => {
