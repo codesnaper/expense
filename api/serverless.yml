@@ -1,0 +1,101 @@
+#org: codesnaper
+app: gallery-api
+service: gallery-api
+frameworkVersion: '3'
+
+custom:
+  accountTable: 'account-table-${sls:stage}'
+  bankTable: 'bank-table-${sls:stage}'
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      convertEmptyValues: true
+    migration:
+      dir: dest/migrations
+
+package:
+  individually: true
+
+provider:
+  httpApi:
+    authorizers:
+      someJwtAuthorizer:
+        type: jwt
+        identitySource: $request.header.Authorization
+        issuerUrl: https://cognito-idp.ap-south-1.amazonaws.com/ap-south-1_pvEuDVm63
+  name: aws
+  runtime: nodejs14.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [ BankTable, Arn ]
+            - Fn::GetAtt: [ AccountTbale, Arn ]
+  environment:
+    ACCOUNT_TABLE: ${self:custom.accountTable}
+    BANK_TABLE: ${self:custom.bankTable}
+
+functions:
+  account:
+    handler: src/account/controller.handler
+    events:
+      - httpApi:
+          method: '*'
+          path: /account/{param*}
+
+  bank:
+    handler: src/bank/controller.handler
+    events:
+      - httpApi:
+          method: '*'
+          path: /bank/{param*}
+ 
+resources:
+  Resources:
+    BankTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+          - AttributeName: USERID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+          - AttributeName: USERID
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.bankTable}
+    AccountTbale:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+          - AttributeName: BANKID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+          - AttributeName: BANKID
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.accountTable}
+
+plugins:
+  - serverless-offline
+  - serverless-webpack
+  - serverless-dynamodb-local
