@@ -55,7 +55,7 @@ export default function AccountModal(props) {
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "application/json",
-                    'user-id': '13232',
+                    'user-id': JSON.parse(sessionStorage.getItem('user')).username,
                 },
                 body: JSON.stringify(data),
             })

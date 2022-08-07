@@ -257,7 +257,7 @@ export default function BankView(props) {
             fetch(`http://localhost:3000/bank/${id}`, {
                 method: "DELETE",
                 headers: {
-                    'user-id': '13232'
+                    'user-id': JSON.parse(sessionStorage.getItem('user')).username
                 }
             })
                 .then(res => res.json())

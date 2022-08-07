@@ -19,7 +19,8 @@ import { visuallyHidden } from '@mui/utils';
 import { Button, ButtonGroup, Skeleton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-
+import { Link } from 'react-router-dom';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -358,6 +359,11 @@ export default function AccountView(props) {
                                             <TableCell align="right"><span>{row.totalInterest}</span></TableCell>
                                             <TableCell align="center">
                                                 <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                                                <Tooltip title={`View Accounts Details for ${row.name}`}>
+                                                        <Button variant="text"><Link underline="hover" color="inherit" to={`/accDetail?accId=${row.ID}&bankId=${props.bankId}`}>
+                                                            <VisibilityIcon />
+                                                        </Link></Button>
+                                                    </Tooltip>
                                                     <Button onClick={() => editAccount(row)} variant="text"><EditIcon /></Button>
                                                     <Button onClick={() => deleteAccount(row.ID)} variant="text"><DeleteForeverIcon /></Button>
                                                 </ButtonGroup>

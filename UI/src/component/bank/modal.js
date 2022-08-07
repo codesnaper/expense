@@ -41,7 +41,7 @@ export default function ModalBank(props) {
             location: location ? location : props.location,
             currency: currency ? currency : props.currency,
             tags: tag ? tag : props.tag,
-            userId: '13232'
+            userId: JSON.parse(sessionStorage.getItem('user')).username
         };
         if (props.type === 'add') {
             setAddLoader(true);
@@ -70,7 +70,7 @@ export default function ModalBank(props) {
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "application/json",
-                    'user-id': '13232'
+                    'user-id': JSON.parse(sessionStorage.getItem('user')).username
                 },
                 body: JSON.stringify(data),
             })

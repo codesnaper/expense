@@ -76,7 +76,7 @@ export default class Bank extends React.Component {
 
     componentDidMount() {
         fetch('http://localhost:3000/bank',{headers: {
-            'user-id': '13232'
+            'user-id': JSON.parse(sessionStorage.getItem('user')).username
         }}).then(res => res.json())
             .then(res => {
                 let data = [];

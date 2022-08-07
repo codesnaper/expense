@@ -108,7 +108,7 @@ export default class Account extends React.Component {
     fetchAccountPromise() {
         return fetch(`http://localhost:3000/bank/${this.id}`, {
             headers: {
-                'user-id': '13232'
+                'user-id': JSON.parse(sessionStorage.getItem('user')).username
             }
         });
     }

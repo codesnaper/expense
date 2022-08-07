@@ -11,7 +11,7 @@ import ForgetPassword from './component/user/forgetPassword';
 const Bank = React.lazy(() => import('./component/bank/banks'));
 const Account = React.lazy(() => import('./component/account/account'));
 const Home = React.lazy(() => import('./component/dashboard/home'));
-
+const AccountDetail  = React.lazy(() => import('./component/accountDetail/accountDetail'));
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -74,7 +74,20 @@ class App extends React.Component {
                       </>
                     }
                   </>} />
-                <Route path="/bank" element={
+                <Route path="/accDetail" element={
+                  <>
+                    {!this.state.login ?
+                      <>
+                        <Login loggedInCallback={() => this.userLoggedIn(this)} />
+                      </>
+                      :
+                      <>
+                        <Navbar loggedUser={this.state.loggedUser}></Navbar>
+                        <AccountDetail></AccountDetail>
+                      </>
+                    }
+                  </>} />
+                <Route path="/account" element={
                   <>
                     {!this.state.login ?
                       <>
