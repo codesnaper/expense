@@ -80,7 +80,7 @@ const AccountService = {
         account.compoundSaving = data.compoundSaving;
         account.compoundingYear = data.compoundingYear;
         account.openDate = data.openDate;
-        account.emiPaid = data.emiPaid;
+        account.emiPaid = 0;
         let interest = this.calculateInterest(account);
         if(account.loanType){
             account.interestAmount = interest.interestAmount;

@@ -1,8 +1,10 @@
-import { Breadcrumbs, Grid, Skeleton, Typography } from "@mui/material";
+import { Breadcrumbs, Grid, Paper, Skeleton, Typography } from "@mui/material";
 import { blue, red } from "@mui/material/colors";
+import moment from "moment";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Chart from "./chart";
+import EmiList from "./emiList";
 import AccountForm from "./form";
 
 function getParameterByName(name, url = window.location.href) {
@@ -20,11 +22,15 @@ export default function AccountDetail(props) {
     const [account, setAccount] = React.useState({});
 
     const [data, setData] = React.useState({});
+    const [totalMonth, setTotalMonth] = React.useState(0);
+    const [endDate, setEndDate] = React.useState(null);
 
     const fetchAccountData = () => {
         fetch(`http://localhost:3000/account/${getParameterByName('accId')}/${getParameterByName('bankId')}`)
             .then((res) => res.json())
             .then(data => {
+                setEndDate(moment(data.openDate).add(parseInt(data.tenure), 'Y'));
+                setTotalMonth(moment(data.openDate).add(parseInt(data.tenure), 'Y').diff(moment(data.openDate),'months', true));
                 setAccount(data);
                 setData({
                     labels: ['Amount', 'Interest Amount'],
@@ -38,10 +44,10 @@ export default function AccountDetail(props) {
                             ]
                         }
                     ]
-                })
+                });
                 setLoading(false);
             })
-            .catch(err=> setLoading(false))
+            .catch(err => setLoading(false))
     }
 
     useEffect(() => {
@@ -59,8 +65,8 @@ export default function AccountDetail(props) {
                         <Skeleton sx={{ width: '15vw' }} variant="body1"></Skeleton>
                     </> :
                     <>
-                    <Link underline="hover" color="inherit" to="/bank">Bank</Link> <span>{' > '}</span> 
-                    <Link underline="hover" color="inherit" to={`/account?bankId=${getParameterByName('bankId')}`}>Accounts</Link>
+                        <Link underline="hover" color="inherit" to="/bank">Bank</Link> <span>{' > '}</span>
+                        <Link underline="hover" color="inherit" to={`/account?bankId=${getParameterByName('bankId')}`}>Accounts</Link>
                     </>}
                 {!loading && <Typography color="text.primary">{account.name}</Typography>}
             </Breadcrumbs>
@@ -69,13 +75,17 @@ export default function AccountDetail(props) {
                 <AccountForm account={account}>
                 </AccountForm>
             </div>
+            <Grid container spacing={2}>    
             {data.labels && <>
-                <Grid container spacing={2}>
+                
                     <Grid item md={3} sm={6} style={{ margin: '24px' }}>
                         <Chart data={data} />
                     </Grid>
-                </Grid>
+                    <Grid item md={8} sm={6} style={{ margin: '24px' }}>
+                        <EmiList openDate = {account.openDate} emiPaid = {account.emiPaid} emi={account.interestAmount} month={totalMonth}/>
+                    </Grid>
             </>}
+            </Grid>
 
 
 
