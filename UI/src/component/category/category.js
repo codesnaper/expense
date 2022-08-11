@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import CategoryCard from "./card";
 import AddIcon from '@mui/icons-material/Add';
-import { AppBar, Button, Fab, Toolbar, Typography, Paper, Grid } from "@mui/material";
+import { Button, Toolbar, Typography, Paper, Grid, Skeleton, Card, CardHeader, CardActionArea, CardContent } from "@mui/material";
+import useAlert from "../alert/alertHook";
+import CategoryIcon from '@mui/icons-material/Category';
 export default function Category(props) {
 
     const [categories, setCategories] = useState([]);
+    const [loader, setLoader] = useState(true);
+    const { setAlert } = useAlert();
 
     useEffect(() => {
         fetch('http://localhost:3000/category', {
@@ -14,7 +18,12 @@ export default function Category(props) {
         }).then(res => res.json())
             .then(res => {
                 setCategories(res.Items)
-            }).catch(err => console.error(err));
+                setLoader(false);
+            }).catch(err => {
+                setLoader(false);
+                console.error(err);
+                setAlert('Failed in fetching Categories', 'error');
+            });
     }, []);
 
 
@@ -22,8 +31,25 @@ export default function Category(props) {
         setCategories([...categories, { editable: true, name: '' }])
     }
 
-    const updateCategoriesCallback = (category) => {
-        setCategories([...categories.filter(category => !category.editable), category])
+    const updateCategoriesCallback = (category, update) => {
+        if (update) {
+            setCategories([...categories.map(cData => {
+                if (cData.ID === category.ID) {
+                    return category;
+                }
+                return cData;
+            })]);
+        } else {
+            if (category) {
+                setCategories([...categories.filter(category => !category.editable), category])
+            } else {
+                setCategories([...categories.filter(category => !category.editable)])
+            }
+        }
+    }
+
+    const deleteCategoryCallback = (id) => {
+        setCategories([...categories.filter(category => category.ID !== id)]);
     }
 
     return (<>
@@ -40,6 +66,7 @@ export default function Category(props) {
                     id="tableTitle"
                     component="div"
                 >
+                    <CategoryIcon sx={{verticalAlign: 'bottom'}}></CategoryIcon>
                     Categories
                 </Typography>
                 <Typography
@@ -48,18 +75,58 @@ export default function Category(props) {
                     id="tableTitle"
                     component="div"
                 >
-                    <Button variant="outlined" onClick={addCard}><AddIcon sx={{ mr: 1 }} />
-                        Add Catrgory</Button>
+                    <Button disabled={loader} variant="outlined" onClick={addCard}><AddIcon sx={{ mr: 1 }} />
+                        Add Category</Button>
                 </Typography>
             </Toolbar>
             <Grid container spacing={2}>
-                {categories && categories.map((category, index) =>
-                    <Grid item>
-                            <CategoryCard updateCategories={updateCategoriesCallback} key={index} name={category.name} editable={category.editable} action id={category.ID}>
-                                <span>{category.name}</span>
-                            </CategoryCard>
-                    </Grid>
-                )}
+                {loader ?
+                    <>
+                        <Skeleton sx={{ margin: '24px' }} variant="rectangular" width={339} height={151} />
+                        <Skeleton sx={{ margin: '24px' }} variant="rectangular" width={339} height={151} />
+                        <Skeleton sx={{ margin: '24px' }} variant="rectangular" width={339} height={151} />
+                    </>
+                    :
+                    <>
+                        {categories && categories.map((category, index) =>
+                            <Grid item key={index}>
+                                <CategoryCard
+                                    updateCategories={updateCategoriesCallback}
+                                    deleteCategory={deleteCategoryCallback}
+                                    key={index}
+                                    name={category.name}
+                                    editable={category.editable}
+                                    action
+                                    id={category.ID}>
+                                    <span>{category.name}</span>
+                                </CategoryCard>
+                            </Grid>
+                        )}
+                        {!categories || (categories && categories.length === 0) &&
+                            <Grid item xs={12}>
+                                <Card sx={{textAlign:'center'}}>
+                                    <CardContent>
+                                    <Typography variant="h1" component="div">
+                                            <CategoryIcon fontSize="30"></CategoryIcon>
+                                        </Typography>
+                                        <Typography variant="h5" component="div">
+                                            Categories are not been created yet.
+                                        </Typography>
+                                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                            It will help to keep the expense in category group and will be able to help to apply limit to expense per category. Click on Add button below to add new category.
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActionArea>
+                                        <Button size="large" onClick={addCard}><AddIcon sx={{ mr: 1 }} />
+                                            Add Category
+                                        </Button>
+                                    </CardActionArea>
+                                </Card>
+                            </Grid>
+                        }
+                    </>
+                }
+
             </Grid>
         </Paper>
 

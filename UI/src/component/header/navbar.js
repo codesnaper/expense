@@ -17,7 +17,7 @@ import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { Auth } from 'aws-amplify';
 import configure from '../../service/cognitoService';
-const pages = [{ name: 'Add Expense', link: '/bank' }, { name: 'Set Limit', link: '/limit' }, { name: 'Banks', link: '/bank' }, { name: 'Goal', link: '/goal' }];
+const pages = [{ name: 'Add Expense', link: '/bank' }, { name: 'Set Limit', link: '/limit' },{ name: 'Categories', link: '/category' }, { name: 'Banks', link: '/bank' }, { name: 'Goal', link: '/goal' }];
 function stringToColor(string) {
     let hash = 0;
     let i;
