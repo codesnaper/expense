@@ -6,6 +6,9 @@ frameworkVersion: '3'
 custom:
   accountTable: 'account-table-${sls:stage}'
   bankTable: 'bank-table-${sls:stage}'
+  limitTable: 'limit-table-${sls:stage}'
+  categoryTable: 'category-table-${sls:stage}'
+  expenseTable: 'expense-table-${sls:stage}'
   dynamodb:
     stages:
       - dev
@@ -43,9 +46,15 @@ provider:
           Resource:
             - Fn::GetAtt: [ BankTable, Arn ]
             - Fn::GetAtt: [ AccountTbale, Arn ]
+            - Fn::GetAtt: [ LimitTable, Arn ]
+            - Fn::GetAtt: [ CategoryTable, Arn ]
+            - Fn::GetAtt: [ ExpenseTable, Arn ]
   environment:
     ACCOUNT_TABLE: ${self:custom.accountTable}
     BANK_TABLE: ${self:custom.bankTable}
+    LIMIT_TABLE: ${self:custom.limitTable}
+    CATEGORY_TABLE: ${self:custom.categoryTable}
+    EXPENSE_TABLE: ${self:custom.expenseTable}
 
 functions:
   account:
@@ -61,7 +70,28 @@ functions:
       - httpApi:
           method: '*'
           path: /bank/{param*}
- 
+
+  limit:
+    handler: src/limit/controller.handler
+    events:
+      - httpApi:
+          method: '*'
+          path: /limit/{param*}
+
+  category:
+    handler: src/category/controller.handler
+    events:
+      - httpApi:
+          method: '*'
+          path: /category/{param*}
+
+  expense:
+    handler: src/expense/controller.handler
+    events:
+      - httpApi:
+          method: '*'
+          path: /expense/{param*}
+
 resources:
   Resources:
     BankTable:
@@ -94,6 +124,51 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.accountTable}
+    LimitTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+          - AttributeName: USERID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+          - AttributeName: USERID
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.limitTable}
+    CategoryTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+          - AttributeName: USERID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+          - AttributeName: USERID
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.categoryTable}
+    ExpenseTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+          - AttributeName: USERID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+          - AttributeName: USERID
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.expenseTable}
 
 plugins:
   - serverless-offline
