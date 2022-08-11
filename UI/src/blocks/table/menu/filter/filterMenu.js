@@ -39,7 +39,7 @@ export default function MenuFilter(props) {
     }
 
     const handleFilter = () => {
-        let result = Array.from(props.dataset);
+        let result =[];
         filterCondition.forEach(filter => {
             switch (filter.operator) {
                 case 0:
@@ -50,6 +50,7 @@ export default function MenuFilter(props) {
                     }
             }
         })
+        alert(JSON.stringify(result))
 
     }
 

@@ -3,6 +3,7 @@ import React from "react";
 import { Container } from "@mui/material";
 import ExpenseTable from "../../blocks/table/table";
 import { Navigate } from "react-router-dom";
+import { BANK_HEADER } from "../../modal/bankHeader";
 function createData(ID, name, location, currency, tags, creditAmount, debitAmount, accounts) {
     return {
         ID,
@@ -28,65 +29,7 @@ export default class Bank extends React.Component {
             accountNavigate: false,
             accountNavigateId: -1
         }
-        this.header = [
-            {
-                mapName: 'USERID',
-                alias: 'User ID',
-                isPrimaryKey: false,
-                isVisible: true,
-                display: 'hidden'
-            },
-            {
-                mapName: 'name',
-                alias: 'Bank Name',
-                isPrimaryKey: false,
-                isVisible: true,
-            },
-            {
-                mapName: 'currency',
-                alias: 'Currency',
-                isPrimaryKey: false,
-                isVisible: true,
-            },
-            {
-                mapName: 'location',
-                alias: 'Bank Location',
-                isPrimaryKey: false,
-                isVisible: true,
-            },
-            {
-                mapName: 'ID',
-                alias: 'Bank Id',
-                isPrimaryKey: false,
-                isVisible: true,
-                display: 'hidden'
-            },
-            {
-                mapName: 'accounts',
-                alias: 'Total Account',
-                isPrimaryKey: false,
-                isVisible: true,
-            },
-            {
-                mapName: 'debitAmount',
-                alias: 'Total Debit Amount',
-                isPrimaryKey: false,
-                isVisible: true,
-            },
-            {
-                mapName: 'creditAmount',
-                alias: 'Total Credit Amount',
-                isPrimaryKey: false,
-                isVisible: true,
-            },
-            {
-                mapName: 'tags',
-                alias: 'Tags',
-                isPrimaryKey: false,
-                isVisible: true,
-                type: 'tag'
-            }
-        ]
+        this.header = BANK_HEADER
     }
 
     loadingComplete() {
