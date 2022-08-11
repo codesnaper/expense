@@ -1,7 +1,8 @@
 import ModalBank from "./modal";
-import BankView from "./view";
 import React from "react";
 import { Container } from "@mui/material";
+import ExpenseTable from "../../blocks/table/table";
+import { Navigate } from "react-router-dom";
 function createData(ID, name, location, currency, tags, creditAmount, debitAmount, accounts) {
     return {
         ID,
@@ -23,12 +24,73 @@ export default class Bank extends React.Component {
             open: false,
             type: 'add',
             bank: {},
-            loading: true
+            loading: true,
+            accountNavigate: false,
+            accountNavigateId: -1
         }
+        this.header = [
+            {
+                mapName: 'USERID',
+                alias: 'User ID',
+                isPrimaryKey: false,
+                isVisible: true,
+                display: 'hidden'
+            },
+            {
+                mapName: 'name',
+                alias: 'Bank Name',
+                isPrimaryKey: false,
+                isVisible: true,
+            },
+            {
+                mapName: 'currency',
+                alias: 'Currency',
+                isPrimaryKey: false,
+                isVisible: true,
+            },
+            {
+                mapName: 'location',
+                alias: 'Bank Location',
+                isPrimaryKey: false,
+                isVisible: true,
+            },
+            {
+                mapName: 'ID',
+                alias: 'Bank Id',
+                isPrimaryKey: false,
+                isVisible: true,
+                display: 'hidden'
+            },
+            {
+                mapName: 'accounts',
+                alias: 'Total Account',
+                isPrimaryKey: false,
+                isVisible: true,
+            },
+            {
+                mapName: 'debitAmount',
+                alias: 'Total Debit Amount',
+                isPrimaryKey: false,
+                isVisible: true,
+            },
+            {
+                mapName: 'creditAmount',
+                alias: 'Total Credit Amount',
+                isPrimaryKey: false,
+                isVisible: true,
+            },
+            {
+                mapName: 'tags',
+                alias: 'Tags',
+                isPrimaryKey: false,
+                isVisible: true,
+                type: 'tag'
+            }
+        ]
     }
 
-    loadingComplete(){
-        this.setState({loading: false});
+    loadingComplete() {
+        this.setState({ loading: false });
     }
 
     handleAddBank(newBank, _self) {
@@ -41,8 +103,8 @@ export default class Bank extends React.Component {
         _self.setState({ open: true })
     }
 
-    handleDeleteBank(id, _self) {
-        let fetchIndex = _self.state.banks.map(bank => bank.ID).indexOf(id);
+    handleDeleteBank(bank, _self) {
+        let fetchIndex = _self.state.banks.map(bank => bank.ID).indexOf(bank.ID);
         if (fetchIndex) {
             _self.state.banks.splice(fetchIndex, 1);
         }
@@ -75,9 +137,11 @@ export default class Bank extends React.Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:3000/bank',{headers: {
-            'user-id': JSON.parse(sessionStorage.getItem('user')).username
-        }}).then(res => res.json())
+        fetch('http://localhost:3000/bank', {
+            headers: {
+                'user-id': JSON.parse(sessionStorage.getItem('user')).username
+            }
+        }).then(res => res.json())
             .then(res => {
                 let data = [];
                 res.Items.forEach(item => {
@@ -88,23 +152,38 @@ export default class Bank extends React.Component {
             }).catch(err => console.error(err));
     }
 
+    showAction(data, _self) {
+        _self.setState({ accountNavigateId: data.ID });
+        _self.setState({ accountNavigate: true });
+    }
+
     render() {
         return (
             <>
                 <Container maxWidth sx={{ 'margin-top': '40px' }}>
-                    <BankView
-                        loading={this.state.loading}
-                        data={this.state.banks}
-                        openModalCallback={() => this.handleOpenModal(this)}
-                        deleteCallback={(data) => this.handleDeleteBank(data, this)}
-                        editModalCallback={(data) => this.handleEditBank(data, this)}
-                    ></BankView>
+                    <ExpenseTable
+                        action
+                        showAction
+                        editAction
+                        deleteAction
+                        addAction
+                        dataset={this.state.banks}
+                        headers={this.header}
+                        showActionCallback={(row) => this.showAction(row, this)}
+                        editActionCallback={(row) => this.handleEditBank(row, this)}
+                        deleteActionCallback={(row) => this.handleDeleteBank(row, this)}
+                        addActionCallback={() => this.handleOpenModal(this)}
+                    >
+                        <span>Bank Detail</span>
+                        <span>Total Amount: {10}</span>
+                    </ExpenseTable>
                     <ModalBank openModal={this.state.open} type={this.state.type}
                         bank={this.state.bank}
                         closeModalCallback={() => this.handleCloseModal(this)}
                         addCallback={(data) => this.handleAddBank(data, this)}
                         editCallback={(id, data) => this.handleEditCallback(id, data, this)}
                     ></ModalBank>
+                    {this.state.accountNavigate && <Navigate to={`/account?bankId=${this.state.accountNavigateId}`} replace={true} />}
                 </Container>
             </>
         );

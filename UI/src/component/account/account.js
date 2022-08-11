@@ -1,8 +1,8 @@
 import ModalBank from "./modal";
 import React from "react";
-import AccountView from "./view";
 import { Breadcrumbs, Container, Skeleton, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import ExpenseTable from "../../blocks/table/table";
 
 
 function getParameterByName(name, url = window.location.href) {
@@ -28,6 +28,110 @@ export default class Account extends React.Component {
             bank: {},
             loading: true,
         }
+        this.header = [
+            {
+                mapName: 'isInterest',
+                alias: 'Interest Account',
+                isPrimaryKey: false,
+                isVisible: true,
+                type: 'boolean'
+            },
+            {
+                mapName: 'loanType',
+                alias: 'Loan Account',
+                isPrimaryKey: false,
+                isVisible: true,
+                type: 'boolean'
+            },
+            {
+                mapName: 'interestAmount',
+                alias: 'Interest Amount',
+                isPrimaryKey: false,
+                isVisible: true
+            },
+            {
+                mapName: 'emiPaid',
+                alias: 'Paid EMI',
+                isPrimaryKey: false,
+                isVisible: true
+            },
+            {
+                mapName: 'BANKID',
+                alias: 'Bank Id',
+                isPrimaryKey: false,
+                isVisible: false,
+                display: 'hidden'
+            },
+            {
+                mapName: 'principal',
+                alias: 'Total Account',
+                isPrimaryKey: false,
+                isVisible: true
+            },
+            {
+                mapName: 'maturityAmount',
+                alias: 'Maturity Account',
+                isPrimaryKey: false,
+                isVisible: true
+            },
+            {
+                mapName: 'totalPayment',
+                alias: 'Total Amount',
+                isPrimaryKey: false,
+                isVisible: true
+            },
+            {
+                mapName: 'rate',
+                alias: 'Interest Rate',
+                isPrimaryKey: false,
+                isVisible: true
+            },
+            {
+                mapName: 'interest',
+                alias: 'Interest Account',
+                isPrimaryKey: false,
+                isVisible: true,
+                type: 'boolean'
+            },
+            {
+                mapName: 'accountNo',
+                alias: 'Account Number',
+                isPrimaryKey: false,
+                isVisible: true
+            },
+            {
+                mapName: 'name',
+                alias: 'Account Name',
+                isPrimaryKey: false,
+                isVisible: true
+            },
+            {
+                mapName: 'ID',
+                alias: 'ID',
+                isPrimaryKey: true,
+                isVisible: true,
+                display: 'hidden'
+            },
+            {
+                mapName: 'openDate',
+                alias: 'Account Opening Date',
+                isPrimaryKey: false,
+                isVisible: true,
+                type: 'date'
+            },
+            {
+                mapName: 'totalInterest',
+                alias: 'Total Interest',
+                isPrimaryKey: false,
+                isVisible: true
+            },
+            {
+                mapName: 'tenure',
+                alias: 'Tenure',
+                isPrimaryKey: false,
+                isVisible: true
+            },
+        ]
     }
 
     loadingComplete() {
@@ -113,15 +217,27 @@ export default class Account extends React.Component {
         });
     }
 
+    showAction(row) {
+        alert(JSON.stringify(row));
+    }
+
+    editAction(row) {
+        alert(JSON.stringify(row));
+    }
+
+    deleteAction(row) {
+        alert(JSON.stringify(row));
+    }
+
     render() {
         return (
             <>
                 <Breadcrumbs sx={{ 'margin': '20px' }} separator=">" aria-label="breadcrumb">
-                    {this.state.loading ? <><Skeleton sx={{width: '15vw'}} variant="body1"></Skeleton><Skeleton sx={{width: '15vw'}} variant="body1"></Skeleton></> : <><Link underline="hover" color="inherit" to="/bank">{this.state.bank.name}</Link></>}
+                    {this.state.loading ? <><Skeleton sx={{ width: '15vw' }} variant="body1"></Skeleton><Skeleton sx={{ width: '15vw' }} variant="body1"></Skeleton></> : <><Link underline="hover" color="inherit" to="/bank">{this.state.bank.name}</Link></>}
                     {!this.state.loading && <Typography color="text.primary">accounts</Typography>}
                 </Breadcrumbs>
                 <Container maxWidth sx={{ 'margin-top': '40px' }}>
-                    <AccountView
+                    {/* <AccountView
                         loading={this.state.loading}
                         bankId={this.id}
                         bank={this.state.bank}
@@ -129,7 +245,21 @@ export default class Account extends React.Component {
                         openModalCallback={() => this.handleOpenModal(this)}
                         deleteCallback={(data) => this.handleDeleteAccount(data, this)}
                         editModalCallback={(data) => this.handleEditAccount(data, this)}
-                    ></AccountView>
+                    ></AccountView> */}
+                    <ExpenseTable
+                        action
+                        showAction
+                        editAction
+                        deleteAction
+                        addAction
+                        dataset={this.state.accounts}
+                        headers={this.header}
+                        showActionCallback={(row) => this.showAction(row)}
+                        editActionCallback={(row) => this.editAction(row)}
+                        deleteActionCallback={(row) => this.deleteAction(row)}
+                        addActionCallback={()=> this.handleOpenModal(this)}
+                    ></ExpenseTable>
+                    {/* <AccountView></AccountView> */}
                     <ModalBank openModal={this.state.open} type={this.state.type}
                         bank={this.state.bank}
                         account={this.state.account}

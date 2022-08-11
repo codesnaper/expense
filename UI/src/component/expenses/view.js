@@ -216,21 +216,11 @@ const EnhancedTableToolbar = (props) => {
                 id="tableTitle"
                 component="div"
             >
-                Bank Accounts
-            </Typography>
-
-
-            <Typography
-                sx={{ flex: '1 1 100%' }}
-                variant="h6"
-                id="tableTitle"
-                component="div"
-            >
-                {props.loading ? <Skeleton /> : <>{`Total Amount: 0`}</>}
+                Expense Type
             </Typography>
 
             {!props.loading && <>
-                <Tooltip title="Add new Bank">
+                <Tooltip title="Add new Expense">
                     <Button onClick={openModal} variant="contained"><AddIcon /> Add</Button>
                 </Tooltip>
             </>}

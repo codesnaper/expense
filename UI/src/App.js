@@ -11,7 +11,11 @@ import ForgetPassword from './component/user/forgetPassword';
 const Bank = React.lazy(() => import('./component/bank/banks'));
 const Account = React.lazy(() => import('./component/account/account'));
 const Home = React.lazy(() => import('./component/dashboard/home'));
-const AccountDetail  = React.lazy(() => import('./component/accountDetail/accountDetail'));
+const AccountDetail = React.lazy(() => import('./component/accountDetail/accountDetail'));
+const Limit = React.lazy(() => import('./component/limit/limit'));
+const Expense = React.lazy(() => import('./component/expenses/expenses'));
+const Category = React.lazy(() => import('./component/category/category'));
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -97,6 +101,45 @@ class App extends React.Component {
                       <>
                         <Navbar loggedUser={this.state.loggedUser}></Navbar>
                         <Account></Account>
+                      </>
+                    }
+                  </>} />
+                <Route path="/limit" element={
+                  <>
+                    {!this.state.login ?
+                      <>
+                        <Login loggedInCallback={() => this.userLoggedIn(this)} />
+                      </>
+                      :
+                      <>
+                        <Navbar loggedUser={this.state.loggedUser}></Navbar>
+                        <Limit></Limit>
+                      </>
+                    }
+                  </>} />
+                  <Route path="/exp" element={
+                  <>
+                    {!this.state.login ?
+                      <>
+                        <Login loggedInCallback={() => this.userLoggedIn(this)} />
+                      </>
+                      :
+                      <>
+                        <Navbar loggedUser={this.state.loggedUser}></Navbar>
+                        <Expense></Expense>
+                      </>
+                    }
+                  </>} />
+                  <Route path="/category" element={
+                  <>
+                    {!this.state.login ?
+                      <>
+                        <Login loggedInCallback={() => this.userLoggedIn(this)} />
+                      </>
+                      :
+                      <>
+                        <Navbar loggedUser={this.state.loggedUser}></Navbar>
+                        <Category></Category>
                       </>
                     }
                   </>} />
