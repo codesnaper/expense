@@ -1,21 +1,12 @@
 import ModalBank from "./modal";
 import React from "react";
-import { Container } from "@mui/material";
+import { Container, Grid, CardContent, Typography, Card, CardActionArea, Button } from "@mui/material";
 import ExpenseTable from "../../blocks/table/table";
 import { Navigate } from "react-router-dom";
 import { BANK_HEADER } from "../../modal/bankHeader";
-function createData(ID, name, location, currency, tags, creditAmount, debitAmount, accounts) {
-    return {
-        ID,
-        name,
-        location,
-        currency,
-        tags,
-        creditAmount,
-        debitAmount,
-        accounts,
-    }
-};
+import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
+import AddIcon from '@mui/icons-material/Add';
+import ContentLoader from "../../blocks/contentLoader";
 
 export default class Bank extends React.Component {
     constructor(props) {
@@ -27,7 +18,8 @@ export default class Bank extends React.Component {
             bank: {},
             loading: true,
             accountNavigate: false,
-            accountNavigateId: -1
+            accountNavigateId: -1,
+            loader: true
         }
         this.header = BANK_HEADER
     }
@@ -88,11 +80,15 @@ export default class Bank extends React.Component {
             .then(res => {
                 let data = [];
                 res.Items.forEach(item => {
-                    data.push(createData(item.ID, item.name, item.location, item.currency, item.tags, item.creditAmount, item.debitAmount, item.accounts));
+                    data.push(item);
                 });
                 this.setState({ banks: data })
                 this.loadingComplete();
-            }).catch(err => console.error(err));
+                this.setState({ loader: false });
+            }).catch(err => {
+                console.error(err);
+                this.setState({ loader: false });
+            });
     }
 
     showAction(data, _self) {
@@ -104,22 +100,60 @@ export default class Bank extends React.Component {
         return (
             <>
                 <Container maxWidth sx={{ 'margin-top': '40px' }}>
-                    <ExpenseTable
-                        action
-                        showAction
-                        editAction
-                        deleteAction
-                        addAction
-                        dataset={this.state.banks}
-                        headers={this.header}
-                        showActionCallback={(row) => this.showAction(row, this)}
-                        editActionCallback={(row) => this.handleEditBank(row, this)}
-                        deleteActionCallback={(row) => this.handleDeleteBank(row, this)}
-                        addActionCallback={() => this.handleOpenModal(this)}
-                    >
-                        <span>Bank Detail</span>
-                        <span>Total Amount: {10}</span>
-                    </ExpenseTable>
+                    {this.state.loader ? <>
+                        <ContentLoader heading={'Fetching Bank Details'}>
+                        </ContentLoader>
+                    </> :
+                        <>
+                            {(this.state.banks.length === 0) ?
+                                <>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12}>
+                                            <Card sx={{ textAlign: 'center' }}>
+                                                <CardContent>
+                                                    <Typography variant="h1" component="div">
+                                                        <AccountBalanceOutlinedIcon fontSize="30"></AccountBalanceOutlinedIcon>
+                                                    </Typography>
+                                                    <Typography variant="h5" component="div">
+                                                        No Banks details have been added yet.
+                                                    </Typography>
+                                                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                                        To record the expense and apply limit enter the bank details and account tags with bank. Click on add button to add the bank details.
+                                                    </Typography>
+                                                </CardContent>
+                                                <CardActionArea>
+                                                    <Button size="large" onClick={() => this.handleOpenModal(this)} >
+                                                        <AddIcon sx={{ mr: 1 }} />
+                                                        Add Bank Details
+                                                    </Button>
+                                                </CardActionArea>
+                                            </Card>
+                                        </Grid>
+                                    </Grid>
+                                </> :
+                                <>
+                                    <ExpenseTable
+                                        action
+                                        showAction
+                                        editAction
+                                        deleteAction
+                                        addAction
+                                        loader={this.state.loader}
+                                        dataset={this.state.banks}
+                                        headers={this.header}
+                                        showActionCallback={(row) => this.showAction(row, this)}
+                                        editActionCallback={(row) => this.handleEditBank(row, this)}
+                                        deleteActionCallback={(row) => this.handleDeleteBank(row, this)}
+                                        addActionCallback={() => this.handleOpenModal(this)}
+                                    >
+                                        <span>Bank Detail</span>
+                                        <span>Total Amount: {10}</span>
+                                    </ExpenseTable>
+                                </>
+
+                            }
+                        </>}
+
                     <ModalBank openModal={this.state.open} type={this.state.type}
                         bank={this.state.bank}
                         closeModalCallback={() => this.handleCloseModal(this)}
