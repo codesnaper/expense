@@ -1,35 +1,34 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Fab, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { blue, green } from "@mui/material/colors";
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import { ServiceContext } from "../../providers/serviceContext";
+import { UserContext } from "../../providers/userContext";
 import useAlert from "../alert/alertHook";
 export default function ModalBank(props) {
     const [currency, setCurrency] = React.useState(false);
+    const service = useContext(ServiceContext);
+    const user = useContext(UserContext);
     const [name, setName] = React.useState('');
     const [location, setLocation] = React.useState('');
     const [tag, setTag] = React.useState('');
-    const [addLoader, setAddLoader] = React.useState(false);
+    const [addLoader, setAddLoader] = React.useState(true);
     const handleClose = () => { props.closeModalCallback() }
     const handleChange = (event) => {
         setCurrency(event.target.value);
     }
+
+    useEffect(() => {
+        setAddLoader(false);
+    },[service]);
+
     const { setAlert } = useAlert();
+
     const currencies = [
         'INR',
         'EURO',
         'DOLLAR',
         'PLN'
     ];
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
-    };
 
     const handleBankName = (e) => setName(e.target.value);
     const handleLocation = (e) => setLocation(e.target.value);
@@ -45,15 +44,7 @@ export default function ModalBank(props) {
         };
         if (props.type === 'add') {
             setAddLoader(true);
-            fetch('http://localhost:3000/bank/', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                body: JSON.stringify(data),
-            })
-                .then(res => res.json())
+            service.bankService.addBank(data)
                 .then(res => {
                     setAddLoader(false);
                     handleClose();
@@ -65,16 +56,7 @@ export default function ModalBank(props) {
                 })
         } else {
             setAddLoader(true);
-            fetch(`http://localhost:3000/bank/${props.bank.ID}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                    'user-id': JSON.parse(sessionStorage.getItem('user')).username
-                },
-                body: JSON.stringify(data),
-            })
-                .then(res => res.json())
+            service.bankService.updateBank(data, props.bank.ID, user.id)
                 .then(res => {
                     setAddLoader(false);
                     handleClose();

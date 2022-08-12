@@ -28,7 +28,7 @@ export default function Login(props) {
             const user = await Auth.signIn(userData.Username, userData.password);
             setAlert(`Welcome ${user.attributes.name} !!!`, 'success');
             sessionStorage.setItem('user', JSON.stringify(user));
-            props.loggedInCallback();
+            // props.loggedInCallback();
             setLoginLoader(false);
         } catch (error) {
             setAlert( error.message,'error')

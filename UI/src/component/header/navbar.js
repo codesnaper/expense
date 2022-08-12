@@ -17,7 +17,9 @@ import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { Auth } from 'aws-amplify';
 import configure from '../../service/cognitoService';
-const pages = [{ name: 'Add Expense', link: '/bank' }, { name: 'Set Limit', link: '/limit' },{ name: 'Categories', link: '/category' }, { name: 'Banks', link: '/bank' }, { name: 'Goal', link: '/goal' }];
+import { NavigationLink } from '../../conf';
+import { UserContext } from '../../providers/userContext';
+const pages = NavigationLink;
 function stringToColor(string) {
     let hash = 0;
     let i;
@@ -50,6 +52,7 @@ function stringAvatar(name) {
 const Navbar = (props) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const user = React.useContext(UserContext);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -175,7 +178,7 @@ const Navbar = (props) => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                {props.loggedUser.attributes && <Avatar {...stringAvatar(`${props.loggedUser.attributes.name}`)} />}
+                                {<Avatar {...stringAvatar(`${user.name}`)} />}
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -195,7 +198,7 @@ const Navbar = (props) => {
                             onClose={handleCloseUserMenu}
                         >
                             <MenuItem disabled>
-                                {props.loggedUser.attributes &&  <ListItemText>{`${props.loggedUser.attributes.name}`.toUpperCase()}</ListItemText>}
+                               <ListItemText>{`${user.name}`.toUpperCase()}</ListItemText>
                             </MenuItem>
                             <Divider />
                             <MenuItem onClick={handleUserMenu}>
