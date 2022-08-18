@@ -29,7 +29,7 @@ export default function BankComponent() {
     const user = useContext(UserContext);
     const service = useContext(ServiceContext);
     const localization = useContext(LocalizationContext);
-    const alert = useContext(AlertContext);
+    const expenseAlert = useContext(AlertContext);
 
     const createBankDataSet = (banks: Array<BankModal>) => {
         const dataSet: TableDataSet<BankModal> = new TableDataSet<BankModal>(
@@ -126,7 +126,7 @@ export default function BankComponent() {
                 createBankDataSet(banks);
                 setLoader(false);
             }).catch(err => {
-                alert.setAlert?.('Failed to load bank data from server', AlertType.ERROR);
+                expenseAlert.setAlert?.(`${localization.getString?.('Bank.error.404', localization.getLanguage?.())}`, AlertType.SUCCESS);
                 console.error(err);
                 setLoader(false);
             });
@@ -140,13 +140,14 @@ export default function BankComponent() {
             banks.push(bank)
             createBankDataSet(banks);
         }
+        setTotalBank(totalBank + 1);
     }
 
     const editModalCallback = (id: string, editedBank: BankModal) => {
         if (bankDataSet) {
             const banks: Array<BankModal> = bankDataSet.rows
                 .map((bank: BankModal) => {
-                    if (editedBank.ID === id) {
+                    if (bank.ID === id) {
                         if (editedBank.currency) {
                             bank.currency = editedBank.currency;
                         }
@@ -188,26 +189,21 @@ export default function BankComponent() {
             .then((res: ResponseDelete) => {
                 if (bankDataSet) {
                     let bankModals: Array<BankModal> = bankDataSet.rows;
-                    const fetchIndex: number = bankModals.map((bank: BankModal) => bank.ID).indexOf(bank.ID);
-                    if (bankModals.length === 1) {
-                        bankModals.pop();
-                    } else {
-                        //TODO: need to fix it 
-                        if (fetchIndex !== -1) {
-                            bankModals = bankModals.splice(fetchIndex, 1);
-                        }
+                    const fetchIndex: number = bankModals.findIndex((sBank: BankModal) => sBank.ID === bank.ID);
+                    if (fetchIndex !== -1) {
+                        bankModals.splice(fetchIndex, 1);
                     }
                     createBankDataSet(bankModals);
-                    alert.setAlert?.(res.message, AlertType.SUCCESS);
+                    setTotalBank(totalBank - 1);
+                    setTotalCreditAmount(totalCreditAmount - Number(bank.creditAmount));
+                    setTotalDebitAmount(totalDebitAmount - Number(bank.debitAmount));
+                    expenseAlert.setAlert?.(res.message, AlertType.SUCCESS);
                 }
             }).
             catch(err => {
                 console.error(err);
-                alert.setAlert?.('Failed to delete Bank details.', AlertType.ERROR);
+                expenseAlert.setAlert?.(`${localization.getString?.('Bank.error.delete', localization.getLanguage?.())}`, AlertType.SUCCESS);
             })
-
-
-
     }
 
     return (
@@ -235,13 +231,13 @@ export default function BankComponent() {
                             <>
                                 <Grid container spacing={2}>
                                     <InfoCardComponent header="Total Bank" value={`${totalBank}`} ></InfoCardComponent>
-                                    <InfoCardComponent header="Credit Amount" value={`${totalCreditAmount}`} suffixCurrency="₹" color={green[200]}></InfoCardComponent>
-                                    <InfoCardComponent header="Debit Amount" value={`${totalDebitAmount}`} suffixCurrency="₹" color={red[200]}></InfoCardComponent>
+                                    <InfoCardComponent header="Credit Amount" value={`${totalCreditAmount}`} suffixCurrency="₹" color={green[700]}></InfoCardComponent>
+                                    <InfoCardComponent header="Debit Amount" value={`${totalDebitAmount}`} suffixCurrency="₹" color={red[700]}></InfoCardComponent>
                                 </Grid>
                                 <Card raised sx={{ marginTop: '40px' }}>
                                     <CardContent>
-                                        <Typography variant="h5" component="div" sx={{marginBottom: '12px'}}>
-                                            Banks Details
+                                        <Typography variant="h5" component="div" sx={{ marginBottom: '12px' }}>
+                                            {localization.getString?.('Bank.tableHeading', localization.getLanguage?.(), true)}
                                         </Typography>
                                         <Divider></Divider>
                                         <ExpenseTable
@@ -253,7 +249,6 @@ export default function BankComponent() {
                                         ></ExpenseTable>
                                     </CardContent>
                                 </Card>
-
                             </>
                         }
                     </>}
