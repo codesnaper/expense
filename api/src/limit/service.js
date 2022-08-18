@@ -1,25 +1,25 @@
 const Dynamo = require("../util/dynamoDB");
-const { Bank } = require("./bank");
+const { Limit } = require("./limit");
 const uuid = require('uuid');
 
-const BankService = {
-    bankTable : process.env.BANK_TABLE,
+const LimitService = {
+    limitTable : process.env.LIMIT_TABLE,
 
     async getById(id,userId){
         const param = {
-            TableName: this.bankTable,
+            TableName: this.limitTable,
             Key: {
                 ID: id,
                 USERID: userId
             },
         }
-        let res = await Dynamo.getByParam(param, this.bankTable);
+        let res = await Dynamo.getByParam(param, this.limitTable);
         return res;
     },
 
     async getAllByUserId(userId){
         const params = {
-            TableName: this.bankTable,
+            TableName: this.limitTable,
             FilterExpression: "#USERID = :userId_val",
             ExpressionAttributeNames: {
                 "#USERID": "USERID",
@@ -31,17 +31,17 @@ const BankService = {
     },
 
     async add(data) {
-        let bank = new Bank();
-        bank.ID = uuid.v4();
-        bank.name = data.name ? data.name: '';
-        bank.location = data.location;
-        bank.currency = data.currency;
-        bank.tags = data.tags;
-        bank.USERID = data.userId;
-        bank.creditAmount = data.creditAmount? data.creditAmount: 0;
-        bank.debitAmount = data.debitAmount ? data.debitAmount : 0;
-        bank.accounts = data.accounts ? data.accounts: 0;
-        return await Dynamo.write(bank, this.bankTable);
+        let limit = new Limit();
+        limit.ID = uuid.v4();
+        limit.USERID = data.USERID;
+        limit.accountID = data.accountID;
+        limit.amount = data.amount;
+        limit.categoryID = data.categoryID;
+        limit.created = data.created;
+        limit.maxThreshold = data.maxThreshold;
+        limit.renew = data.renew;
+        limit.warnThresold = data.warnThresold;
+        return await Dynamo.write(bank, this.limitTable);
     },
 
     async update(ID, userId, data) {
@@ -49,7 +49,7 @@ const BankService = {
             ID,
             USERID: userId
         }
-        return await Dynamo.update(data, this.bankTable, key);
+        return await Dynamo.update(data, this.limitTable, key);
     },
 
     async delete(ID, userId) {
@@ -57,7 +57,7 @@ const BankService = {
             ID,
             USERID: userId
         }
-        return await Dynamo.delete(key, this.bankTable);
+        return await Dynamo.delete(key, this.limitTable);
     }
 }
-module.exports = BankService;
+module.exports = LimitService;

@@ -37,7 +37,7 @@ const BankService = {
         bank.location = data.location;
         bank.currency = data.currency;
         bank.tags = data.tags;
-        bank.USERID = data.userId;
+        bank.USERID = data.USERID;
         bank.creditAmount = data.creditAmount? data.creditAmount: 0;
         bank.debitAmount = data.debitAmount ? data.debitAmount : 0;
         bank.accounts = data.accounts ? data.accounts: 0;
@@ -49,6 +49,7 @@ const BankService = {
             ID,
             USERID: userId
         }
+        delete data['ID']
         return await Dynamo.update(data, this.bankTable, key);
     },
 
