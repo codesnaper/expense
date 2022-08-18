@@ -6,7 +6,7 @@ import { UserContextProvider } from './provider/UserContext';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AlertContextProvider } from './provider/AlertProvider';
 const Home = React.lazy(() => import('./component/Home/Home'));
-const Bank = React.lazy(() => import('./component/Bank'));
+const BankComponent = React.lazy(() => import('./component/Bank'));
 const AccountComponent = React.lazy(() => import('./component/Accounts'));
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
           <UserContextProvider>
             <Routes>
               <Route path="/*" element={<Home />} />
-              <Route path="/bank" element={<Bank />} />
+              <Route path="/bank" element={<BankComponent />} />
               <Route path="/account/:bankId" element={<AccountComponent></AccountComponent>}/>
             </Routes>
           </UserContextProvider>

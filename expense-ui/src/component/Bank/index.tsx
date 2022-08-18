@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Container, Button } from "@mui/material";
+import { Container, Button, Grid, Card, CardContent, Typography, Divider } from "@mui/material";
 import { Navigate } from "react-router-dom";
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AddIcon from '@mui/icons-material/Add';
@@ -13,8 +13,9 @@ import { TableAction, TableDataSet } from "../../modal/TableDataSet";
 import { HeaderDisplay, HeaderType } from "../../modal/Header";
 import ExpenseTable from "../Table";
 import { OperationType } from "../../modal/OperationType";
-import PermScanWifiIcon from '@mui/icons-material/PermScanWifi';
-export default function Bank() {
+import InfoCardComponent from "../Card/InfoCard";
+import { green, red } from "@mui/material/colors";
+export default function BankComponent() {
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [operationType, setOperationType] = useState<OperationType>(OperationType.ADD);
     const [bank, setBank] = useState<BankModal>();
@@ -22,10 +23,13 @@ export default function Bank() {
     const [accountId, setAccountId] = useState<string>('-1');
     const [bankDataSet, setBankDataSet] = useState<TableDataSet<BankModal>>();
     const [loader, setLoader] = useState<boolean>(true);
+    const [totalBank, setTotalBank] = useState<number>(0);
+    const [totalCreditAmount, setTotalCreditAmount] = useState<number>(0);
+    const [totalDebitAmount, setTotalDebitAmount] = useState<number>(0);
     const user = useContext(UserContext);
     const service = useContext(ServiceContext);
     const localization = useContext(LocalizationContext);
-    const alert = useContext(AlertContext);
+    const expenseAlert = useContext(AlertContext);
 
     const createBankDataSet = (banks: Array<BankModal>) => {
         const dataSet: TableDataSet<BankModal> = new TableDataSet<BankModal>(
@@ -109,13 +113,20 @@ export default function Bank() {
         service.bankService?.fetchBanks(user.id)
             .then((response: BankModalsResponse) => {
                 let banks: BankModal[] = [];
+                let sumCreditAmount: number = 0;
+                let sumDebitAmount: number = 0;
                 response.Items.forEach((bank: BankModal) => {
                     banks.push(bank);
+                    sumCreditAmount += Number(bank.creditAmount);
+                    sumDebitAmount += Number(bank.debitAmount);
                 });
+                setTotalCreditAmount(sumCreditAmount);
+                setTotalDebitAmount(sumDebitAmount);
+                setTotalBank(response.Count);
                 createBankDataSet(banks);
                 setLoader(false);
             }).catch(err => {
-                alert.setAlert?.('Failed to load bank data from server', AlertType.ERROR);
+                expenseAlert.setAlert?.(`${localization.getString?.('Bank.error.404', localization.getLanguage?.())}`, AlertType.SUCCESS);
                 console.error(err);
                 setLoader(false);
             });
@@ -129,13 +140,14 @@ export default function Bank() {
             banks.push(bank)
             createBankDataSet(banks);
         }
+        setTotalBank(totalBank + 1);
     }
 
     const editModalCallback = (id: string, editedBank: BankModal) => {
         if (bankDataSet) {
             const banks: Array<BankModal> = bankDataSet.rows
                 .map((bank: BankModal) => {
-                    if (editedBank.ID === id) {
+                    if (bank.ID === id) {
                         if (editedBank.currency) {
                             bank.currency = editedBank.currency;
                         }
@@ -177,26 +189,21 @@ export default function Bank() {
             .then((res: ResponseDelete) => {
                 if (bankDataSet) {
                     let bankModals: Array<BankModal> = bankDataSet.rows;
-                    const fetchIndex: number = bankModals.map((bank: BankModal) => bank.ID).indexOf(bank.ID);
-                    if (bankModals.length === 1) {
-                        bankModals.pop();
-                    } else {
-                        //TODO: need to fix it 
-                        if (fetchIndex !== -1) {
-                            bankModals = bankModals.splice(fetchIndex, 1);
-                        }
+                    const fetchIndex: number = bankModals.findIndex((sBank: BankModal) => sBank.ID === bank.ID);
+                    if (fetchIndex !== -1) {
+                        bankModals.splice(fetchIndex, 1);
                     }
                     createBankDataSet(bankModals);
-                    alert.setAlert?.(res.message, AlertType.SUCCESS);
+                    setTotalBank(totalBank - 1);
+                    setTotalCreditAmount(totalCreditAmount - Number(bank.creditAmount));
+                    setTotalDebitAmount(totalDebitAmount - Number(bank.debitAmount));
+                    expenseAlert.setAlert?.(res.message, AlertType.SUCCESS);
                 }
             }).
             catch(err => {
                 console.error(err);
-                alert.setAlert?.('Failed to delete Bank details.', AlertType.ERROR);
+                expenseAlert.setAlert?.(`${localization.getString?.('Bank.error.delete', localization.getLanguage?.())}`, AlertType.SUCCESS);
             })
-
-
-
     }
 
     return (
@@ -209,24 +216,39 @@ export default function Bank() {
                     <>
                         {(bankDataSet?.rows.length === 0) ?
                             <>
-                                <PlaceholderCard heading={`${localization.getString?.('Bank.emptyCardHeading', localization.getLanguage?.(), true)}`}
-                                    info={`${localization.getString?.('Bank.emptyCardInfo', localization.getLanguage?.(), true)}`}
-                                >
-                                    <AccountBalanceOutlinedIcon></AccountBalanceOutlinedIcon>
-                                    <Button size="large" onClick={() => setOpenModal(true)} >
-                                        <AddIcon sx={{ mr: 1 }} />
-                                        {localization.getString?.('Bank.addPrimaryCtaText', localization.getLanguage?.(), true)}
-                                    </Button>
-                                </PlaceholderCard>
+                                <Card raised>
+                                    <PlaceholderCard heading={`${localization.getString?.('Bank.emptyCardHeading', localization.getLanguage?.(), true)}`}
+                                        info={`${localization.getString?.('Bank.emptyCardInfo', localization.getLanguage?.(), true)}`}
+                                    >
+                                        <AccountBalanceOutlinedIcon></AccountBalanceOutlinedIcon>
+                                        <Button size="large" onClick={() => setOpenModal(true)} >
+                                            <AddIcon sx={{ mr: 1 }} />
+                                            {localization.getString?.('Bank.addPrimaryCtaText', localization.getLanguage?.(), true)}
+                                        </Button>
+                                    </PlaceholderCard>
+                                </Card>
                             </> :
                             <>
-                                <ExpenseTable
-                                    dataset={bankDataSet}
-                                    showActionCallback={(row) => viewAccounts(row)}
-                                    editActionCallback={(row) => editBank(row)}
-                                    deleteActionCallback={(row) => deleteBank(row)}
-                                    addActionCallback={() => setOpenModal(true)}
-                                ></ExpenseTable>
+                                <Grid container spacing={2}>
+                                    <InfoCardComponent header="Total Bank" value={`${totalBank}`} ></InfoCardComponent>
+                                    <InfoCardComponent header="Credit Amount" value={`${totalCreditAmount}`} suffixCurrency="₹" color={green[700]}></InfoCardComponent>
+                                    <InfoCardComponent header="Debit Amount" value={`${totalDebitAmount}`} suffixCurrency="₹" color={red[700]}></InfoCardComponent>
+                                </Grid>
+                                <Card raised sx={{ marginTop: '40px' }}>
+                                    <CardContent>
+                                        <Typography variant="h5" component="div" sx={{ marginBottom: '12px' }}>
+                                            {localization.getString?.('Bank.tableHeading', localization.getLanguage?.(), true)}
+                                        </Typography>
+                                        <Divider></Divider>
+                                        <ExpenseTable
+                                            dataset={bankDataSet}
+                                            showActionCallback={(row) => viewAccounts(row)}
+                                            editActionCallback={(row) => editBank(row)}
+                                            deleteActionCallback={(row) => deleteBank(row)}
+                                            addActionCallback={() => setOpenModal(true)}
+                                        ></ExpenseTable>
+                                    </CardContent>
+                                </Card>
                             </>
                         }
                     </>}
