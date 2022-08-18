@@ -66,13 +66,8 @@ export default function ExpenseTable(props: ExpenseTableProps) {
 
     return (
         <>
-            <Paper sx={{ width: '100%', mb: 2 }}>
-                <Toolbar
-                    sx={{
-                        pl: { sm: 2 },
-                        pr: { xs: 1, sm: 1 },
-                    }}
-                >
+            <Paper sx={{ width: '100%' }}>
+                <Toolbar>
                     <Typography
                         key={'1'}
                         sx={{ flex: '1 1 100%' }}
@@ -105,7 +100,7 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                 <TableContainer component={Paper}>
                     <Table size="small" stickyHeader aria-label="simple table">
                         <TableHead key={'header-1'}>
-                            <TableRow key={'header-1-row'}>
+                            <TableRow key={'header-1-row'} hover={true}>
                                 {
                                     props.dataset?.getColumns().
                                         map(
@@ -119,7 +114,7 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                             {
                                 props.dataset?.getRows().
                                     map((rows: Array<string>, index: number) =>
-                                        <TableRow key={`row-${index}`}>
+                                        <TableRow key={`row-${index}`} hover={true}>
                                             {
                                                 rows.map((data: string, index: number) =>
                                                     <TableCell align="center" key={`cell-${index}`}>{data}</TableCell>

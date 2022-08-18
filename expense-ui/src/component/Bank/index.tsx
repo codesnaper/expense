@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Container, Button } from "@mui/material";
+import { Container, Button, Grid, Card, CardContent, Typography, Divider } from "@mui/material";
 import { Navigate } from "react-router-dom";
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AddIcon from '@mui/icons-material/Add';
@@ -13,8 +13,9 @@ import { TableAction, TableDataSet } from "../../modal/TableDataSet";
 import { HeaderDisplay, HeaderType } from "../../modal/Header";
 import ExpenseTable from "../Table";
 import { OperationType } from "../../modal/OperationType";
-import PermScanWifiIcon from '@mui/icons-material/PermScanWifi';
-export default function Bank() {
+import InfoCardComponent from "../Card/InfoCard";
+import { green, red } from "@mui/material/colors";
+export default function BankComponent() {
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [operationType, setOperationType] = useState<OperationType>(OperationType.ADD);
     const [bank, setBank] = useState<BankModal>();
@@ -22,6 +23,9 @@ export default function Bank() {
     const [accountId, setAccountId] = useState<string>('-1');
     const [bankDataSet, setBankDataSet] = useState<TableDataSet<BankModal>>();
     const [loader, setLoader] = useState<boolean>(true);
+    const [totalBank, setTotalBank] = useState<number>(0);
+    const [totalCreditAmount, setTotalCreditAmount] = useState<number>(0);
+    const [totalDebitAmount, setTotalDebitAmount] = useState<number>(0);
     const user = useContext(UserContext);
     const service = useContext(ServiceContext);
     const localization = useContext(LocalizationContext);
@@ -109,9 +113,16 @@ export default function Bank() {
         service.bankService?.fetchBanks(user.id)
             .then((response: BankModalsResponse) => {
                 let banks: BankModal[] = [];
+                let sumCreditAmount: number = 0;
+                let sumDebitAmount: number = 0;
                 response.Items.forEach((bank: BankModal) => {
                     banks.push(bank);
+                    sumCreditAmount += Number(bank.creditAmount);
+                    sumDebitAmount += Number(bank.debitAmount);
                 });
+                setTotalCreditAmount(sumCreditAmount);
+                setTotalDebitAmount(sumDebitAmount);
+                setTotalBank(response.Count);
                 createBankDataSet(banks);
                 setLoader(false);
             }).catch(err => {
@@ -209,24 +220,40 @@ export default function Bank() {
                     <>
                         {(bankDataSet?.rows.length === 0) ?
                             <>
-                                <PlaceholderCard heading={`${localization.getString?.('Bank.emptyCardHeading', localization.getLanguage?.(), true)}`}
-                                    info={`${localization.getString?.('Bank.emptyCardInfo', localization.getLanguage?.(), true)}`}
-                                >
-                                    <AccountBalanceOutlinedIcon></AccountBalanceOutlinedIcon>
-                                    <Button size="large" onClick={() => setOpenModal(true)} >
-                                        <AddIcon sx={{ mr: 1 }} />
-                                        {localization.getString?.('Bank.addPrimaryCtaText', localization.getLanguage?.(), true)}
-                                    </Button>
-                                </PlaceholderCard>
+                                <Card raised>
+                                    <PlaceholderCard heading={`${localization.getString?.('Bank.emptyCardHeading', localization.getLanguage?.(), true)}`}
+                                        info={`${localization.getString?.('Bank.emptyCardInfo', localization.getLanguage?.(), true)}`}
+                                    >
+                                        <AccountBalanceOutlinedIcon></AccountBalanceOutlinedIcon>
+                                        <Button size="large" onClick={() => setOpenModal(true)} >
+                                            <AddIcon sx={{ mr: 1 }} />
+                                            {localization.getString?.('Bank.addPrimaryCtaText', localization.getLanguage?.(), true)}
+                                        </Button>
+                                    </PlaceholderCard>
+                                </Card>
                             </> :
                             <>
-                                <ExpenseTable
-                                    dataset={bankDataSet}
-                                    showActionCallback={(row) => viewAccounts(row)}
-                                    editActionCallback={(row) => editBank(row)}
-                                    deleteActionCallback={(row) => deleteBank(row)}
-                                    addActionCallback={() => setOpenModal(true)}
-                                ></ExpenseTable>
+                                <Grid container spacing={2}>
+                                    <InfoCardComponent header="Total Bank" value={`${totalBank}`} ></InfoCardComponent>
+                                    <InfoCardComponent header="Credit Amount" value={`${totalCreditAmount}`} suffixCurrency="₹" color={green[200]}></InfoCardComponent>
+                                    <InfoCardComponent header="Debit Amount" value={`${totalDebitAmount}`} suffixCurrency="₹" color={red[200]}></InfoCardComponent>
+                                </Grid>
+                                <Card raised sx={{ marginTop: '40px' }}>
+                                    <CardContent>
+                                        <Typography variant="h5" component="div" sx={{marginBottom: '12px'}}>
+                                            Banks Details
+                                        </Typography>
+                                        <Divider></Divider>
+                                        <ExpenseTable
+                                            dataset={bankDataSet}
+                                            showActionCallback={(row) => viewAccounts(row)}
+                                            editActionCallback={(row) => editBank(row)}
+                                            deleteActionCallback={(row) => deleteBank(row)}
+                                            addActionCallback={() => setOpenModal(true)}
+                                        ></ExpenseTable>
+                                    </CardContent>
+                                </Card>
+
                             </>
                         }
                     </>}
