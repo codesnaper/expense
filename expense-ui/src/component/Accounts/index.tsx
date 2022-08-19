@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Container, Button } from "@mui/material";
+import { Container, Button, Card, CardContent, Tabs, Tab, Grid, List, ListItemText, ListItem, ListItemButton, ListItemIcon, Collapse, Divider } from "@mui/material";
 import { Navigate, useParams } from "react-router-dom";
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AddIcon from '@mui/icons-material/Add';
@@ -14,7 +14,11 @@ import { HeaderDisplay, HeaderType } from "../../modal/Header";
 import ExpenseTable from "../Table";
 import { OperationType } from "../../modal/OperationType";
 import { Account, AccountResponse, AccountResponseItem, LoanAccount, SavingInterestAccount } from "../../modal/Account";
-
+import { Box } from "@mui/system";
+import InfoCardComponent from "../Card/InfoCard";
+import { green, red } from "@mui/material/colors";
+import { CalendarMonth, ExpandLess, ExpandMore } from "@mui/icons-material";
+import PaymentIcon from '@mui/icons-material/Payment';
 export default function AccountComponent() {
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [operationType, setOperationType] = useState<OperationType>(OperationType.ADD);
@@ -23,7 +27,12 @@ export default function AccountComponent() {
     const [accountId, setAccountId] = useState<string>('-1');
     const [loanAccountDataSet, setLoanAccountDataSet] = useState<TableDataSet<LoanAccount>>();
     const [savingAccountDataSet, setSavingAccountDataSet] = useState<TableDataSet<SavingInterestAccount>>();
+    const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
     const [loader, setLoader] = useState<boolean>(true);
+    const [totalBank, setTotalBank] = useState<number>(0);
+    const [totalCreditAmount, setTotalCreditAmount] = useState<number>(0);
+    const [totalDebitAmount, setTotalDebitAmount] = useState<number>(0);
+    const [upcomingPaymentExpand, setUpcomingPaymentExpand] = useState<boolean>(true); 
     const user = useContext(UserContext);
     const service = useContext(ServiceContext);
     const localization = useContext(LocalizationContext);
@@ -144,7 +153,6 @@ export default function AccountComponent() {
     }
 
     useEffect(() => {
-        window.alert('..'+ bankId)
         if (bankId) {
             service.accountService?.fetchAccounts(bankId)
                 .then((response: AccountResponse) => {
@@ -244,26 +252,92 @@ export default function AccountComponent() {
                     </ContentLoader>
                 </> :
                     <>
-                        {(loanAccountDataSet?.rows.length === 0) ?
+                        {(!loanAccountDataSet || loanAccountDataSet?.rows.length === 0) ?
                             <>
-                                <PlaceholderCard heading={`${localization.getString?.('Bank.emptyCardHeading', localization.getLanguage?.(), true)}`}
-                                    info={`${localization.getString?.('Bank.emptyCardInfo', localization.getLanguage?.(), true)}`}
-                                >
-                                    <AccountBalanceOutlinedIcon></AccountBalanceOutlinedIcon>
-                                    <Button size="large" onClick={() => setOpenModal(true)} >
-                                        <AddIcon sx={{ mr: 1 }} />
-                                        {localization.getString?.('Bank.addPrimaryCtaText', localization.getLanguage?.(), true)}
-                                    </Button>
-                                </PlaceholderCard>
+                                <Card raised>
+                                    <PlaceholderCard heading={`${localization.getString?.('Bank.emptyCardHeading', localization.getLanguage?.(), true)}`}
+                                        info={`${localization.getString?.('Bank.emptyCardInfo', localization.getLanguage?.(), true)}`}
+                                    >
+                                        <AccountBalanceOutlinedIcon fontSize="inherit"></AccountBalanceOutlinedIcon>
+                                        <Button size="large" onClick={() => setOpenModal(true)} >
+                                            <AddIcon sx={{ mr: 1 }} />
+                                            {localization.getString?.('Bank.addPrimaryCtaText', localization.getLanguage?.(), true)}
+                                        </Button>
+                                    </PlaceholderCard>
+                                </Card>
                             </> :
                             <>
-                                <ExpenseTable
-                                    dataset={loanAccountDataSet}
-                                    showActionCallback={(row) => viewAccounts(row)}
-                                    editActionCallback={(row) => editBank(row)}
-                                    deleteActionCallback={(row) => deleteBank(row)}
-                                    addActionCallback={() => setOpenModal(true)}
-                                ></ExpenseTable>
+                                <Grid container spacing={2} marginBottom="40px">
+                                    <InfoCardComponent header="Total Account" value={`${totalBank}`} secondaryText="Bank: XYZ"></InfoCardComponent>
+                                    <InfoCardComponent header="Total Loan Account" value={`${totalBank}`} secondaryText="Bank: XYZ"></InfoCardComponent>
+                                    <InfoCardComponent header="Saving Amount" value={`${totalCreditAmount}`} secondaryText="Bank: XYZ" suffixCurrency="₹" color={green[700]}></InfoCardComponent>
+                                    <InfoCardComponent header="Borrowed Amount" value={`${totalDebitAmount}`} secondaryText="Bank: XYZ" suffixCurrency="₹" color={red[700]}></InfoCardComponent>
+                                </Grid>
+                                <Grid container spacing={2}>
+                                    <Grid item lg={8}>
+                                        <Card raised>
+                                            <CardContent>
+                                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                                    <Tabs value={selectedTabIndex} onChange={(_event: React.SyntheticEvent, tabIndex: number) => setSelectedTabIndex(tabIndex)} aria-label="Account Tabs">
+                                                        <Tab value={0} label="Saving Account" />
+                                                        <Tab value={1} label="Loan Account" />
+                                                        <Tab value={2} label="Saving Interest Account" />
+                                                    </Tabs>
+                                                    <ExpenseTable
+                                                        dataset={loanAccountDataSet}
+                                                        showActionCallback={(row) => viewAccounts(row)}
+                                                        editActionCallback={(row) => editBank(row)}
+                                                        deleteActionCallback={(row) => deleteBank(row)}
+                                                        addActionCallback={() => setOpenModal(true)}
+                                                    ></ExpenseTable>
+                                                </Box>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                    <Grid item lg={4}>
+                                        <Card raised>
+                                            <CardContent>
+                                                <List>
+                                                        <ListItemButton onClick={() => setUpcomingPaymentExpand(!upcomingPaymentExpand)}>
+                                                            <ListItemIcon>
+                                                                <PaymentIcon />
+                                                            </ListItemIcon>
+                                                            <ListItemText primary='Upcoming Payments'></ListItemText>
+                                                            {upcomingPaymentExpand ? <ExpandLess /> : <ExpandMore />}
+                                                        </ListItemButton>
+                                                        <Divider></Divider>
+                                                        <Collapse in={upcomingPaymentExpand} timeout="auto" unmountOnExit>
+                                                            <List component="div" disablePadding>
+                                                                <ListItemButton dense sx={{ pl: 4 }}>
+                                                                    <ListItemText primary="Account1 : 25000" />
+                                                                    <ListItemIcon>
+                                                                        <CalendarMonth />
+                                                                        <span>October, 3</span>
+                                                                    </ListItemIcon>
+                                                                </ListItemButton>
+                                                                <ListItemButton dense sx={{ pl: 4 }}>
+                                                                    <ListItemText primary="Account1 : 25000" />
+                                                                    <ListItemIcon>
+                                                                        <CalendarMonth />
+                                                                        <span>October, 3</span>
+                                                                    </ListItemIcon>
+                                                                </ListItemButton>
+                                                                <ListItemButton dense sx={{ pl: 4 }}>
+                                                                    <ListItemText primary="Account1 : 25000" />
+                                                                    <ListItemIcon>
+                                                                        <CalendarMonth />
+                                                                        <span>October, 3</span>
+                                                                    </ListItemIcon>
+                                                                </ListItemButton>
+                                                            </List>
+                                                        </Collapse>
+                                                </List>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                </Grid>
+
+
                             </>
                         }
                     </>}

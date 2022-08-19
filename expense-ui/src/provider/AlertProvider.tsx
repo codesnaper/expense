@@ -18,7 +18,7 @@ const AlertContextProvider: any = (props: AlertContextProps) => {
             setOpen(false);
         }, 2000);
     }
-
+// notisnack
     return (
         <AlertContext.Provider value={{setAlert}}>
             <ExpenseAlert open={open} message={message} type={alertType}></ExpenseAlert>

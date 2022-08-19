@@ -220,7 +220,7 @@ export default function BankComponent() {
                                     <PlaceholderCard heading={`${localization.getString?.('Bank.emptyCardHeading', localization.getLanguage?.(), true)}`}
                                         info={`${localization.getString?.('Bank.emptyCardInfo', localization.getLanguage?.(), true)}`}
                                     >
-                                        <AccountBalanceOutlinedIcon></AccountBalanceOutlinedIcon>
+                                        <AccountBalanceOutlinedIcon fontSize="inherit"></AccountBalanceOutlinedIcon>
                                         <Button size="large" onClick={() => setOpenModal(true)} >
                                             <AddIcon sx={{ mr: 1 }} />
                                             {localization.getString?.('Bank.addPrimaryCtaText', localization.getLanguage?.(), true)}
