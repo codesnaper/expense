@@ -234,7 +234,7 @@ export default function BankComponent() {
                                     <InfoCardComponent header="Credit Amount" value={`${totalCreditAmount}`} suffixCurrency="₹" color={green[700]}></InfoCardComponent>
                                     <InfoCardComponent header="Debit Amount" value={`${totalDebitAmount}`} suffixCurrency="₹" color={red[700]}></InfoCardComponent>
                                 </Grid>
-                                <Card raised sx={{ marginTop: '40px' }}>
+                                <Card raised sx={{ marginTop: '40px', marginBottom: '40px' }}>
                                     <CardContent>
                                         <Typography variant="h5" component="div" sx={{ marginBottom: '12px' }}>
                                             {localization.getString?.('Bank.tableHeading', localization.getLanguage?.(), true)}
