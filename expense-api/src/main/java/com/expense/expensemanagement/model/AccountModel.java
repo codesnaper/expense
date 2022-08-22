@@ -2,6 +2,7 @@ package com.expense.expensemanagement.model;
 
 import com.expense.expensemanagement.entity.Tag;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,7 @@ public class AccountModel {
 
     private double amount;
 
+    @DateTimeFormat(pattern = "dd.MM.yyyy", iso = DateTimeFormat.ISO.DATE)
     private Date openDate;
 
     private Date createdDate;

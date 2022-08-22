@@ -32,15 +32,29 @@ public class AccountService implements IAccountService{
         this.bankDAO = bankDAO;
     }
 
-    public AccountModel addLoanAccount(AccountModel accountModel){
-        Account account = this.accountDAO.save(accountEntityModel.getEntity(accountModel));
-        accountModel.setId(account.getId());
+    public AccountModel addAccount(AccountModel accountModel){
         BankModel bank = accountModel.getBank();
         bank.setTotalAccount(bank.getTotalAccount() + 1);
         if(accountModel instanceof LoanAccountModel){
+            LoanAccount loanAccount = (LoanAccount) accountEntityModel.getEntity((LoanAccountModel) accountModel);
+            calculateLoanInterest(loanAccount);
+            loanAccount = this.accountDAO.save(loanAccount);
+            accountModel.setId(loanAccount.getId());
             bank.setDebitAmount(new BigDecimal(((LoanAccountModel) accountModel).getTotalPayment() + bank.getCreditAmount().doubleValue()));
+            loanAccount = this.accountDAO.save(loanAccount);
+            return accountEntityModel.getModel(loanAccount);
         }
-        return accountEntityModel.getModel(account);
+        return null;
+    }
+
+    private void calculateLoanInterest(LoanAccount account){
+        float interest = account.getRate() / 100/ 12;
+        double x = Math.pow(1+ interest, account.getTenure() * 12);
+        double monthly = (account.getAmount().doubleValue() * x * interest)/(x-1);
+        float tenure = account.getTenure() * 12;
+        account.setInterestAmount(monthly);
+        account.setTotalInterestAmount(new BigDecimal((account.getInterestAmount() * tenure) - account.getAmount().doubleValue()));
+        account.setTotalPayment(new BigDecimal(account.getInterestAmount() * tenure));
     }
 
 

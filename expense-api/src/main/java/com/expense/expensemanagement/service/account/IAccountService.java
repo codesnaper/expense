@@ -4,6 +4,6 @@ import com.expense.expensemanagement.model.AccountModel;
 
 public interface IAccountService {
 
-    AccountModel addLoanAccount(AccountModel accountModel);
+    AccountModel addAccount(AccountModel accountModel);
 
 }

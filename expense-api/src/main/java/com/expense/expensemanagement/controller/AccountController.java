@@ -26,7 +26,7 @@ public class AccountController {
     public AccountModel addLoanAccount(
             @RequestBody(required = true) LoanAccountModel loanAccountModel
             ) throws IllegalAccessException {
-        return this.accountService.addLoanAccount(loanAccountModel);
+        return this.accountService.addAccount(loanAccountModel);
 
     }
 }

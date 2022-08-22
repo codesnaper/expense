@@ -6,6 +6,7 @@ import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class Bank {
 
     @OneToMany(mappedBy = "refId", fetch = FetchType.LAZY)
     @Where(clause = "mapping_table = 'BANK'")
-    private List<TagMapping> tagMappings;
+    private List<TagMapping> tagMappings = new ArrayList<>();
 
     @Column(name = "total_account", nullable = false)
     private int nAccount;
