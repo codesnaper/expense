@@ -28,18 +28,16 @@ import java.util.stream.Collectors;
 public class BankService implements IBankService {
 
     private final BankDAO bankDAO;
-    private final TagMappingDAO tagMappingDAO;
-    private final ITagService tagService;
+    private final com.expense.expensemanagement.service.tagMapping.TagMapping tagMappingService;
 
     @Autowired
     @Qualifier("BankEntityModel")
     private EntityModalConversion<Bank, BankModel> bankEntityModalConversion;
 
     @Autowired
-    public BankService(BankDAO bankDAO, TagMappingDAO tagMappingDAO, ITagService tagService) {
+    public BankService(BankDAO bankDAO, com.expense.expensemanagement.service.tagMapping.TagMapping tagMappingService) {
         this.bankDAO = bankDAO;
-        this.tagMappingDAO = tagMappingDAO;
-        this.tagService = tagService;
+        this.tagMappingService = tagMappingService;
     }
 
     @Transactional
@@ -48,21 +46,7 @@ public class BankService implements IBankService {
         bankModel.setDebitAmount(new BigDecimal(0));
         Bank bankEntity = this.bankDAO.save(bankEntityModalConversion.getEntity(bankModel));
         bankModel.setId(bankEntity.getId());
-        //TODO: put in tag mapping service
-        List<TagMapping> tagMappingEntities = new ArrayList<>();
-        List<Long> tagIds = bankModel.getTagModels().stream().map(tag -> tag.getId()).collect(Collectors.toList());
-        List<Tag> tagEntities = this.tagService.findAllByIds(tagIds);
-        if (tagIds.size() != tagEntities.size()) {
-            throw new IllegalArgumentException("Provided Tag Id is not found or missing. Please create tag first.");
-        }
-        tagEntities.parallelStream().forEach(tag -> {
-            TagMapping tagMapping = new TagMapping();
-            tagMapping.setTagMappingType(TagMappingType.BANK);
-            tagMapping.setRefId(bankModel.getId());
-            tagMapping.setTags(tag);
-            tagMappingEntities.add(tagMapping);
-        });
-        tagMappingDAO.saveAll(tagMappingEntities);
+        this.tagMappingService.addTagMapping(bankModel);
         return bankModel;
     }
 

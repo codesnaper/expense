@@ -26,7 +26,7 @@ public class AccountModel {
 
     private String userId;
 
-    private List<Tag> tags;
+    private List<TagModel> tags;
 
     private BankModel bank;
 }

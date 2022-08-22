@@ -9,10 +9,13 @@ import com.expense.expensemanagement.entity.LoanAccount;
 import com.expense.expensemanagement.model.AccountModel;
 import com.expense.expensemanagement.model.BankModel;
 import com.expense.expensemanagement.model.LoanAccountModel;
+import com.expense.expensemanagement.service.tagMapping.TagMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 @Service
@@ -26,12 +29,16 @@ public class AccountService implements IAccountService{
     @Qualifier("AccountEntityModel")
     private EntityModalConversion<Account, AccountModel> accountEntityModel;
 
+    private TagMapping tagMappingService;
+
     @Autowired
-    public AccountService(AccountDAO accountDAO, BankDAO bankDAO) {
+    public AccountService(AccountDAO accountDAO, BankDAO bankDAO, TagMapping tagMappingService) {
         this.accountDAO = accountDAO;
         this.bankDAO = bankDAO;
+        this.tagMappingService = tagMappingService;
     }
 
+    @Transactional
     public AccountModel addAccount(AccountModel accountModel){
         BankModel bank = accountModel.getBank();
         bank.setTotalAccount(bank.getTotalAccount() + 1);
@@ -41,7 +48,14 @@ public class AccountService implements IAccountService{
             loanAccount = this.accountDAO.save(loanAccount);
             accountModel.setId(loanAccount.getId());
             bank.setDebitAmount(new BigDecimal(((LoanAccountModel) accountModel).getTotalPayment() + bank.getCreditAmount().doubleValue()));
-            loanAccount = this.accountDAO.save(loanAccount);
+            try{
+                loanAccount = this.accountDAO.save(loanAccount);
+            } catch (DataIntegrityViolationException exception){
+                throw new IllegalArgumentException("Provided Bank data is not available. Please add Bank first.");
+            } catch (Exception exception){
+                throw exception;
+            }
+            this.tagMappingService.addTagMapping(accountModel);
             return accountEntityModel.getModel(loanAccount);
         }
         return null;
