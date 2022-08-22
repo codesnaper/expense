@@ -1,5 +1,6 @@
 import { Configuration } from "../config/Configuration";
 import { AccountResponse, AccountResponseItem } from "../modal/Account";
+import { BankModal } from "../modal/bank";
 
 export class AccountService {
     baseUrl: string;
@@ -22,7 +23,7 @@ export class AccountService {
         });
     }
 
-    public addAccount(userId: string, bodyData: AccountResponseItem): Promise<AccountResponseItem> {
+    public addAccount(userId: string, bodyData: {account:AccountResponseItem , bank: BankModal}): Promise<AccountResponseItem> {
         return new Promise((resolve, reject) => {
             fetch(`${this.baseUrl}account/`, {
                 method: "POST",

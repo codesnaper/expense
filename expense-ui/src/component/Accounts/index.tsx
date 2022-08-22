@@ -19,6 +19,7 @@ import { CalendarMonth, ExpandLess, ExpandMore } from "@mui/icons-material";
 import PaymentIcon from '@mui/icons-material/Payment';
 import { BankModal } from "../../modal/bank";
 import ModalAccount from "./modal";
+
 export default function AccountComponent() {
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [operationType, setOperationType] = useState<OperationType>(OperationType.ADD);
@@ -35,6 +36,7 @@ export default function AccountComponent() {
     const [totalCreditAmount, setTotalCreditAmount] = useState<number>(0);
     const [totalDebitAmount, setTotalDebitAmount] = useState<number>(0);
     const [upcomingPaymentExpand, setUpcomingPaymentExpand] = useState<boolean>(true);
+    const [bankNavigate, setBankNavigate] = useState<boolean>(false);
     const user = useContext(UserContext);
     const service = useContext(ServiceContext);
     const localization = useContext(LocalizationContext);
@@ -308,24 +310,35 @@ export default function AccountComponent() {
         if (bankId) {
             service.accountService?.fetchAccounts(bankId)
                 .then((response: AccountResponse) => {
-                    const loanAccounts: Array<LoanAccount> = new Array();
-                    const savingInterestAccounts: Array<SavingInterestAccount> = new Array();
-                    const savingAccounts: Array<Account> = new Array();
-                    response.Items.forEach((account: AccountResponseItem) => {
-                        if (account.isInterest && account.loanType) {
-                            loanAccounts.push(account as LoanAccount);
-                        } else if (account.isInterest && !account.loanType) {
-                            savingInterestAccounts.push(account as SavingInterestAccount);
-                        } else {
-                            savingAccounts.push(account as Account);
-                        }
-                    });
-                    createLoanAccountDataSet(loanAccounts);
-                    createSavingInterestDataSet(savingInterestAccounts);
-                    createAccountDataSet(savingAccounts);
-                    setTotalAccount(response.Count);
-                    setLoader(false);
-                }).catch((err: any) => {
+                    service.bankService?.getBankById(bankId, user.id ? user.id : '')
+                        .then((bankResponse: BankModal) => {
+                            setBank(bankResponse);
+                            const loanAccounts: Array<LoanAccount> = new Array();
+                            const savingInterestAccounts: Array<SavingInterestAccount> = new Array();
+                            const savingAccounts: Array<Account> = new Array();
+                            response.Items.forEach((account: AccountResponseItem) => {
+                                if (account.isInterest && account.loanType) {
+                                    loanAccounts.push(account as LoanAccount);
+                                } else if (account.isInterest && !account.loanType) {
+                                    savingInterestAccounts.push(account as SavingInterestAccount);
+                                } else {
+                                    savingAccounts.push(account as Account);
+                                }
+                            });
+                            createLoanAccountDataSet(loanAccounts);
+                            createSavingInterestDataSet(savingInterestAccounts);
+                            createAccountDataSet(savingAccounts);
+                            setTotalAccount(response.Count);
+                            setLoader(false);
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            setLoader(false);
+                            alert.setAlert?.('There are no bank tag to account. Redirecting to bank', AlertType.INFO);
+                            setBankNavigate(true);
+                        });
+                })
+                .catch((err: any) => {
                     alert.setAlert?.('Failed to load Account data from server', AlertType.ERROR);
                     console.error(err);
                     setLoader(false);
@@ -408,6 +421,9 @@ export default function AccountComponent() {
 
     return (
         <>
+            {bankNavigate && <>
+                <Navigate to="/bank" replace={true} />
+            </>}
             <Container maxWidth={'lg'} sx={{ marginTop: '40px' }}>
                 {loader ? <>
                     <ContentLoader heading={`${localization.getString?.('Account.appLoading', localization.getLanguage?.(), true)}`}>
@@ -507,7 +523,7 @@ export default function AccountComponent() {
                 <ModalAccount
                     openModal={openModal}
                     bank={bank}
-                    account = {account}
+                    account={account}
                     operationType={operationType}
                     closeModalCallback={() => closeModal()}
                 ></ModalAccount>
