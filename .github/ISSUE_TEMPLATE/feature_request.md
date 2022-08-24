@@ -13,9 +13,11 @@ assignees: ''
 **When** ....
 **Then** ....
 
-** UI Design
+** UI Design**
+<br>Provide UI Design
 
 ** ER Design
+<br> Provide ER Design
 
 
 **Describe alternatives, Solution**
