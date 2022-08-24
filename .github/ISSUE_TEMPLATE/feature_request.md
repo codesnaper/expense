@@ -8,12 +8,15 @@ assignees: ''
 ---
 
 **Is your feature request related to a problem? Please describe.**
+<br>
 **Given** As a ...
 **When** ....
 **Then** ....
 
-** If a bug step to reproduce,
-A clear and concise description of how to reproduce the bugs
+** UI Design
+
+** ER Design
+
 
 **Describe alternatives, Solution**
 Description about the solution
