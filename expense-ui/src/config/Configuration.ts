@@ -1,6 +1,6 @@
 export const Configuration = {
     profile: 'dev',
-    baseUrl: 'http://localhost:3000/',
+    baseUrl: 'https://phoenix-api-test.herokuapp.com/',
     group: 'group/'
 }
 

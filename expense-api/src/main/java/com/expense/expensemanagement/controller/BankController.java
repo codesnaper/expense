@@ -13,9 +13,12 @@ public class BankController {
 
     private final IBankService bankService;
 
+    private final AccountController accountController;
+
     @Autowired
-    public BankController(IBankService bankService) {
+    public BankController(IBankService bankService, AccountController accountController) {
         this.bankService = bankService;
+        this.accountController = accountController;
     }
 
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
