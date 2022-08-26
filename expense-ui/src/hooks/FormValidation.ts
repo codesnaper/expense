@@ -25,6 +25,17 @@ export const useFormValidation = <T extends Record<keyof T, any> = {}>(options?:
     });
   };
 
+  const handleChangeWithValue = <S extends unknown>(
+    key: keyof T,
+    value: any
+  ) => (e: ChangeEvent<HTMLInputElement & HTMLSelectElement>) => {
+    // const value = sanitizeFn ? sanitizeFn(e.target.value) : e.target.value;
+    setData({
+      ...data,
+      [key]: '',
+    });
+  };
+
   const handleSelectChange = <S extends unknown>(
     key: keyof T,
     sanitizeFn?: (value: string) => S
@@ -35,6 +46,13 @@ export const useFormValidation = <T extends Record<keyof T, any> = {}>(options?:
       [key]: value,
     });
   };
+
+  const setValue = (key: keyof T, value: any) => {
+    setData({
+      ...data,
+      [key]: value,
+    });
+  }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -82,6 +100,7 @@ export const useFormValidation = <T extends Record<keyof T, any> = {}>(options?:
     handleChange,
     handleSubmit,
     handleSelectChange,
+    setValue,
     errors,
   };
 };

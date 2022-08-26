@@ -14,11 +14,11 @@ export default function InfoCardComponent(props: InfoCardProps) {
         <>
             <Grid item lg={3} md={6} xs={6}>
                 <Card raised>
-                    <CardContent>
+                    <CardContent sx={{padding: '12px'}}>
                         <Typography color="text.secondary" gutterBottom>
                             {props.header}
                         </Typography>
-                        <Typography variant="h3" component="div" color={props.color}>
+                        <Typography variant="h4" component="div" color={props.color}>
                             <span>{`${props.value} ${props.suffixCurrency ? props.suffixCurrency : ''}`}</span>
                         </Typography>
                         {props.secondaryText &&

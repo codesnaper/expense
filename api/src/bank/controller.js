@@ -59,9 +59,6 @@ const handler = serverless(app);
 
 module.exports.handler = async (event, context) => {
   const result = await handler(event, context);
-  // const data = JSON.parse(result.body);
-  // if (data.status) {
-  //   result.statusCode = data.status;
-  // }
   return result;
 };
+

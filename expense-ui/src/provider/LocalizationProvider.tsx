@@ -1,9 +1,9 @@
 import { createContext, useEffect, useState } from "react";
 import LocalizedStrings from 'react-localization';
 import { LocalizationContext } from "../context";
-import { Bank } from '../locale/bank'
-import { Login } from '../locale/login'
-
+import { Bank } from '../locale/bank';
+import { Login } from '../locale/login';
+import { Account } from '../locale/account';
 interface LocalizationContextProps  { 
     children: React.ReactNode
  }
@@ -19,7 +19,8 @@ const LocalizationContextProvider = (props: LocalizationContextProps) => {
             new LocalizedStrings({
                 en: {
                     Bank,
-                    Login
+                    Login,
+                    Account
                 }
             })
         )

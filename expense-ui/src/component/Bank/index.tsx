@@ -220,7 +220,7 @@ export default function BankComponent() {
                                     <PlaceholderCard heading={`${localization.getString?.('Bank.emptyCardHeading', localization.getLanguage?.(), true)}`}
                                         info={`${localization.getString?.('Bank.emptyCardInfo', localization.getLanguage?.(), true)}`}
                                     >
-                                        <AccountBalanceOutlinedIcon></AccountBalanceOutlinedIcon>
+                                        <AccountBalanceOutlinedIcon fontSize="inherit"></AccountBalanceOutlinedIcon>
                                         <Button size="large" onClick={() => setOpenModal(true)} >
                                             <AddIcon sx={{ mr: 1 }} />
                                             {localization.getString?.('Bank.addPrimaryCtaText', localization.getLanguage?.(), true)}
@@ -234,7 +234,7 @@ export default function BankComponent() {
                                     <InfoCardComponent header="Credit Amount" value={`${totalCreditAmount}`} suffixCurrency="₹" color={green[700]}></InfoCardComponent>
                                     <InfoCardComponent header="Debit Amount" value={`${totalDebitAmount}`} suffixCurrency="₹" color={red[700]}></InfoCardComponent>
                                 </Grid>
-                                <Card raised sx={{ marginTop: '40px' }}>
+                                <Card raised sx={{ marginTop: '40px', marginBottom: '40px' }}>
                                     <CardContent>
                                         <Typography variant="h5" component="div" sx={{ marginBottom: '12px' }}>
                                             {localization.getString?.('Bank.tableHeading', localization.getLanguage?.(), true)}

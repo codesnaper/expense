@@ -67,19 +67,20 @@ const AccountService = {
     },
 
     async addAccount(data, userId) {
+        let accountData = data.account;
         let account = new Account();
-        account.name = data.name;
+        account.name = accountData.name;
         account.ID = uuid.v4();
-        account.BANKID = data.bankId;
-        account.accountNo = data.accountNo;
-        account.principal = data.principal;
-        account.rate = data.rate;
-        account.tenure = data.tenure;
-        account.loanType = data.loanType;
-        account.interest = data.interest;
-        account.compoundSaving = data.compoundSaving;
-        account.compoundingYear = data.compoundingYear;
-        account.openDate = data.openDate;
+        account.BANKID = accountData.bankId;
+        account.accountNo = accountData.accountNo;
+        account.principal = accountData.principal;
+        account.rate = accountData.rate;
+        account.tenure = accountData.tenure;
+        account.loanType = accountData.loanType;
+        account.interest = accountData.interest;
+        account.compoundSaving = accountData.compoundSaving;
+        account.compoundingYear = accountData.compoundingYear;
+        account.openDate = accountData.openDate;
         account.emiPaid = 0;
         let interest = this.calculateInterest(account);
         if(account.loanType){
@@ -90,9 +91,14 @@ const AccountService = {
         } else{
             account.maturityAmount = interest.maturityAmount;
         }
-        const dbData = await Dynamo.write(account, this.accountTable);
-        dbData.bank = await this.updataBankDetail(data.bank, userId);
-        return dbData;
+        try{
+            const dbData = await Dynamo.write(account, this.accountTable);
+            // dbData.bank = await this.updataBankDetail(data.bank, userId);
+            return dbData;
+        } catch(err){
+            console.log(err);
+        }
+        
     },
 
     async updataBankDetail(bank, userId){
