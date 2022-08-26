@@ -22,7 +22,7 @@ public class BankConversion implements EntityModalConversion<Bank, BankModel> {
     @Override
     public BankModel getModel(Bank bankEntity) {
         BankModel bankModel = new BankModel();
-        bankModel.setAccounts(bankEntity.getAccounts());
+//        bankModel.setAccounts(bankEntity.getAccounts());
         bankModel.setCreditAmount(bankEntity.getCreditAmount());
         bankModel.setDebitAmount(bankEntity.getDebitAmount());
         bankModel.setCurrencyType(bankEntity.getCurrency());
@@ -31,7 +31,6 @@ public class BankConversion implements EntityModalConversion<Bank, BankModel> {
         bankModel.setName(bankEntity.getName());
         bankModel.setTotalAccount(bankEntity.getNAccount());
         bankModel.setUserId(bankEntity.getUserId());
-        List<TagModel> tagModels = new ArrayList<>();
         bankModel.setTagModels(
                 bankEntity.getTagMappings().parallelStream().
                         map(tagMapping -> tagEntityModalConversion.getModel(tagMapping.getTags())).

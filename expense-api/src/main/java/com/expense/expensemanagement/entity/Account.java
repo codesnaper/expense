@@ -1,5 +1,6 @@
 package com.expense.expensemanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,7 +11,11 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "em_account_t")
+@Table(name = "em_account_t",
+    indexes = {
+        @Index(name = "account_bank_em_idx", columnList = "bank_id")
+    }
+)
 @DiscriminatorColumn(name="account_type",
         discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -31,6 +36,7 @@ public class Account {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_id",referencedColumnName = "id")
+    @JsonBackReference
     private Bank bank;
 
     @Column(name = "account_open_date", nullable = false)

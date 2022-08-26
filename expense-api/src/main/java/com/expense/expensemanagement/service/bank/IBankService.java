@@ -1,5 +1,6 @@
 package com.expense.expensemanagement.service.bank;
 
+import com.expense.expensemanagement.entity.Bank;
 import com.expense.expensemanagement.model.BankModel;
 import com.expense.expensemanagement.model.ResponseList;
 
@@ -32,4 +33,6 @@ public interface IBankService {
      * @return
      */
     BankModel updateBank(BankModel bankModel);
+
+    Bank findById(long id);
 }

@@ -1,13 +1,7 @@
 package com.expense.expensemanagement.conversion;
 
-import com.expense.expensemanagement.entity.Account;
-import com.expense.expensemanagement.entity.Bank;
-import com.expense.expensemanagement.entity.LoanAccount;
-import com.expense.expensemanagement.entity.Tag;
-import com.expense.expensemanagement.model.AccountModel;
-import com.expense.expensemanagement.model.BankModel;
-import com.expense.expensemanagement.model.LoanAccountModel;
-import com.expense.expensemanagement.model.TagModel;
+import com.expense.expensemanagement.entity.*;
+import com.expense.expensemanagement.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -31,14 +25,20 @@ public class AccountConversion implements EntityModalConversion<Account, Account
 
     @Override
     public AccountModel getModel(Account account) {
-        AccountModel accountModel;
+        AccountModel accountModel = new AccountModel();
         if(account instanceof LoanAccount){
             accountModel = new LoanAccountModel();
+            ((LoanAccountModel)accountModel).setTotalInterestAmount(Optional.ofNullable(((LoanAccount) account).getTotalInterestAmount().doubleValue()).orElse((double)0));
+            ((LoanAccountModel) accountModel).setTotalPayment(Optional.ofNullable(((LoanAccount) account).getTotalPayment().doubleValue()).orElse((double)0));
+            ((LoanAccountModel) accountModel).setTotalEMI(((LoanAccount) account).getTotalEMI());
             ((LoanAccountModel) accountModel).setEmiPaid(Optional.ofNullable(((LoanAccount) account).getEmiPaid()).orElse(0));
-            ((LoanAccountModel) accountModel).setInterestAmount(Optional.ofNullable(((LoanAccount) account).getInterestAmount()).orElse(new Double(0)));
+            ((LoanAccountModel) accountModel).setInterestAmount(Optional.ofNullable(((LoanAccount) account).getInterestAmount()).orElse((double) 0));
             ((LoanAccountModel) accountModel).setRate(Optional.ofNullable(((LoanAccountModel) accountModel).getRate()).orElse(0f));
-        } else{
-            accountModel = new AccountModel();
+        } else if( account instanceof SavingInterestAccount) {
+            accountModel = new SIAccountModel();
+            ((SIAccountModel) accountModel).setRate(((SavingInterestAccount) account).getRate());
+            ((SIAccountModel) accountModel).setTenure(((SavingInterestAccount) account).getTenure());
+            ((SIAccountModel) accountModel).setMaturityAmount(((SavingInterestAccount) account).getMaturityAmount().doubleValue());
         }
         accountModel.setId(account.getId());
         accountModel.setAccountNumber(account.getAccountNumber());
@@ -58,16 +58,19 @@ public class AccountConversion implements EntityModalConversion<Account, Account
 
     @Override
     public Account getEntity(AccountModel accountModel) {
-        Account account;
+        Account account = new Account();
         if(accountModel instanceof LoanAccountModel){
             account = new LoanAccount();
             ((LoanAccount)account).setEmiPaid(((LoanAccountModel) accountModel).getEmiPaid());
             ((LoanAccount)account).setRate(((LoanAccountModel) accountModel).getRate());
             ((LoanAccount)account).setTenure(((LoanAccountModel) accountModel).getTenure());
-        } else{
-            account = new Account();
+        } else if( accountModel instanceof SIAccountModel) {
+            account = new SavingInterestAccount();
+            ((SavingInterestAccount)account).setRate(((SIAccountModel) accountModel).getRate());
+            ((SavingInterestAccount)account).setTenure(((SIAccountModel) accountModel).getTenure());
         }
-        account.setBank(bankEntityModelConversion.getEntity(accountModel.getBank()));
+
+        account.setBank(bankEntityModelConversion.getEntity(Optional.ofNullable(accountModel.getBank()).orElse(new BankModel())));
         account.setOpenDate(accountModel.getOpenDate());
         account.setAccountNumber(accountModel.getAccountNumber());
         account.setAmount(new BigDecimal(accountModel.getAmount()));
