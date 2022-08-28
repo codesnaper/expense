@@ -8,7 +8,7 @@ import javax.persistence.Column;
 public class Category {
     private Long id;
 
-    private Long userID;
+    private String userID;
 
     private String name;
     

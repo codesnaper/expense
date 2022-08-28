@@ -1,17 +1,15 @@
 package com.expense.expensemanagement.service.category;
 
-import com.expense.expensemanagement.conversion.CategoryConversion;
+import com.expense.expensemanagement.conversion.EntityModalConversion;
 import com.expense.expensemanagement.dao.CategoryDao;
-import com.expense.expensemanagement.entity.Bank;
-import com.expense.expensemanagement.entity.CategoryDto;
-import com.expense.expensemanagement.model.Category;
+import com.expense.expensemanagement.entity.Category;
 import com.expense.expensemanagement.model.ResponseList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.NoSuchElementException;
 
 /**
@@ -24,13 +22,14 @@ public class CategoryService implements ICategoryService{
     @Autowired
     private CategoryDao categoryDao;
     @Autowired
-    private CategoryConversion categoryConversion;
+    @Qualifier("CategoryConversion")
+    private EntityModalConversion<Category, com.expense.expensemanagement.model.Category> categoryConversion;
 
 
     @Override
-    public ResponseList<CategoryDto> getCategory(int pageNo, int pageSize) {
+    public ResponseList<Category> getCategory(int pageNo, int pageSize) {
         Page page= categoryDao.findAll(PageRequest.of(pageNo,pageSize));
-        ResponseList<CategoryDto> responseList=new ResponseList<>();
+        ResponseList<Category> responseList=new ResponseList<>();
         responseList.setPageNo(page.getNumber());
         responseList.setTotalPage(page.getTotalPages());
         responseList.setTotalCount(page.getTotalElements());
@@ -39,15 +38,15 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public Category addCategory(Category category) {
-        CategoryDto entity=categoryDao.save(categoryConversion.getEntity(category));
+    public com.expense.expensemanagement.model.Category addCategory(com.expense.expensemanagement.model.Category category) {
+        Category entity=categoryDao.save(categoryConversion.getEntity(category));
         return categoryConversion.getModel(entity);
 
     }
 
     @Override
-    public void updateCategory(long id,Category category) {
-        CategoryDto categoryDto = categoryDao.findById(id).orElseThrow(NoSuchElementException::new);
+    public void updateCategory(long id, com.expense.expensemanagement.model.Category category) {
+        Category categoryDto = categoryDao.findById(id).orElseThrow(NoSuchElementException::new);
         if(categoryDto != null) {
             categoryDao.save(categoryConversion.getEntity(category));
         }
