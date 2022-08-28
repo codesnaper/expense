@@ -22,4 +22,14 @@ public class RestException extends ResponseEntityExceptionHandler {
                 error, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({ Exception.class })
+    public ResponseEntity<ResponseError> handleInternalException(
+            Exception ex, WebRequest request) {
+        ResponseError error = new ResponseError();
+        error.setMessage(ex.getMessage());
+        error.setDetails(ex.getLocalizedMessage());
+        return new ResponseEntity<ResponseError>(
+                error, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

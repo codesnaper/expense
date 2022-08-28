@@ -1,13 +1,17 @@
 package com.expense.expensemanagement.model;
 
 import lombok.Data;
+import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Data
-public class LoanAccountModel extends AccountModel{
+public class LoanAccountModel extends AccountModel {
 
     private float rate;
+
+    private Date accountEndDate;
 
     private float tenure;
 
@@ -20,4 +24,7 @@ public class LoanAccountModel extends AccountModel{
     private double totalPayment;
 
     private int emiPaid = 0;
+
+    private boolean isLendType;
+
 }
