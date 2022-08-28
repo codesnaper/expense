@@ -5,10 +5,12 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
 @DiscriminatorValue("Loan")
+@Table(name = "em_loan_account_t")
 @Data
 public class LoanAccount extends Account{
     @Column(name = "rate", nullable = false)
@@ -30,5 +32,8 @@ public class LoanAccount extends Account{
 
     @Column(name = "emi_paid_count")
     private int emiPaid = 0;
+
+    @Column(name = "lend_account")
+    private boolean lendAccount;
 
 }
