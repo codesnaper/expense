@@ -25,7 +25,7 @@ public interface ICategoryService {
      * @param id
      * @param category
      */
-    public void updateCategory(long id, com.expense.expensemanagement.model.Category category);
+    public Category updateCategory(long id, com.expense.expensemanagement.model.Category category);
 
     /**
      *

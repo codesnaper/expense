@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
+
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
@@ -26,11 +28,11 @@ public class CategoryController {
 
     }
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void updateCategory(@RequestParam long id,@RequestParam com.expense.expensemanagement.model.Category category) throws IllegalAccessException {
-        this.categoryService.updateCategory(id,category);
+    public Category updateCategory(@PathVariable long id ,@RequestBody com.expense.expensemanagement.model.Category category) throws IllegalAccessException {
+       return this.categoryService.updateCategory(id,category);
     }
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteCategory(@RequestParam long id) throws IllegalAccessException {
+    public void deleteCategory(@PathVariable long id) throws IllegalAccessException {
          this.categoryService.deleteCategory(id);
     }
 

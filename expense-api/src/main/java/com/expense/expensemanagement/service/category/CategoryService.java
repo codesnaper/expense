@@ -45,11 +45,18 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public void updateCategory(long id, com.expense.expensemanagement.model.Category category) {
-        Category categoryDto = categoryDao.findById(id).orElseThrow(NoSuchElementException::new);
-        if(categoryDto != null) {
-            categoryDao.save(categoryConversion.getEntity(category));
+    public Category updateCategory(long id, com.expense.expensemanagement.model.Category category) {
+        Category categoryDto1 = null;
+         Category categoryDto = categoryDao.findById(id).orElseThrow(NoSuchElementException::new);
+        if (categoryDto.getId() == null) {
+            throw new IllegalStateException("Category not exist ");
+        } else if (categoryDto.getId()==id) {
+             category.setId(categoryDto.getId());
+             categoryDto1 = categoryDao.save(categoryConversion.getEntity(category));
         }
+
+
+        return categoryDto1;
     }
 
     @Override
