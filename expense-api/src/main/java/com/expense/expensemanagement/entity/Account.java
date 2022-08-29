@@ -18,13 +18,16 @@ import java.util.List;
 )
 @DiscriminatorColumn(name="account_type",
         discriminatorType = DiscriminatorType.STRING)
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorValue("account")
 @Data
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private long id;
+
+    @Column(name="account_type", insertable = false, updatable = false)
+    protected String accountType;
 
     @Column(name = "name",nullable = false)
     private String name;
@@ -39,6 +42,9 @@ public class Account {
     @JoinColumn(name = "bank_id",referencedColumnName = "id")
     @JsonBackReference
     private Bank bank;
+
+    @Column(name="bank_id", insertable = false, updatable = false)
+    protected String bankId;
 
     @Column(name = "account_open_date", nullable = false)
     private Date openDate;

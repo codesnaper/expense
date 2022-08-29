@@ -35,6 +35,8 @@ public class Bank {
 
     private BigDecimal debitAmount;
 
+    private BigDecimal holdAmount;
+
     @OneToMany(mappedBy = "bank",fetch = FetchType.LAZY)
     private List<Account> accounts;
 

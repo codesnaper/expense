@@ -23,8 +23,10 @@ public class BankController {
 
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public BankModel addBank(
-            @RequestBody(required = true) BankModel bankModel
+            @RequestBody(required = true) BankModel bankModel,
+            @RequestHeader(name = "user-id") String userId
     ){
+        bankModel.setUserId(userId);
         return this.bankService.addBank(bankModel);
     }
 
@@ -32,7 +34,7 @@ public class BankController {
     public ResponseList<BankModel> getBanks(
             @RequestHeader(name = "pageNo",defaultValue = "0", required = false) int pageNo,
             @RequestHeader(name = "size",defaultValue = "10", required = false) int pageSize,
-            @RequestHeader(name = "user_id", defaultValue = "", required = false) String userId
+            @RequestHeader(name = "user-id") String userId
     ){
         return this.bankService.getAllBanks(userId, pageNo,pageSize);
     }
@@ -46,8 +48,10 @@ public class BankController {
 
     @PutMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public BankModel updateBank(
+            @RequestHeader(name = "user-id") String userId,
             @RequestBody(required = true) BankModel bankModel
     ) {
+        bankModel.setUserId(userId);
         if(bankModel.getId() == null){
             throw new IllegalArgumentException("Id is required");
         }
