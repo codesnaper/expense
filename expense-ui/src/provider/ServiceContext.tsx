@@ -4,6 +4,7 @@ import * as React from "react";
 import { Service } from "../modal/Service";
 import { ServiceContext } from "../context";
 import { AccountService } from "../service/AccountService";
+import { TagService } from "../service/TagService";
 
 interface ServiceContextProps  { 
     children: React.ReactNode
@@ -16,7 +17,8 @@ const ServiceContextProvider = (props: ServiceContextProps) => {
     useEffect(() => {
         setService({
             bankService: new BankService(),
-            accountService: new AccountService()
+            accountService: new AccountService(),
+            tagService: new TagService()
         })
     }, []);
 
