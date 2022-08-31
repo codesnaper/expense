@@ -22,26 +22,66 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @PostMapping(value = "/type={loan-type}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/type={account-type}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public AccountModel addLoanAccount(
             @RequestBody() Object accountModel,
-            @PathVariable("bank-id") long bankid,
-            @PathVariable("loan-type") String loanType
+            @PathVariable("bank-id") long bankId,
+            @PathVariable("account-type") AccountType accountType
             ){
-        AccountModel accountModelResponse;
-        switch (loanType){
-            case "loan":
-                accountModelResponse = new ObjectMapper().convertValue(accountModel,LoanAccountModel.class);
-                break;
-
-            case "si":
-                accountModelResponse = new ObjectMapper().convertValue(accountModel,SIAccountModel.class);
-                break;
-
-            default:
-                throw new IllegalArgumentException("Its not supported loan type");
-        }
-        accountModelResponse = this.accountService.addAccount(accountModelResponse, bankid);
+        AccountModel accountModelResponse = convertAccountModel(accountType,accountModel);
+        accountModelResponse = this.accountService.addAccount(accountModelResponse, bankId);
         return accountModelResponse;
+    }
+
+    @PutMapping(value = "/type={account-type}" , produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public AccountModel updateAccount(
+            @RequestBody Object accountModel,
+            @PathVariable("account-type") AccountType accountType
+    ){
+        AccountModel accountModelResponse = convertAccountModel(accountType,accountModel);
+        return null;
+    }
+
+    @DeleteMapping(value = "/{account-id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void deleteAccount(
+            @PathVariable("account-id") long accountId
+    ){
+        this.accountService.deleteAccount(accountId);
+    }
+
+    @GetMapping(value = "/{account-id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AccountModel getAccountModel(
+            @PathVariable("account-id") long accountId
+    ) {
+        return null;
+    }
+
+    @GetMapping(value = "/type={account-type}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseList<? extends AccountModel> accountModelResponseList(
+            @PathVariable("account-type") AccountType accountType,
+            @PathVariable("bank-id") long bankId,
+            @RequestHeader(name = "pageNo",defaultValue = "0", required = false) int pageNo,
+            @RequestHeader(name = "size",defaultValue = "10", required = false) int pageSize
+    ){
+        return this.accountService.getAccount(bankId, accountType, pageNo,pageSize);
+    }
+
+    private AccountModel convertAccountModel(AccountType accountType, Object account){
+        switch (accountType){
+            case LOAN:
+                return new ObjectMapper().convertValue(account,LoanAccountModel.class);
+            case SAVING_INTEREST:
+                return new ObjectMapper().convertValue(account,SIAccountModel.class);
+            case SAVING_COMPOUND_INTEREST:
+                return new ObjectMapper().convertValue(account, SavingCompoundInterestModel.class);
+            case ACCOUNT:
+                return new ObjectMapper().convertValue(account, AccountModel.class);
+            case MONEY_LENDING:
+                AccountModel accountModel = new ObjectMapper().convertValue(account, LoanAccountModel.class);
+                ((LoanAccountModel) accountModel).setLendType(true);
+                return accountModel;
+            default:
+                throw new IllegalArgumentException("Account type not supported");
+        }
     }
 }

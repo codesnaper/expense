@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component("BankEntityModel")
@@ -31,6 +33,8 @@ public class BankConversion implements EntityModalConversion<Bank, BankModel> {
         bankModel.setName(bankEntity.getName());
         bankModel.setTotalAccount(bankEntity.getNAccount());
         bankModel.setUserId(bankEntity.getUserId());
+        bankModel.setHoldAmount(bankEntity.getHoldAmount());
+        List<TagModel> tagModels = new ArrayList<>();
         bankModel.setTagModels(
                 bankEntity.getTagMappings().parallelStream().
                         map(tagMapping -> tagEntityModalConversion.getModel(tagMapping.getTags())).
@@ -45,6 +49,7 @@ public class BankConversion implements EntityModalConversion<Bank, BankModel> {
         bankEntity.setCurrency(bankModel.getCurrencyType());
         bankEntity.setCreditAmount(bankModel.getCreditAmount());
         bankEntity.setDebitAmount(bankModel.getDebitAmount());
+        bankEntity.setHoldAmount(Optional.ofNullable(bankModel.getHoldAmount()).orElse(new BigDecimal(0)));
         bankEntity.setName(bankModel.getName());
         bankEntity.setLocation(bankModel.getLocation());
         bankEntity.setNAccount(0);

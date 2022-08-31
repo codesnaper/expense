@@ -6,6 +6,7 @@ import Navbar from '../component/header/Navbar';
 import { ServiceContextProvider } from './ServiceContext';
 import { UserContext } from '../context';
 import UserComponent from '../component/User';
+import ExpenseDrawer from '../component/header/Drawer/Drawer';
 
 interface UserContextProps {
     children: React.ReactNode
@@ -14,6 +15,7 @@ interface UserContextProps {
 const UserContextProvider = (props: UserContextProps) => {
     const [user, setUser] = useState<Partial<User>>({});
     const [loader, setLoader] = useState<Boolean>(true);
+    const [openDrawer, setOpenDrawer] = useState<boolean>(false);
     useEffect(() => {
         const userSession = window.sessionStorage.getItem('user');
         if (userSession) {
@@ -42,6 +44,10 @@ const UserContextProvider = (props: UserContextProps) => {
         setLoader(false);
     }, []);
 
+    const handleOpenDrawer = (open: boolean) => {
+        setOpenDrawer(open);
+    }
+
     return (
         <UserContext.Provider value={user}>
             <LocalizationContextProvider>
@@ -52,7 +58,8 @@ const UserContextProvider = (props: UserContextProps) => {
                         </>
                         :
                         <>
-                            <Navbar></Navbar>
+                            <Navbar openDrawer={handleOpenDrawer}></Navbar>
+                            <ExpenseDrawer open={openDrawer} openDrawer={handleOpenDrawer}></ExpenseDrawer>
                             <ServiceContextProvider>
                                 {props.children}
                             </ServiceContextProvider>
@@ -65,4 +72,4 @@ const UserContextProvider = (props: UserContextProps) => {
 };
 
 
-export {  UserContextProvider };
+export { UserContextProvider };

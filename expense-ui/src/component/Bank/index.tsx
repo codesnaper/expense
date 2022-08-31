@@ -96,6 +96,13 @@ export default function BankComponent() {
                     isVisible: true,
                     alias: 'Debit Amounts',
                     type: HeaderType.string
+                },
+                holdAmount: {
+                    display: HeaderDisplay.NONE,
+                    isPrimaryKey: false,
+                    isVisible: true,
+                    alias: 'Hold Amount',
+                    type: HeaderType.string
                 }
             }
             , banks);

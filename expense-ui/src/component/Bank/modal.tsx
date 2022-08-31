@@ -7,6 +7,7 @@ import { BankModal } from "../../modal/bank";
 import { AlertType } from "../../modal/ExpenseAlert";
 import Draggable from 'react-draggable';
 import { OperationType } from "../../modal/OperationType";
+import TagSelect from "../Tag/TagForm";
 
 interface ModalBankProps {
     operationType: OperationType;
@@ -166,16 +167,7 @@ export default function ModalBank(props: ModalBankProps) {
                                 <Typography sx={{ color: red[700] }} variant="caption" display="block" gutterBottom>{errors.currency}</Typography>
                             }
                         </FormControl>
-                        <FormControl margin="normal">
-                            <TextField
-                                required
-                                id="tags"
-                                label={localization.getString?.('Bank.modal.form.label.tags', localization.getLanguage?.())}
-                                defaultValue={props.bank?.tags}
-                                variant="standard"
-                                onChange={handleChange('tags')}
-                            />
-                        </FormControl>
+                        <TagSelect></TagSelect>
                     </DialogContent>
                     <DialogActions>
                         <Button type="submit" disabled={addLoader}>{props.operationType === OperationType.ADD ?

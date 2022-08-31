@@ -8,12 +8,14 @@ export class BankModal{
     creditAmount!: number;
     debitAmount!: number;
     accounts!: number;
+    holdAmount!: number;
 }
 
 export class BankModalsResponse{
     Items!: BankModal[];
     Count!: number;
-    ScannedCount!: number;
+    pageNo!: number;
+    pageSize!: number;
 }
 
 export interface ResponseDelete {
