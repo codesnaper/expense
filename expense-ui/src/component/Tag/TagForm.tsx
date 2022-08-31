@@ -5,8 +5,6 @@ import { useContext, useEffect, useState } from "react";
 import { ServiceContext, UserContext } from "../../context";
 import { ResponseList } from "../../modal/ResponseList";
 import { Tag } from "../../modal/Tag";
-import TagDailogForm from "./TagDialog";
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -81,11 +79,6 @@ export default function TagSelect() {
                     </MenuItem>
                 </Select>
             </FormControl>
-
-            <TagDailogForm
-                open={openTagModel}
-            ></TagDailogForm>
-
         </>
     );
 }

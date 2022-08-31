@@ -1,7 +1,9 @@
 export const Configuration = {
     profile: 'dev',
     baseUrl: 'http://localhost:8090/',
-    group: 'group/'
+    group: 'group/',
+    version: '0.0.1',
+    github: 'https://github.com/codesnaper/expense'
 }
 
 export const NavigationLink = [
