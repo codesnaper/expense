@@ -1,8 +1,11 @@
+import { Tag } from "./Tag";
+
 export class BankModal{
     name!: string;
     location!: string;
     currency!: string;
-    tags!: string;
+    tagNames!: string;
+    tags!: Array<Tag>;
     USERID!: string;
     ID!: string;
     creditAmount!: number;

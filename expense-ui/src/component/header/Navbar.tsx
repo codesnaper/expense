@@ -10,13 +10,45 @@ import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { Button } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
+import { UserContext } from '../../context';
+import { Auth } from 'aws-amplify';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { Avatar, Collapse, Divider, List, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
+import { ExpandLess, ExpandMore, LightMode, Logout } from '@mui/icons-material';
+
+function stringToColor(string: string) {
+    let hash = 0;
+    let i;
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+        hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = '#';
+
+    for (i = 0; i < 3; i += 1) {
+        const value = (hash >> (i * 8)) & 0xff;
+        color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+
+    return color;
+}
+
+function stringAvatar(name: string) {
+    return {
+        sx: {
+            bgcolor: stringToColor(name),
+        },
+        children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`.toUpperCase(),
+    };
+}
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -59,10 +91,28 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 interface NavbarProps {
-    openDrawer?: (open: boolean) => void
+    openDrawer?: (open: boolean) => void;
+    setTheme?: (theme: string) => void;
 }
 
 export default function Navbar(props: NavbarProps) {
+    const [open, setOpen] = React.useState(false);
+    const [darkMode, setDarkMode] = React.useState<boolean>(false);
+
+    const handleClick = () => {
+        setOpen(!open);
+    };
+
+    const user = React.useContext(UserContext);
+    const signOut = async () => {
+        try {
+            await Auth.signOut();
+            sessionStorage.removeItem('user');
+            window.location.href = '/';
+        } catch (error) {
+            console.log('error signing out: ', error);
+        }
+    }
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
         React.useState<null | HTMLElement>(null);
@@ -87,6 +137,11 @@ export default function Navbar(props: NavbarProps) {
         setMobileMoreAnchorEl(event.currentTarget);
     };
 
+    const setTheme = (theme: string, darkMode: boolean) => {
+        props.setTheme?.(theme);
+        setDarkMode(darkMode);
+    }
+
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
         <Menu
@@ -95,7 +150,7 @@ export default function Navbar(props: NavbarProps) {
                 vertical: 'top',
                 horizontal: 'right',
             }}
-            id={menuId}
+            sx={{ mt: '45px' }}
             keepMounted
             transformOrigin={{
                 vertical: 'top',
@@ -104,8 +159,58 @@ export default function Navbar(props: NavbarProps) {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+            <MenuItem>
+                <IconButton
+                    size="large"
+                    aria-label="account name"
+                    color="inherit"
+                >
+                    {<Avatar {...stringAvatar(`${user.name}`)} />}
+                </IconButton>
+                <p>{user.name}</p>
+            </MenuItem>
+            <Divider></Divider>
+            {!darkMode &&
+                <>
+                    <List component="div" disablePadding>
+                        <ListItemButton onClick={() => setTheme('dark', true)} sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                                <DarkModeIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Dark Mode" />
+                        </ListItemButton>
+                    </List>
+                </>
+            }
+            {darkMode &&
+                <>
+                    <List component="div" disablePadding>
+                        <ListItemButton onClick={() => setTheme('light', false)} sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                                <LightMode />
+                            </ListItemIcon>
+                            <ListItemText primary="Light Mode" />
+                        </ListItemButton>
+                    </List>
+                </>
+            }
+
+            <List component="div" disablePadding>
+                <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon>
+                        <AccountCircle />
+                    </ListItemIcon>
+                    <ListItemText primary="Account" />
+                </ListItemButton>
+            </List>
+            <List component="div" disablePadding>
+                <ListItemButton onClick={signOut} sx={{ pl: 4 }}>
+                    <ListItemIcon>
+                        <Logout />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                </ListItemButton>
+            </List>
         </Menu>
     );
 
@@ -146,18 +251,60 @@ export default function Navbar(props: NavbarProps) {
                 </IconButton>
                 <p>Notifications</p>
             </MenuItem>
-            <MenuItem onClick={handleProfileMenuOpen}>
+            <Divider />
+            <MenuItem onClick={handleClick}>
                 <IconButton
                     size="large"
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
+                    aria-label="account name"
                     color="inherit"
                 >
-                    <AccountCircle />
+                    {<Avatar {...stringAvatar(`${user.name}`)} />}
                 </IconButton>
-                <p>Profile</p>
+                <p>{user.name}</p>
+                {open ? <ExpandLess /> : <ExpandMore />}
             </MenuItem>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+                {!darkMode &&
+                    <>
+                        <List component="div" disablePadding>
+                            <ListItemButton onClick={() => setTheme('dark', true)} sx={{ pl: 4 }}>
+                                <ListItemIcon>
+                                    <DarkModeIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Dark Mode" />
+                            </ListItemButton>
+                        </List>
+                    </>
+                }
+                {darkMode &&
+                    <>
+                        <List component="div" disablePadding>
+                            <ListItemButton onClick={() => setTheme('light', false)} sx={{ pl: 4 }}>
+                                <ListItemIcon>
+                                    <LightMode />
+                                </ListItemIcon>
+                                <ListItemText primary="Light Mode" />
+                            </ListItemButton>
+                        </List>
+                    </>
+                }
+                <List component="div" disablePadding>
+                    <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemIcon>
+                            <AccountCircle />
+                        </ListItemIcon>
+                        <ListItemText primary="Account" />
+                    </ListItemButton>
+                </List>
+                <List component="div" disablePadding>
+                    <ListItemButton onClick={signOut} sx={{ pl: 4 }}>
+                        <ListItemIcon>
+                            <Logout />
+                        </ListItemIcon>
+                        <ListItemText primary="Logout" />
+                    </ListItemButton>
+                </List>
+            </Collapse>
         </Menu>
     );
 
@@ -191,17 +338,8 @@ export default function Navbar(props: NavbarProps) {
                             textDecoration: 'none',
                         }}
                     >
-                    Expense-Management
+                        Expense-Management
                     </Typography>
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search>
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
@@ -218,17 +356,19 @@ export default function Navbar(props: NavbarProps) {
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            <AccountCircle />
-                        </IconButton>
+                        <Tooltip title="Open settings">
+                            <IconButton
+                                size="large"
+                                edge="end"
+                                aria-label="account of current user"
+                                aria-controls={menuId}
+                                aria-haspopup="true"
+                                onClick={handleProfileMenuOpen}
+                                color="inherit"
+                            >
+                                {<Avatar {...stringAvatar(`${user.name}`)} />}
+                            </IconButton>
+                        </Tooltip>
                     </Box>
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                         <IconButton

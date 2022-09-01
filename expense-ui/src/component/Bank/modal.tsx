@@ -8,6 +8,7 @@ import { AlertType } from "../../modal/ExpenseAlert";
 import Draggable from 'react-draggable';
 import { OperationType } from "../../modal/OperationType";
 import TagSelect from "../Tag/TagForm";
+import { Tag } from "../../modal/Tag";
 
 interface ModalBankProps {
     operationType: OperationType;
@@ -40,13 +41,14 @@ export default function ModalBank(props: ModalBankProps) {
     useEffect(() => {
         setAddLoader(false);
     }, [service]);
+    const [errorTag, setErrorTags] = useState<boolean>(false);
 
     useEffect(() => {
         if (props.bank) {
             data.name = props.bank.name;
             data.location = props.bank.location;
             data.currency = props.bank.currency;
-            data.tags = props.bank.tags;
+            // data.tags = props.bank.tags;
         }
     }, [props.bank])
 
@@ -57,7 +59,7 @@ export default function ModalBank(props: ModalBankProps) {
         { name: 'PLN', value: 'zl' }
     ];
 
-    const { handleSubmit, handleChange, handleSelectChange, data, errors } = useFormValidation<BankModal>({
+    const { handleSubmit, handleChange, handleSelectChange,handleTagValue, data, errors } = useFormValidation<BankModal>({
         validations: {
             name: {
                 custom: {
@@ -167,7 +169,11 @@ export default function ModalBank(props: ModalBankProps) {
                                 <Typography sx={{ color: red[700] }} variant="caption" display="block" gutterBottom>{errors.currency}</Typography>
                             }
                         </FormControl>
-                        <TagSelect></TagSelect>
+                        <TagSelect
+                            onChange={handleTagValue('tags')}
+                            error={errorTag}
+                            helperText='Max Tag selected can be 5'
+                        ></TagSelect>
                     </DialogContent>
                     <DialogActions>
                         <Button type="submit" disabled={addLoader}>{props.operationType === OperationType.ADD ?

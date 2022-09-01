@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Container, Button, Grid, Card, CardContent, Typography, Divider } from "@mui/material";
+import { Container, Button, Grid, Card, CardContent, Typography, Divider, Box } from "@mui/material";
 import { Navigate } from "react-router-dom";
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AddIcon from '@mui/icons-material/Add';
@@ -15,6 +15,7 @@ import ExpenseTable from "../Table";
 import { OperationType } from "../../modal/OperationType";
 import InfoCardComponent from "../Card/InfoCard";
 import { green, red } from "@mui/material/colors";
+
 export default function BankComponent() {
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [operationType, setOperationType] = useState<OperationType>(OperationType.ADD);
@@ -55,8 +56,15 @@ export default function BankComponent() {
                     alias: 'ID',
                     type: HeaderType.string
                 },
-                tags: {
+                tagNames: {
                     display: HeaderDisplay.NONE,
+                    isPrimaryKey: true,
+                    isVisible: true,
+                    alias: 'Tags',
+                    type: HeaderType.tag
+                },
+                tags: {
+                    display: HeaderDisplay.HIDDEN,
                     isPrimaryKey: true,
                     isVisible: true,
                     alias: 'Tags',
@@ -215,61 +223,61 @@ export default function BankComponent() {
 
     return (
         <>
-            <Container maxWidth={'lg'} sx={{ marginTop: '40px' }}>
-                {loader ? <>
-                    <ContentLoader heading={`${localization.getString?.('Bank.appLoading', localization.getLanguage?.(), true)}`}>
-                    </ContentLoader>
-                </> :
-                    <>
-                        {(bankDataSet?.rows.length === 0) ?
-                            <>
-                                <Card raised>
-                                    <PlaceholderCard heading={`${localization.getString?.('Bank.emptyCardHeading', localization.getLanguage?.(), true)}`}
-                                        info={`${localization.getString?.('Bank.emptyCardInfo', localization.getLanguage?.(), true)}`}
-                                    >
-                                        <AccountBalanceOutlinedIcon fontSize="inherit"></AccountBalanceOutlinedIcon>
-                                        <Button size="large" onClick={() => setOpenModal(true)} >
-                                            <AddIcon sx={{ mr: 1 }} />
-                                            {localization.getString?.('Bank.addPrimaryCtaText', localization.getLanguage?.(), true)}
-                                        </Button>
-                                    </PlaceholderCard>
-                                </Card>
-                            </> :
-                            <>
-                                <Grid container spacing={2}>
-                                    <InfoCardComponent header="Total Bank" value={`${totalBank}`} ></InfoCardComponent>
-                                    <InfoCardComponent header="Credit Amount" value={`${totalCreditAmount}`} suffixCurrency="₹" color={green[700]}></InfoCardComponent>
-                                    <InfoCardComponent header="Debit Amount" value={`${totalDebitAmount}`} suffixCurrency="₹" color={red[700]}></InfoCardComponent>
-                                </Grid>
-                                <Card raised sx={{ marginTop: '40px', marginBottom: '40px' }}>
-                                    <CardContent>
-                                        <Typography variant="h5" component="div" sx={{ marginBottom: '12px' }}>
-                                            {localization.getString?.('Bank.tableHeading', localization.getLanguage?.(), true)}
-                                        </Typography>
-                                        <Divider></Divider>
-                                        <ExpenseTable
-                                            dataset={bankDataSet}
-                                            showActionCallback={(row) => viewAccounts(row)}
-                                            editActionCallback={(row) => editBank(row)}
-                                            deleteActionCallback={(row) => deleteBank(row)}
-                                            addActionCallback={() => setOpenModal(true)}
-                                        ></ExpenseTable>
-                                    </CardContent>
-                                </Card>
-                            </>
-                        }
-                    </>}
+            <Box component={Container} maxWidth={'lg'} height={'100vh'} sx={{padding: '40px'}} >
+                    {loader ? <>
+                        <ContentLoader heading={`${localization.getString?.('Bank.appLoading', localization.getLanguage?.(), true)}`}>
+                        </ContentLoader>
+                    </> :
+                        <>
+                            {(bankDataSet?.rows.length === 0) ?
+                                <>
+                                    <Card raised>
+                                        <PlaceholderCard heading={`${localization.getString?.('Bank.emptyCardHeading', localization.getLanguage?.(), true)}`}
+                                            info={`${localization.getString?.('Bank.emptyCardInfo', localization.getLanguage?.(), true)}`}
+                                        >
+                                            <AccountBalanceOutlinedIcon fontSize="inherit"></AccountBalanceOutlinedIcon>
+                                            <Button size="large" onClick={() => setOpenModal(true)} >
+                                                <AddIcon sx={{ mr: 1 }} />
+                                                {localization.getString?.('Bank.addPrimaryCtaText', localization.getLanguage?.(), true)}
+                                            </Button>
+                                        </PlaceholderCard>
+                                    </Card>
+                                </> :
+                                <>
+                                    <Grid container spacing={2}>
+                                        <InfoCardComponent header="Total Bank" value={`${totalBank}`} ></InfoCardComponent>
+                                        <InfoCardComponent header="Credit Amount" value={`${totalCreditAmount}`} suffixCurrency="₹" color={green[700]}></InfoCardComponent>
+                                        <InfoCardComponent header="Debit Amount" value={`${totalDebitAmount}`} suffixCurrency="₹" color={red[700]}></InfoCardComponent>
+                                    </Grid>
+                                    <Card raised sx={{ marginTop: '40px', marginBottom: '40px' }}>
+                                        <CardContent>
+                                            <Typography variant="h5" component="div" sx={{ marginBottom: '12px' }}>
+                                                {localization.getString?.('Bank.tableHeading', localization.getLanguage?.(), true)}
+                                            </Typography>
+                                            <Divider></Divider>
+                                            <ExpenseTable
+                                                dataset={bankDataSet}
+                                                showActionCallback={(row) => viewAccounts(row)}
+                                                editActionCallback={(row) => editBank(row)}
+                                                deleteActionCallback={(row) => deleteBank(row)}
+                                                addActionCallback={() => setOpenModal(true)}
+                                            ></ExpenseTable>
+                                        </CardContent>
+                                    </Card>
+                                </>
+                            }
+                        </>}
 
-                <ModalBank
-                    openModal={openModal}
-                    operationType={operationType}
-                    bank={operationType === OperationType.ADD ? undefined : bank}
-                    closeModalCallback={() => closeModal()}
-                    addCallback={(data: BankModal) => addModalCallback(data)}
-                    editCallback={(id: string, data: BankModal) => editModalCallback(id, data)}
-                ></ModalBank>
-                {isAccountLinkActive && <Navigate to={`/account/${accountId}`} replace={true} />}
-            </Container>
+                    <ModalBank
+                        openModal={openModal}
+                        operationType={operationType}
+                        bank={operationType === OperationType.ADD ? undefined : bank}
+                        closeModalCallback={() => closeModal()}
+                        addCallback={(data: BankModal) => addModalCallback(data)}
+                        editCallback={(id: string, data: BankModal) => editModalCallback(id, data)}
+                    ></ModalBank>
+                    {isAccountLinkActive && <Navigate to={`/account/${accountId}`} replace={true} />}
+            </Box>
         </>
     );
 }

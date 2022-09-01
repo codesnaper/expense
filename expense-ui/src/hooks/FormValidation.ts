@@ -1,5 +1,6 @@
 import { SelectChangeEvent } from "@mui/material";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { Tag } from "../modal/Tag";
 import { Validations } from "../modal/validation";
 
 type ErrorRecord<T> = Partial<Record<keyof T, string>>;
@@ -33,6 +34,16 @@ export const useFormValidation = <T extends Record<keyof T, any> = {}>(options?:
     setData({
       ...data,
       [key]: '',
+    });
+  };
+
+  const handleTagValue = <S extends unknown>(
+    key: keyof T
+  ) => (tags: Array<Tag>) => {
+    const value = tags;
+    setData({
+      ...data,
+      [key]: value,
     });
   };
 
@@ -102,5 +113,6 @@ export const useFormValidation = <T extends Record<keyof T, any> = {}>(options?:
     handleSelectChange,
     setValue,
     errors,
+    handleTagValue
   };
 };
