@@ -14,7 +14,7 @@ assignees: ''
 **Solution**
 A clear and concise description of what you want to happen.
 
-**Acceptance Criteria**
+**Task**
 - [ ] Describe criteria
 
 **UI Design and Diagrams**
