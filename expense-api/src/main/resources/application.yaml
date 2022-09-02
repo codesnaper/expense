@@ -1,20 +1,16 @@
 server:
   port: 8090
+aws:
+  cognito:
+    clientId: ${CLIENT_ID}
+    userPoolId: ${USER_POOL_ID}
+    identityPoolId: ${IDENTITY_POOL_ID}
+    region: ${REGION}
+    userNameField: cognito:username
+    groupsField:
+    connectionTimeout: 2000
+    readTimeout: 2000
 spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          cognito:
-            clientId: ${CLIENT_ID}
-            clientSecret: ${CLIENT_SECRET}
-            scope: openid
-            redirect-uri: ${REDIRECT_URI}
-            clientName: ${CLIENT_NAME}
-        provider:
-          cognito:
-            issuerUri: ${ISSUER_URI}
-            user-name-attribute: cognito:username
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
