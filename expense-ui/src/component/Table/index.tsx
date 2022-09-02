@@ -1,10 +1,11 @@
-import { Button, ButtonGroup, FormControl, Input, InputAdornment, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Toolbar, Tooltip, Typography } from "@mui/material";
+import { Button, ButtonGroup, Checkbox, Chip, FormControl, Input, InputAdornment, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Toolbar, Tooltip, Typography } from "@mui/material";
 import React from "react";
-import { Header } from "../../modal/Header";
+import { Header, HeaderType } from "../../modal/Header";
 import { Operator, TableDataSet } from "../../modal/TableDataSet";
 import MenuFilter from "./menu/Filter";
 import MenuColumn from "./menu/MenuColumn";
 import SearchIcon from '@mui/icons-material/Search';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -117,7 +118,20 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                                         <TableRow key={`row-${index}`} hover={true}>
                                             {
                                                 rows.map((data: string, index: number) =>
-                                                    <TableCell align="center" key={`cell-${index}`}>{data}</TableCell>
+                                                    <TableCell align="center" key={`cell-${index}`}>
+                                                        {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.boolean) && <>
+                                                            <Checkbox checked={data === 'true' ? true : false} />
+                                                        </>}
+                                                        {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.tag) && <>
+                                                            {data !== '' && data.split(',').map((tag: string, index:number) => <div style={{paddingBottom: '10px'}}><Chip color="secondary" key={`chip-${index}`} icon={<BookmarkBorderIcon />} label={tag} /></div>)}
+                                                        </>}
+                                                        {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.string) && <>
+                                                            {data}
+                                                        </>}
+                                                        {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.number) && <>
+                                                            {Number.isNaN(Number(data)) ? 0: Number(data)}
+                                                        </>}
+                                                    </TableCell>
                                                 )
                                             }
                                             {props.dataset?.action &&

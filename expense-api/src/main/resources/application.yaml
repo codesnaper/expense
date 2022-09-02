@@ -1,0 +1,36 @@
+server:
+  port: 8090
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          cognito:
+            clientId: ${CLIENT_ID}
+            clientSecret: ${CLIENT_SECRET}
+            scope: openid
+            redirect-uri: ${REDIRECT_URI}
+            clientName: ${CLIENT_NAME}
+        provider:
+          cognito:
+            issuerUri: ${ISSUER_URI}
+            user-name-attribute: cognito:username
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql: trace

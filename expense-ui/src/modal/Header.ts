@@ -2,7 +2,8 @@ export enum HeaderType{
     boolean= 'boolean',
     date = 'date',
     string = 'string',
-    tag = 'tag'
+    tag = 'tag',
+    number = 'number'
 }
 
 export enum HeaderDisplay{
