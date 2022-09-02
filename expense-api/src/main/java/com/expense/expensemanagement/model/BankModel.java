@@ -38,7 +38,7 @@ public class BankModel {
     @JsonProperty("holdAmount")
     private BigDecimal holdAmount;
 
-    @JsonProperty("accounts")
+    @JsonProperty("totalAccounts")
     private int totalAccount;
 
     private List<Account> accounts;

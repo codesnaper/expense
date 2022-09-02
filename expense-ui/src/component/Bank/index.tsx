@@ -15,6 +15,7 @@ import ExpenseTable from "../Table";
 import { OperationType } from "../../modal/OperationType";
 import InfoCardComponent from "../Card/InfoCard";
 import { green, red } from "@mui/material/colors";
+import { Tag } from "../../modal/Tag";
 
 export default function BankComponent() {
     const [openModal, setOpenModal] = useState<boolean>(false);
@@ -66,7 +67,7 @@ export default function BankComponent() {
                 tags: {
                     display: HeaderDisplay.HIDDEN,
                     isPrimaryKey: true,
-                    isVisible: true,
+                    isVisible: false,
                     alias: 'Tags',
                     type: HeaderType.tag
                 },
@@ -89,28 +90,28 @@ export default function BankComponent() {
                     isPrimaryKey: false,
                     isVisible: true,
                     alias: 'Accounts',
-                    type: HeaderType.string
+                    type: HeaderType.number
                 },
                 creditAmount: {
                     display: HeaderDisplay.NONE,
                     isPrimaryKey: false,
                     isVisible: true,
                     alias: 'Amounts',
-                    type: HeaderType.string
+                    type: HeaderType.number
                 },
                 debitAmount: {
                     display: HeaderDisplay.NONE,
                     isPrimaryKey: false,
                     isVisible: true,
                     alias: 'Debit Amounts',
-                    type: HeaderType.string
+                    type: HeaderType.number
                 },
                 holdAmount: {
                     display: HeaderDisplay.NONE,
                     isPrimaryKey: false,
                     isVisible: true,
                     alias: 'Hold Amount',
-                    type: HeaderType.string
+                    type: HeaderType.number
                 }
             }
             , banks);
@@ -131,6 +132,11 @@ export default function BankComponent() {
                 let sumCreditAmount: number = 0;
                 let sumDebitAmount: number = 0;
                 response.Items.forEach((bank: BankModal) => {
+                    const tagNames: Array<string> = [];
+                    bank.tags.forEach((tag: Tag) => {
+                        tagNames.push(tag.name);
+                    })
+                    bank.tagNames = tagNames.join(',')
                     banks.push(bank);
                     sumCreditAmount += Number(bank.creditAmount);
                     sumDebitAmount += Number(bank.debitAmount);

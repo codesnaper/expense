@@ -4,6 +4,7 @@ import com.expense.expensemanagement.model.CurrencyType;
 import lombok.Data;
 import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -11,7 +12,15 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "em_bank_t")
+@Table(
+        name = "em_bank_t",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "nameAndUserId", columnNames = {"name", "user_id"})
+        },
+        indexes = {
+                @Index(name = "bank_name_userid_idx", columnList = "name,user_id")
+        }
+)
 @Data
 public class Bank {
 
@@ -19,7 +28,7 @@ public class Bank {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "currency_type", nullable = false)
@@ -37,7 +46,7 @@ public class Bank {
 
     private BigDecimal holdAmount;
 
-    @OneToMany(mappedBy = "bank",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "bank", fetch = FetchType.LAZY)
     private List<Account> accounts;
 
     @OneToMany(mappedBy = "refId", fetch = FetchType.LAZY)

@@ -1,7 +1,8 @@
-import { Button, Chip, FormControl, FormHelperText, InputLabel, ListItemButton , ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent } from "@mui/material";
+import { Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, InputLabel, ListItemButton, ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import { useContext, useEffect, useState } from "react";
 import { ServiceContext, UserContext } from "../../context";
+import { useFormValidation } from "../../hooks/FormValidation";
 import { ResponseList } from "../../modal/ResponseList";
 import { Tag } from "../../modal/Tag";
 const ITEM_HEIGHT = 48;
@@ -15,7 +16,7 @@ const MenuProps = {
     },
 };
 
-interface TagSelectProps{
+interface TagSelectProps {
     onChange?: (tags: Array<Tag>) => void;
     error: boolean;
     helperText: string;
@@ -26,7 +27,36 @@ export default function TagSelect(props: TagSelectProps) {
     const service = useContext(ServiceContext);
     const [tagName, setTagName] = useState<string[]>([]);
     const [tags, setTags] = useState<Array<Tag>>([]);
-    // const [openTagModel, setOpenTagModel] = useState<boolean>(false);
+    const [openTagModel, setOpenTagModel] = useState<boolean>(false);
+    const { handleSubmit, handleChange: handleTagFormChange, data: tagForm, errors: tagFormError } = useFormValidation<Tag>({
+        validations: {
+            name: {
+                required:{
+                    value: true,
+                    message: "Tag Name is required"
+                }
+            },
+            description: {
+                required: {
+                    value: true,
+                    message: "Tag Description is required"
+                },
+                custom: {
+                    isValid(value) {
+                        return (value != null && value.length < 24);
+                    },
+                    message: "Max Description can be of 24 character and min character is 1."
+                }
+            }
+        },
+        onSubmit() {
+            tags.push(tagForm);
+            setTags([...tags]);
+            handleTagModel();
+            alert(JSON.stringify(tagForm))
+        },
+    });
+
     const handleChange = (event: SelectChangeEvent<typeof tagName>) => {
         let selectedTags: Array<Tag> = [];
         const {
@@ -36,21 +66,21 @@ export default function TagSelect(props: TagSelectProps) {
             typeof value === 'string' ? value.split(',') : value,
         );
         let inputTagNames: Array<string> = [];
-        if(typeof value === 'string'){
+        if (typeof value === 'string') {
             inputTagNames = [...value.split(',')];
-        } else{
+        } else {
             inputTagNames = [...value]
         }
         selectedTags.forEach((tag: Tag, idx: number) => {
-            if(inputTagNames.indexOf(tag.name) === -1){
-                selectedTags = [...selectedTags.splice(idx,1)];
-            } else{
+            if (inputTagNames.indexOf(tag.name) === -1) {
+                selectedTags = [...selectedTags.splice(idx, 1)];
+            } else {
                 inputTagNames = [...inputTagNames.splice(inputTagNames.indexOf(tag.name), 1)]
             }
         });
         inputTagNames.forEach((inputTagName: string) => {
             selectedTags = [...selectedTags.concat(tags.filter((tag: Tag) => tag.name === inputTagName))];
-        });   
+        });
         sendTag(selectedTags);
     };
 
@@ -58,9 +88,9 @@ export default function TagSelect(props: TagSelectProps) {
         props.onChange?.(tags);
     }
 
-    // const handleTagModel = () => {
-    //     setOpenTagModel(true);
-    // }
+    const handleTagModel = () => {
+        setOpenTagModel(!openTagModel);
+    }
 
     useEffect(() => {
         service.tagService?.fetchAllTag(user.id)
@@ -97,14 +127,50 @@ export default function TagSelect(props: TagSelectProps) {
                     ))}
                     <MenuItem key='new Tag Button'>
                         <ListItemButton disableRipple={true}>
-                            <Button disableRipple={true} sx={{width: '100%'}}>
-                            <ListItemText primary="Create New Tag" />
+                            <Button  onClick={handleTagModel} disableRipple={true} sx={{ width: '100%' }}>
+                                <ListItemText primary="Create New Tag" />
                             </Button>
                         </ListItemButton>
                     </MenuItem>
                 </Select>
                 <FormHelperText>{props.helperText}</FormHelperText>
             </FormControl>
+
+            <Dialog open={openTagModel} onClose={handleTagModel}>
+                <Box id="tagForm" component="form" noValidate onSubmit={handleSubmit}>
+                    <DialogTitle>Add Tag</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="name"
+                            label="Tag Name"
+                            type="email"
+                            fullWidth
+                            variant="standard"
+                            error = {tagFormError.name ? true: false}
+                            helperText={tagFormError.name}
+                            onChange={handleTagFormChange('name')}
+                        />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="name"
+                            label="Description"
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                            error = {tagFormError.description ? true: false}
+                            helperText={tagFormError.description}
+                            onChange={handleTagFormChange('description')}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleTagModel}>Cancel</Button>
+                        <Button type="submit" form="tagForm">Add Tag</Button>
+                    </DialogActions>
+                </Box>
+            </Dialog>
         </>
     );
 }

@@ -6,8 +6,8 @@ import com.expense.expensemanagement.model.TagModel;
 import java.util.List;
 
 public interface ITagService {
-    void deleteTag(Long id, String userId);
-    ResponseList<TagModel> getTags(int page, int size);
+    void deleteTag(Long id);
+    ResponseList<TagModel> getTags(String userId, int page, int size);
     TagModel addTag(TagModel tagModel);
     List<com.expense.expensemanagement.entity.Tag> findAllByIds(List<Long> ids);
 }

@@ -45,7 +45,7 @@ export class BankService {
                 body: JSON.stringify(bank),
                 headers: {
                     "Content-Type": "application/json",
-                    Accept: "application/json",
+                    "user-id": bank.USERID
                 },
             })
             .then(function(res) {    

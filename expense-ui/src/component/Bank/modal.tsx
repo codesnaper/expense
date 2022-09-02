@@ -53,13 +53,13 @@ export default function ModalBank(props: ModalBankProps) {
     }, [props.bank])
 
     const currencies = [
-        { name: 'INR', value: '₹' },
-        { name: 'EURO', value: '€' },
-        { name: 'USD', value: '$' },
-        { name: 'PLN', value: 'zl' }
+        { name: 'INR', value: 'INR' },
+        { name: 'EURO', value: 'EURO' },
+        { name: 'USD', value: 'USD' },
+        { name: 'PLN', value: 'PLN' }
     ];
 
-    const { handleSubmit, handleChange, handleSelectChange,handleTagValue, data, errors } = useFormValidation<BankModal>({
+    const { handleSubmit, handleChange, handleSelectChange, handleTagValue, data, errors } = useFormValidation<BankModal>({
         validations: {
             name: {
                 custom: {
@@ -124,10 +124,15 @@ export default function ModalBank(props: ModalBankProps) {
     return (
         <>
             <Dialog PaperComponent={PaperComponent} open={props.openModal} aria-labelledby="draggable-dialog-title" onClose={handleClose}>
-                <Box component="form" noValidate onSubmit={handleSubmit}>
+                <Box id="bankForm" component="form" noValidate onSubmit={handleSubmit}>
                     <DialogTitle className="grabbable"
-                        id="draggable-dialog-title">{props.operationType === OperationType.ADD ? localization.getString?.('Bank.modal.addTitle', localization.getLanguage?.()) : localization.getString?.('Bank.modal.editTitle', localization.getLanguage?.())}</DialogTitle>
-                    <DialogContent>
+                        id="draggable-dialog-title">
+                        {props.operationType === OperationType.ADD ? localization.getString?.('Bank.modal.addTitle', localization.getLanguage?.()) : localization.getString?.('Bank.modal.editTitle', localization.getLanguage?.())}
+                        {errors && <>
+                            <br></br><Typography variant="caption" color={red[600]}>There are some error in form</Typography>
+                        </>}
+                    </DialogTitle>
+                    <DialogContent sx={{ maxHeight: '50vh' }}>
                         <FormControl fullWidth margin="normal">
                             <TextField
                                 required
@@ -176,10 +181,10 @@ export default function ModalBank(props: ModalBankProps) {
                         ></TagSelect>
                     </DialogContent>
                     <DialogActions>
-                        <Button type="submit" disabled={addLoader}>{props.operationType === OperationType.ADD ?
-                            localization.getString?.('Bank.modal.form.primarySaveCTA',localization.getLanguage?.())
+                        <Button type="submit" form="bankForm" disabled={addLoader}>{props.operationType === OperationType.ADD ?
+                            localization.getString?.('Bank.modal.form.primarySaveCTA', localization.getLanguage?.())
                             :
-                            localization.getString?.('Bank.modal.form.primaryEditCTA',localization.getLanguage?.())
+                            localization.getString?.('Bank.modal.form.primaryEditCTA', localization.getLanguage?.())
                         }
                         </Button>
                         {addLoader && (
@@ -191,7 +196,7 @@ export default function ModalBank(props: ModalBankProps) {
                             />
                         )}
                         <Button onClick={handleClose}>
-                            {localization.getString?.('Bank.modal.form.secondaryCTA',localization.getLanguage?.())}
+                            {localization.getString?.('Bank.modal.form.secondaryCTA', localization.getLanguage?.())}
                         </Button>
                     </DialogActions>
                 </Box>

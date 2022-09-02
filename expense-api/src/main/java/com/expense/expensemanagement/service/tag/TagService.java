@@ -32,8 +32,8 @@ public class TagService implements ITagService {
         this.tagDAO = tagDAO;
     }
 
-    public ResponseList<TagModel> getTags(int page, int size) {
-        Page<Tag> tagModels = this.tagDAO.findAll(PageRequest.of(page, size));
+    public ResponseList<TagModel> getTags(String userId, int page, int size) {
+        Page<Tag> tagModels = this.tagDAO.findByUserId( userId,PageRequest.of(page, size));
         ResponseList<TagModel> tagResponseList = new ResponseList<>();
         tagResponseList.setPageNo(tagModels.getNumber());
         tagResponseList.setTotalPage(tagModels.getTotalPages());
@@ -42,13 +42,11 @@ public class TagService implements ITagService {
         return tagResponseList;
     }
 
-    public void deleteTag(Long id, String userId) {
-        List<Tag> tagEntities = tagDAO.findByUserId(userId);
-        Tag tag = tagEntities.parallelStream().filter(tagEntity -> tagEntity.getId() == id).findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Tag Not found"));
-//        this.bankTagService.fetchTagMappings(tag.getId()).stream().findAny()
-//                .orElseThrow(() -> new IllegalStateException("Can't Delete Tag as it is in used"));
-        this.tagDAO.deleteById(id);
+    public void deleteTag(Long id) {
+        Tag tag = tagDAO.findById(id).orElseThrow(
+                () -> new NoSuchElementException("Tag Not found")
+        );
+        this.tagDAO.deleteById(tag.getId());
     }
 
     public TagModel addTag(TagModel tagModel) {

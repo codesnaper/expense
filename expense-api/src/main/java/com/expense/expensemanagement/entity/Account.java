@@ -12,11 +12,12 @@ import java.util.List;
 
 @Entity
 @Table(name = "em_account_t",
-    indexes = {
-        @Index(name = "account_bank_em_idx", columnList = "bank_id")
-    }
+        indexes = {
+                @Index(name = "account_bank_em_idx", columnList = "bank_id"),
+                @Index(name = "account_bank_type_idx", columnList = "bank_id,account_type")
+        }
 )
-@DiscriminatorColumn(name="account_type",
+@DiscriminatorColumn(name = "account_type",
         discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorValue("account")
@@ -26,24 +27,24 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private long id;
 
-    @Column(name="account_type", insertable = false, updatable = false)
+    @Column(name = "account_type", insertable = false, updatable = false)
     protected String accountType;
 
-    @Column(name = "name",nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "number", nullable = false, unique = true)
     private String accountNumber;
 
-    @Column(name="amount")
+    @Column(name = "amount")
     private BigDecimal amount = new BigDecimal(0);
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bank_id",referencedColumnName = "id")
+    @JoinColumn(name = "bank_id", referencedColumnName = "id")
     @JsonBackReference
     private Bank bank;
 
-    @Column(name="bank_id", insertable = false, updatable = false)
+    @Column(name = "bank_id", insertable = false, updatable = false)
     protected String bankId;
 
     @Column(name = "account_open_date", nullable = false)
@@ -55,7 +56,7 @@ public class Account {
     @Column
     private Date updatedDate = new Date();
 
-    @Column(name="user_id")
+    @Column(name = "user_id")
     private String userId;
 
     @OneToMany(mappedBy = "refId", fetch = FetchType.LAZY)

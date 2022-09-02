@@ -25,17 +25,17 @@ public class TagController {
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseList<TagModel> getAllTag(
+            @RequestHeader(name = "userId") String userid,
             @RequestHeader(name = "pageNo",defaultValue = "0",required = false) int pageNo,
             @RequestHeader(name = "size",defaultValue = "10",required = false) int pageSize
             ){
-        return this.tagService.getTags(pageNo, pageSize);
+        return this.tagService.getTags(userid, pageNo, pageSize);
     }
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void deleteTag(
-            @PathVariable long id,
-            @RequestHeader(name = "userId",value = "") String userid
+            @PathVariable long id
     ){
-        this.tagService.deleteTag(id,userid);
+        this.tagService.deleteTag(id);
     }
 }

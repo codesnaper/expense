@@ -37,11 +37,11 @@ const UserContextProvider = (props: UserContextProps) => {
         if(theme === 'dark'){
             body.style.backgroundColor = `${grey[500]}`
         } else{
-            body.style.backgroundColor = `${blue[300]}`
+            body.style.backgroundColor = `${brown[50]}`
         }
     }
 
-    useEffect(() => {
+    useEffect(() => {        
         const body: HTMLElement = document.getElementsByTagName('body')[0];
         body.style.backgroundColor = `${brown[50]}`
         const userSession = window.sessionStorage.getItem('user');

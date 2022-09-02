@@ -21,9 +21,8 @@ public class BankController {
         this.accountController = accountController;
     }
 
-    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public BankModel addBank(
-            @RequestBody(required = true) BankModel bankModel,
+    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)    public BankModel addBank(
+            @RequestBody BankModel bankModel,
             @RequestHeader(name = "user-id") String userId
     ){
         bankModel.setUserId(userId);
