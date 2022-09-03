@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.expense.expensemanagement.config.security.auth.TokenExtractor;
 import com.expense.expensemanagement.config.security.filter.*;
+import com.expense.expensemanagement.model.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,13 +29,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 
-	public static final String AUTHENTICATION_HEADER_NAME = "Authorization";
-	public static final String AUTHENTICATION_URL = "/login";
-	public static final String REFRESH_TOKEN_URL = "/expense/api/v1/auth/token/**";
-	public static final String RESET_PASSWORD = "/expense/api/v1/auth/resetPassword";
-	public static final String FORGOT_PASSWORD = "/expense/api/v1/auth/forgotPassword";
-	public static final String API_ROOT_URL = "/expense/api/v1/**";
-	public static final String SWAGGER_URL = "/swagger-ui.html";
 
 	@Autowired
 	private AuthenticationEntryPoint authenticationEntryPoint;
@@ -85,8 +79,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		logger.debug("Configuring security endpoints");
-		List<String> permitAllEndpointList = Arrays.asList(AUTHENTICATION_URL, REFRESH_TOKEN_URL, FORGOT_PASSWORD,
-				RESET_PASSWORD, SWAGGER_URL, "/console");
+		List<String> permitAllEndpointList = Arrays.asList(Constants.AUTHENTICATION_URL, Constants.REFRESH_TOKEN_URL,
+				Constants.FORGOT_PASSWORD, Constants.RESET_PASSWORD, Constants.SWAGGER_URL);
 
 		http.csrf().disable().exceptionHandling().authenticationEntryPoint(this.authenticationEntryPoint)
 
@@ -94,11 +88,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 				.and().authorizeRequests()
 				.antMatchers(permitAllEndpointList.toArray(new String[permitAllEndpointList.size()])).permitAll().and()
-				.authorizeRequests().antMatchers(API_ROOT_URL).authenticated().and()
+				.authorizeRequests().antMatchers(Constants.API_ROOT_URL).authenticated().and()
 				.addFilterBefore(new CORSFilter(), UsernamePasswordAuthenticationFilter.class)
-				.addFilterBefore(buildExampleAuthenticationFilter(AUTHENTICATION_URL),
+				.addFilterBefore(buildExampleAuthenticationFilter(Constants.AUTHENTICATION_URL),
 						UsernamePasswordAuthenticationFilter.class)
-				.addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(permitAllEndpointList, API_ROOT_URL),
+				.addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(permitAllEndpointList, Constants.API_ROOT_URL),
 						UsernamePasswordAuthenticationFilter.class);
 
 		logger.debug("Completed security endpoints");

@@ -9,7 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.expense.expensemanagement.config.security.auth.JwtAuthenticationToken;
 import com.expense.expensemanagement.model.CognitoAuthenticationResultHolder;
+import com.expense.expensemanagement.model.Constants;
+import com.expense.expensemanagement.model.User;
+import com.expense.expensemanagement.model.UserContext;
+import com.expense.expensemanagement.service.cognito.CognitoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +31,9 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 	private final CognitoAuthenticationResultHolder cognitoAuthenticationResultHolder;
 
 	@Autowired
+	CognitoService cognitoService;
+
+	@Autowired
 	public AuthenticationSuccessHandler(final ObjectMapper mapper,
                                         final CognitoAuthenticationResultHolder cognitoAuthenticationResultHolder) {
 		this.mapper = mapper;
@@ -35,17 +43,25 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		Map<String, String> tokenMap = new HashMap<String, String>();
-		tokenMap.put("token", cognitoAuthenticationResultHolder.getAuthResult().getAccessToken());
-		tokenMap.put("expiresIn", cognitoAuthenticationResultHolder.getAuthResult().getExpiresIn().toString());
-		tokenMap.put("refreshToken", cognitoAuthenticationResultHolder.getAuthResult().getRefreshToken());
-
+		response.setHeader(Constants.AUTHENTICATION_HEADER_NAME,
+				cognitoAuthenticationResultHolder.getAuthResult().getAccessToken());
+		response.setHeader(Constants.EXPIRE_TIME, cognitoAuthenticationResultHolder.getAuthResult().getExpiresIn().toString());
+		response.setHeader(Constants.REFRESH_TOKEN, cognitoAuthenticationResultHolder.getAuthResult().getRefreshToken());
 		response.setStatus(HttpStatus.OK.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		mapper.writeValue(response.getWriter(), tokenMap);
-
+		//TODO: send Setting data for user
+		Map<String, Object> responseMap = new HashMap<>();
+		Map<String, String> userDetail = new HashMap<>();
+		User user = cognitoService.getUser(
+				((UserContext) authentication.getPrincipal()).getUsername()
+		);
+		userDetail.put("name", user.getName());
+		userDetail.put("email", user.getEmail());
+		responseMap.put("user", userDetail);
+		mapper.writeValue(response.getWriter(), responseMap);
 		clearAuthenticationAttributes(request);
 	}
+
 
 	protected final void clearAuthenticationAttributes(HttpServletRequest request) {
 		HttpSession session = request.getSession(false);

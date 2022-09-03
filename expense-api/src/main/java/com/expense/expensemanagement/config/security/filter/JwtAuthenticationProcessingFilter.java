@@ -1,21 +1,20 @@
 package com.expense.expensemanagement.config.security.filter;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.expense.expensemanagement.config.security.auth.JwtAuthenticationToken;
 import com.expense.expensemanagement.config.security.auth.TokenExtractor;
-import com.expense.expensemanagement.config.security.WebSecurityConfig;
+import com.expense.expensemanagement.model.Constants;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class JwtAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -32,7 +31,7 @@ public class JwtAuthenticationProcessingFilter extends AbstractAuthenticationPro
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
-		String tokenPayload = request.getHeader(WebSecurityConfig.AUTHENTICATION_HEADER_NAME);
+		String tokenPayload = request.getHeader(Constants.AUTHENTICATION_HEADER_NAME);
 		String token = tokenExtractor.extract(tokenPayload);
 		return getAuthenticationManager().authenticate(new JwtAuthenticationToken(token));
 	}

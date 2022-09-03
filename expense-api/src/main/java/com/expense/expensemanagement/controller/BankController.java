@@ -1,14 +1,19 @@
 package com.expense.expensemanagement.controller;
 
+import com.expense.expensemanagement.config.security.auth.JwtAuthenticationToken;
 import com.expense.expensemanagement.model.BankModel;
 import com.expense.expensemanagement.model.ResponseList;
+import com.expense.expensemanagement.model.UserContext;
 import com.expense.expensemanagement.service.bank.IBankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
-@RequestMapping("/bank")
+@RequestMapping("/expense/api/v1/bank")
 public class BankController {
 
     private final IBankService bankService;
@@ -23,9 +28,9 @@ public class BankController {
 
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)    public BankModel addBank(
             @RequestBody BankModel bankModel,
-            @RequestHeader(name = "user-id") String userId
+            Principal principal
     ){
-        bankModel.setUserId(userId);
+        bankModel.setUserId(((UserContext)((JwtAuthenticationToken) principal).getPrincipal()).getUsername());
         return this.bankService.addBank(bankModel);
     }
 
@@ -33,9 +38,9 @@ public class BankController {
     public ResponseList<BankModel> getBanks(
             @RequestHeader(name = "pageNo",defaultValue = "0", required = false) int pageNo,
             @RequestHeader(name = "size",defaultValue = "10", required = false) int pageSize,
-            @RequestHeader(name = "user-id") String userId
+            Principal principal
     ){
-        return this.bankService.getAllBanks(userId, pageNo,pageSize);
+        return this.bankService.getAllBanks(((UserContext)((JwtAuthenticationToken) principal).getPrincipal()).getUsername(), pageNo,pageSize);
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,13 +52,10 @@ public class BankController {
 
     @PutMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public BankModel updateBank(
-            @RequestHeader(name = "user-id") String userId,
+            Principal principal,
             @RequestBody(required = true) BankModel bankModel
     ) {
-        bankModel.setUserId(userId);
-        if(bankModel.getId() == null){
-            throw new IllegalArgumentException("Id is required");
-        }
+        bankModel.setUserId(((UserContext)((JwtAuthenticationToken) principal).getPrincipal()).getUsername());
         return this.bankService.updateBank(bankModel);
     }
 

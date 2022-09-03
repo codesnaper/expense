@@ -1,5 +1,6 @@
 package com.expense.expensemanagement.config.security.filter;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -53,19 +54,19 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 			Map<String, Claim> claims = decodedJWT.getClaims();
 			String username = claims.get(cognitoConfiguration.getUserNameField()).asString();
 
-			List<String> groups = claims.get(cognitoConfiguration.getGroupsField()).asList(String.class);
+//			List<String> groups = claims.get(cognitoConfiguration.getGroupsField()).asList(String.class);
+			List<String> groups = Arrays.asList(new String[]{"USER"});
 			List<GrantedAuthority> grantedAuthorities = convertList(groups,
 					group -> new SimpleGrantedAuthority(ROLE_PREFIX + group.toUpperCase()));
 
 			User user = cognitoService.getUser(username);
-			String name = user.getAttribute("given_name").concat(" ").concat(user.getAttribute("family_name"));
+			String name = user.getName();
 			UserContext context = UserContext.create(username, name, grantedAuthorities);
-
 			return new JwtAuthenticationToken(context, context.getAuthorities());
 		} catch (JWTVerificationException exception) {
 			throw new JwtExpiredTokenException("Token has expired. ".concat(exception.getMessage()));
 		} catch (Exception exception) {
-			throw new JwtInvalidTokenException("Invalid Token. ".concat(exception.getMessage()));
+			throw new JwtInvalidTokenException("Invalid Token. ");
 		}
 	}
 

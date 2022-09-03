@@ -1,6 +1,7 @@
 package com.expense.expensemanagement.config.security.filter;
 
 
+import com.expense.expensemanagement.model.Constants;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -8,6 +9,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
+//TODO: need to take value from application yaml
 public class CORSFilter extends CorsFilter {
 
     public CORSFilter() {
@@ -22,7 +24,7 @@ public class CORSFilter extends CorsFilter {
         config.setMaxAge(36000L);
         config.setAllowedMethods(Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", config);
+        source.registerCorsConfiguration(Constants.API_ROOT_URL, config);
         return source;
     }
 }

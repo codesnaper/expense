@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.cognitoidp.model.AttributeType;
 import com.amazonaws.services.cognitoidp.model.UserType;
+import org.springframework.util.Assert;
 
 @Data
 public class User {
@@ -23,7 +24,7 @@ public class User {
      * @param attributeName
      * @return
      */
-    public String getAttribute(String attributeName) {
+    private String getAttribute(String attributeName) {
         logger.debug("Get the value of the attribute : {}", attributeName);
         logger.debug("Iterate thro the available attributes");
         for (AttributeType attribute : user.getAttributes()) {
@@ -33,6 +34,14 @@ public class User {
             }
         }
         return null;
+    }
+
+    public String getName(){
+        return getAttribute("name");
+    }
+
+    public String getEmail(){
+        return getAttribute("email");
     }
 
 }

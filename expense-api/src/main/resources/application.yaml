@@ -1,7 +1,5 @@
 server:
   port: 8090
-  servlet:
-    context-path=/expense/api/v1:
 aws:
   cognito:
     clientId: ${CLIENT_ID}
@@ -11,10 +9,27 @@ aws:
     secretKey: ${SECRET_KEY}
     accessKey: ${ACCESS_KEY}
     authFlow: ADMIN_NO_SRP_AUTH
-    userNameField: cognito:username
+    userNameField: username
     groupsField:
     connectionTimeout: 2000
     readTimeout: 2000
+cors:
+  origin: http://localhost:8090
+  allowCredentials: true
+  maxAge: 36000L
+  allow:
+    methods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      - PATCH
+    header:
+      - Authorization
+      - refreshToken
+    exposedHeader:
+      - Authorization
+      - refreshToken
 spring:
   datasource:
     url: ${DB_URL}

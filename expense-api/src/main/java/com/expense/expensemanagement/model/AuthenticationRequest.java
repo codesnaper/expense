@@ -1,8 +1,10 @@
-package com.expense.expensemanagement.config.security.filter;
+package com.expense.expensemanagement.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
+@Getter
 public class AuthenticationRequest {
 	private String username;
 	private String password;
@@ -14,17 +16,5 @@ public class AuthenticationRequest {
 		this.username = username;
 		this.password = password;
 		this.newPassword = newPassword;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public String getNewPassword() {
-		return newPassword;
 	}
 }
