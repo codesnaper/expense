@@ -30,10 +30,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	public static final String AUTHENTICATION_HEADER_NAME = "Authorization";
 	public static final String AUTHENTICATION_URL = "/login";
-	public static final String REFRESH_TOKEN_URL = "/api/auth/token/**";
-	public static final String RESET_PASSWORD = "/api/auth/resetPassword";
-	public static final String FORGOT_PASSWORD = "/api/auth/forgotPassword";
-	public static final String API_ROOT_URL = "/api/**";
+	public static final String REFRESH_TOKEN_URL = "/expense/api/v1/auth/token/**";
+	public static final String RESET_PASSWORD = "/expense/api/v1/auth/resetPassword";
+	public static final String FORGOT_PASSWORD = "/expense/api/v1/auth/forgotPassword";
+	public static final String API_ROOT_URL = "/expense/api/v1/**";
 	public static final String SWAGGER_URL = "/swagger-ui.html";
 
 	@Autowired

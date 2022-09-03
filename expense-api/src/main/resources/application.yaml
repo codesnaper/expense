@@ -1,5 +1,7 @@
 server:
   port: 8090
+  servlet:
+    context-path=/expense/api/v1:
 aws:
   cognito:
     clientId: ${CLIENT_ID}
