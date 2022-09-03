@@ -3,6 +3,9 @@ package com.expense.expensemanagement.config.security.config;
 import java.util.Arrays;
 import java.util.List;
 
+import com.expense.expensemanagement.config.security.AuthenticationEntryPoint;
+import com.expense.expensemanagement.config.security.auth.TokenExtractor;
+import com.expense.expensemanagement.config.security.filter.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,15 +23,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.example.security.ExampleAuthenticationEntryPoint;
-import com.example.security.auth.TokenExtractor;
-import com.example.security.filter.JwtAuthenticationProcessingFilter;
-import com.example.security.filter.JwtAuthenticationProvider;
-import com.example.security.filter.ExampleAuthenticationFailureHandler;
-import com.example.security.filter.ExampleAuthenticationFilter;
-import com.example.security.filter.ExampleAuthenticationProvider;
-import com.example.security.filter.ExampleCorsFilter;
-import com.example.security.filter.SkipPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -38,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 
 	public static final String AUTHENTICATION_HEADER_NAME = "Authorization";
-	public static final String AUTHENTICATION_URL = "/api/auth/login";
+	public static final String AUTHENTICATION_URL = "/login";
 	public static final String REFRESH_TOKEN_URL = "/api/auth/token/**";
 	public static final String RESET_PASSWORD = "/api/auth/resetPassword";
 	public static final String FORGOT_PASSWORD = "/api/auth/forgotPassword";
@@ -46,16 +40,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public static final String SWAGGER_URL = "/swagger-ui.html";
 
 	@Autowired
-	private ExampleAuthenticationEntryPoint authenticationEntryPoint;
+	private AuthenticationEntryPoint authenticationEntryPoint;
 
 	@Autowired
 	private AuthenticationSuccessHandler successHandler;
 
 	@Autowired
-	private ExampleAuthenticationFailureHandler failureHandler;
+	private AuthenticationFailureHandler failureHandler;
 
 	@Autowired
-	private ExampleAuthenticationProvider authenticationProvider;
+	private AuthenticationProvider authenticationProvider;
 
 	@Autowired
 	private JwtAuthenticationProvider jwtAuthenticationProvider;
@@ -64,32 +58,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private TokenExtractor tokenExtractor;
 
 	@Autowired
-	private AuthenticationManager authenticationManager;
-
-	@Autowired
 	private ObjectMapper objectMapper;
 
-	protected ExampleAuthenticationFilter buildExampleAuthenticationFilter(String authenticationEntryPoint)
+	protected AuthenticationFilter buildExampleAuthenticationFilter(String authenticationEntryPoint)
 			throws Exception {
-		ExampleAuthenticationFilter filter = new ExampleAuthenticationFilter(authenticationEntryPoint, successHandler,
+		AuthenticationFilter filter = new AuthenticationFilter(authenticationEntryPoint, successHandler,
 				failureHandler, objectMapper);
-		filter.setAuthenticationManager(authenticationManager);
+		filter.setAuthenticationManager(super.authenticationManager());
 		return filter;
 	}
 
 	protected JwtAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter(List<String> pathsToSkip,
-			String pattern) throws Exception {
+																							String pattern) throws Exception {
 		SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, pattern);
 		JwtAuthenticationProcessingFilter filter = new JwtAuthenticationProcessingFilter(failureHandler, tokenExtractor,
 				matcher);
-		filter.setAuthenticationManager(this.authenticationManager);
+		filter.setAuthenticationManager(super.authenticationManager());
 		return filter;
-	}
-
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
 	}
 
 	@Override
@@ -113,7 +98,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and().authorizeRequests()
 				.antMatchers(permitAllEndpointList.toArray(new String[permitAllEndpointList.size()])).permitAll().and()
 				.authorizeRequests().antMatchers(API_ROOT_URL).authenticated().and()
-				.addFilterBefore(new ExampleCorsFilter(), UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(new CORSFilter(), UsernamePasswordAuthenticationFilter.class)
 				.addFilterBefore(buildExampleAuthenticationFilter(AUTHENTICATION_URL),
 						UsernamePasswordAuthenticationFilter.class)
 				.addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(permitAllEndpointList, API_ROOT_URL),

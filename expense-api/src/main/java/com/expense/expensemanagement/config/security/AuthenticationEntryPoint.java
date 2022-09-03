@@ -8,11 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ExampleAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class AuthenticationEntryPoint implements org.springframework.security.web.AuthenticationEntryPoint {
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,

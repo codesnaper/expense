@@ -6,6 +6,9 @@ aws:
     userPoolId: ${USER_POOL_ID}
     identityPoolId: ${IDENTITY_POOL_ID}
     region: ${REGION}
+    secretKey: ${SECRET_KEY}
+    accessKey: ${ACCESS_KEY}
+    authFlow: ADMIN_NO_SRP_AUTH
     userNameField: cognito:username
     groupsField:
     connectionTimeout: 2000
@@ -24,6 +27,9 @@ spring:
         format_sql: true
 logging:
   level:
+    com:
+      expense: DEBUG
+
     org:
       hibernate:
         SQL: debug

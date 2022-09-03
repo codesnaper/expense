@@ -1,5 +1,9 @@
 package com.expense.expensemanagement.config.security.cognito;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.expense.expensemanagement.service.cognito.CognitoService;
 import com.expense.expensemanagement.service.cognito.CognitoServiceImpl;
 import org.slf4j.Logger;
@@ -48,11 +52,23 @@ public class CognitoConfiguration {
 	private String httpHeader = "Authorization";
 	private String jwkUrl;
 
-	@Bean
+	@Value("${aws.cognito.accessKey}")
+	private String accessKey;
+
+	@Value("${aws.cognito.secretKey}")
+	private String secretKey;
+
+	@Value("${aws.cognito.authFlow}")
+	private String authFlow;
+
+	@Bean("CognitoIdentityProvider")
 	public AWSCognitoIdentityProvider cognitoIdentityProvider() throws Exception {
 		logger.debug("Configuring Cognito");
+		AWSCredentials cred = new BasicAWSCredentials(this.accessKey, this.secretKey);
+		AWSCredentialsProvider credProvider = new AWSStaticCredentialsProvider(cred);
 		AWSCognitoIdentityProvider cognitoIdentityProvider = AWSCognitoIdentityProviderClientBuilder.standard()
-				.withCredentials(new ProfileCredentialsProvider()).build();
+				.withRegion(this.region)
+				.withCredentials(credProvider).build();
 		logger.debug("Cognito initialized successfully");
 		return cognitoIdentityProvider;
 	}
@@ -148,5 +164,29 @@ public class CognitoConfiguration {
 
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
+	}
+
+	public String getAuthFlow() {
+		return authFlow;
+	}
+
+	public void setAuthFlow(String authFlow) {
+		this.authFlow = authFlow;
+	}
+
+	public String getAccessKey() {
+		return accessKey;
+	}
+
+	public void setAccessKey(String accessKey) {
+		this.accessKey = accessKey;
+	}
+
+	public String getSecretKey() {
+		return secretKey;
+	}
+
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
 	}
 }

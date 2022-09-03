@@ -13,6 +13,7 @@ import com.expense.expensemanagement.exception.UserNotCreatedException;
 import com.expense.expensemanagement.model.User;
 import com.expense.expensemanagement.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
@@ -66,12 +67,13 @@ public class CognitoServiceImpl implements CognitoService {
 	private CognitoConfiguration cognitoConfiguration;
 
 	@Autowired
+	@Qualifier("CognitoIdentityProvider")
 	private AWSCognitoIdentityProvider cognitoIdentityProvider;
 
 	@Override
 	public AdminInitiateAuthResult initializeAuthentication(Map<String, String> authParams) {
 		AdminInitiateAuthRequest authRequest = new AdminInitiateAuthRequest()
-				.withAuthFlow(AuthFlowType.ADMIN_NO_SRP_AUTH).withClientId(cognitoConfiguration.getClientId())
+				.withAuthFlow(AuthFlowType.fromValue(cognitoConfiguration.getAuthFlow())).withClientId(cognitoConfiguration.getClientId())
 				.withUserPoolId(cognitoConfiguration.getUserPoolId()).withAuthParameters(authParams);
 		AdminInitiateAuthResult authResult = null;
 		try {
