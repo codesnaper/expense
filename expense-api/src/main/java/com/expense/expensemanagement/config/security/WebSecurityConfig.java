@@ -1,18 +1,15 @@
-package com.expense.expensemanagement.config.security.config;
+package com.expense.expensemanagement.config.security;
 
 import java.util.Arrays;
 import java.util.List;
 
-import com.expense.expensemanagement.config.security.AuthenticationEntryPoint;
 import com.expense.expensemanagement.config.security.auth.TokenExtractor;
 import com.expense.expensemanagement.config.security.filter.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

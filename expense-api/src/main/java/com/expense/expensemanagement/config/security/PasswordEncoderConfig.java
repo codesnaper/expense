@@ -1,4 +1,4 @@
-package com.expense.expensemanagement.config.security.config;
+package com.expense.expensemanagement.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

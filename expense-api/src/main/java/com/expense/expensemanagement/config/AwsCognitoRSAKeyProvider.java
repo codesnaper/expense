@@ -1,4 +1,4 @@
-package com.expense.expensemanagement.config.security.cognito;
+package com.expense.expensemanagement.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;

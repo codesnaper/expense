@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.expense.expensemanagement.config.security.cognito.CognitoConfiguration;
+import com.expense.expensemanagement.config.CognitoConfiguration;
 import com.expense.expensemanagement.exception.AuthenticationFailedException;
 import com.expense.expensemanagement.exception.UserNotCreatedException;
 import com.expense.expensemanagement.model.User;

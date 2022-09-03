@@ -6,8 +6,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.expense.expensemanagement.config.security.auth.JwtAuthenticationToken;
-import com.expense.expensemanagement.config.security.cognito.AwsCognitoRSAKeyProvider;
-import com.expense.expensemanagement.config.security.cognito.CognitoConfiguration;
+import com.expense.expensemanagement.config.AwsCognitoRSAKeyProvider;
+import com.expense.expensemanagement.config.CognitoConfiguration;
 import com.expense.expensemanagement.exception.JwtExpiredTokenException;
 import com.expense.expensemanagement.exception.JwtInvalidTokenException;
 import com.expense.expensemanagement.model.User;

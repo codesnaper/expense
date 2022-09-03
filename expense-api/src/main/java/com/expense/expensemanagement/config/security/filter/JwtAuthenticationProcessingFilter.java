@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.expense.expensemanagement.config.security.auth.JwtAuthenticationToken;
 import com.expense.expensemanagement.config.security.auth.TokenExtractor;
-import com.expense.expensemanagement.config.security.config.WebSecurityConfig;
+import com.expense.expensemanagement.config.security.WebSecurityConfig;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
