@@ -57,6 +57,9 @@ public class BankController {
             Principal principal,
             @RequestBody(required = true) BankModel bankModel
     ) {
+        if(bankModel.getId() == null){
+            throw new IllegalArgumentException("Bank Id is missing in request");
+        }
         bankModel.setUserId(ExpenseUtil.getUserId(principal));
         return this.bankService.updateBank(bankModel);
     }

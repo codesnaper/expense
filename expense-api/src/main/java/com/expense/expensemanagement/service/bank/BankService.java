@@ -75,7 +75,10 @@ public class BankService implements IBankService {
     }
 
     public BankModel updateBank(BankModel bankModel) {
-        this.bankDAO.findByUserIdAndId(bankModel.getUserId(), bankModel.getId()).orElseThrow(() -> new IllegalArgumentException("Bank id is not available. Create Bank first."));
+        Bank bank = this.bankDAO.findByUserIdAndId(bankModel.getUserId(), bankModel.getId()).orElseThrow(() -> new IllegalArgumentException("Bank id is not available. Create Bank first."));
+        bank.getTagMappings().stream()
+                .forEach(tagMapping -> this.tagMappingDAO.delete(tagMapping));
+        this.tagMappingService.addTagMapping(bankModel);
         Bank bankEntity = this.bankDAO.save(bankEntityModalConversion.getEntity(bankModel));
         return bankEntityModalConversion.getModel(bankEntity);
     }
