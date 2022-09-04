@@ -13,6 +13,7 @@ public class TagConversion implements EntityModalConversion<Tag, TagModel> {
         tagModel.setId(tagEntity.getId());
         tagModel.setKey(tagEntity.getName());
         tagModel.setValue(tagEntity.getValue());
+        tagModel.setUserId(tagEntity.getUserId());
         return tagModel;
     }
 
@@ -21,6 +22,7 @@ public class TagConversion implements EntityModalConversion<Tag, TagModel> {
         Tag tag = new Tag();
         tag.setName(tagModel.getKey());
         tag.setValue(tagModel.getValue());
+        tag.setUserId(tagModel.getUserId());
         tag.setId(tagModel.getId());
         return tag;
     }

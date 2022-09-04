@@ -11,15 +11,15 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "em_account_t",
-        indexes = {
-                @Index(name = "account_bank_em_idx", columnList = "bank_id"),
-                @Index(name = "account_bank_type_idx", columnList = "bank_id,account_type")
-        }
+@Table(name = "em_account_t"
+//        indexes = {
+//                @Index(name = "account_bank_em_idx", columnList = "bank_id"),
+//                @Index(name = "account_bank_type_idx", columnList = "bank_id,account_type")
+//        }
 )
 @DiscriminatorColumn(name = "account_type",
         discriminatorType = DiscriminatorType.STRING)
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("account")
 @Data
 public class Account {

@@ -10,4 +10,6 @@ public interface ITagService {
     ResponseList<TagModel> getTags(String userId, int page, int size);
     TagModel addTag(TagModel tagModel);
     List<com.expense.expensemanagement.entity.Tag> findAllByIds(List<Long> ids);
+
+    TagModel findTags(long tagId, String userId);
 }

@@ -12,4 +12,5 @@ public interface TagMapping {
      * @return
      */
     List<com.expense.expensemanagement.entity.TagMapping> addTagMapping(Object model);
+
 }

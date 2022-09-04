@@ -23,10 +23,10 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "value", nullable = false, unique = false)
+    @Column(name = "value", nullable = false)
     private String value;
 
     @CreatedDate

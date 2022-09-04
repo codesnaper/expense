@@ -1,5 +1,6 @@
 package com.expense.expensemanagement.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -14,5 +15,8 @@ public class TagModel {
 
     @JsonProperty("description")
     private String value;
+
+    @JsonIgnore
+    private String userId;
 
 }

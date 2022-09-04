@@ -28,13 +28,18 @@ public class TagMappingService implements TagMapping {
     public List<com.expense.expensemanagement.entity.TagMapping> addTagMapping(Object model) {
         List<com.expense.expensemanagement.entity.TagMapping> tagMappingEntities = new ArrayList<>();
         List<TagModel> tagModels = new ArrayList<>();
+        String userId = "";
         if (model instanceof BankModel) {
             tagModels = Optional.ofNullable(((BankModel) model).getTagModels()).orElse(new ArrayList<>());
-        } else if (model instanceof LoanAccountModel) {
-            tagModels = Optional.ofNullable(((LoanAccountModel) model).getTags()).orElse(new ArrayList<>());
+            userId = ((BankModel) model).getUserId();
+        } else if (model instanceof AccountModel) {
+            tagModels = Optional.ofNullable(((AccountModel) model).getTags()).orElse(new ArrayList<>());
+            userId = ((AccountModel) model).getUserId();
         }
+        String user = userId;
         List<Long> tagIds = tagModels.stream().map(tag -> tag.getId()).collect(Collectors.toList());
-        List<Tag> tagEntities = this.tagService.findAllByIds(tagIds);
+        List<Tag> tagEntities = this.tagService.findAllByIds(tagIds).stream().filter(tag -> tag.getUserId().equalsIgnoreCase(user))
+                .collect(Collectors.toList());
         if (tagIds.size() != tagEntities.size()) {
             throw new IllegalArgumentException("Provided Tag Id is not found or missing. Please create tag first.");
         }

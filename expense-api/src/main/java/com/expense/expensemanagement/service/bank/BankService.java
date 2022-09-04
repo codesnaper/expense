@@ -12,6 +12,8 @@ import com.expense.expensemanagement.model.TagMappingType;
 import com.expense.expensemanagement.service.tag.ITagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,9 @@ public class BankService implements IBankService {
     private final com.expense.expensemanagement.service.tagMapping.TagMapping tagMappingService;
 
     @Autowired
+    private TagMappingDAO tagMappingDAO;
+
+    @Autowired
     @Qualifier("BankEntityModel")
     private EntityModalConversion<Bank, BankModel> bankEntityModalConversion;
 
@@ -42,12 +47,16 @@ public class BankService implements IBankService {
 
     @Transactional
     public BankModel addBank(BankModel bankModel) {
-        bankModel.setCreditAmount(new BigDecimal(0));
-        bankModel.setDebitAmount(new BigDecimal(0));
-        Bank bankEntity = this.bankDAO.save(bankEntityModalConversion.getEntity(bankModel));
-        bankModel.setId(bankEntity.getId());
-        this.tagMappingService.addTagMapping(bankModel);
-        return bankModel;
+        try{
+            bankModel.setCreditAmount(new BigDecimal(0));
+            bankModel.setDebitAmount(new BigDecimal(0));
+            Bank bankEntity = this.bankDAO.save(bankEntityModalConversion.getEntity(bankModel));
+            bankModel.setId(bankEntity.getId());
+            this.tagMappingService.addTagMapping(bankModel);
+            return bankModel;
+        } catch (DataIntegrityViolationException ex){
+            throw new DuplicateKeyException("name: Bank Name already exits. It should be unique");
+        }
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
@@ -66,6 +75,8 @@ public class BankService implements IBankService {
         if (bankEntity.getAccounts().size() != 0) {
             throw new IllegalStateException("There are account tagged to bank. Can Delete the bank.");
         }
+        bankEntity.getTagMappings()
+                .stream().forEach(tagMapping -> this.tagMappingDAO.delete(tagMapping));
         this.bankDAO.delete(bankEntity);
     }
 
