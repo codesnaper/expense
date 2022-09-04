@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ErrorCode {
 	AUTHENTICATION(11), JWT_TOKEN_EXPIRED(12), JWT_TOKEN_INVLID(13), USER_CREATION_FAILED(21), NEW_PASSWORD_REQUIRED(
-			22), MISSING_FIELD(1), SERVER_ERROR(0), DUPLICATE_FIELD(2);
+			22), MISSING_FIELD(1), SERVER_ERROR(0), DUPLICATE_FIELD(2), NO_ELEMENT(3);
 
 	private int errorCode;
 

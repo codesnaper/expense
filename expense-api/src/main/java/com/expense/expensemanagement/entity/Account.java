@@ -19,7 +19,7 @@ import java.util.List;
 )
 @DiscriminatorColumn(name = "account_type",
         discriminatorType = DiscriminatorType.STRING)
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @DiscriminatorValue("account")
 @Data
 public class Account {
@@ -45,7 +45,7 @@ public class Account {
     private Bank bank;
 
     @Column(name = "bank_id", insertable = false, updatable = false)
-    protected String bankId;
+    protected long bankId;
 
     @Column(name = "account_open_date", nullable = false)
     private Date openDate;

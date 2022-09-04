@@ -25,7 +25,7 @@ public interface IBankService {
      * Method will delete the bank
      * @param id
      */
-    void deleteBank(long id);
+    void deleteBank(String userId, long id);
 
     /**
      * Method will update the bank

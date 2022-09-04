@@ -5,6 +5,7 @@ import com.expense.expensemanagement.model.BankModel;
 import com.expense.expensemanagement.model.ResponseList;
 import com.expense.expensemanagement.model.UserContext;
 import com.expense.expensemanagement.service.bank.IBankService;
+import com.expense.expensemanagement.util.ExpenseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,9 +46,10 @@ public class BankController {
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteBank(
-            @PathVariable long id
+            @PathVariable long id,
+            Principal principal
     ){
-        this.bankService.deleteBank(id);
+        this.bankService.deleteBank(ExpenseUtil.getUserId(principal), id);
     }
 
     @PutMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -55,7 +57,7 @@ public class BankController {
             Principal principal,
             @RequestBody(required = true) BankModel bankModel
     ) {
-        bankModel.setUserId(((UserContext)((JwtAuthenticationToken) principal).getPrincipal()).getUsername());
+        bankModel.setUserId(ExpenseUtil.getUserId(principal));
         return this.bankService.updateBank(bankModel);
     }
 

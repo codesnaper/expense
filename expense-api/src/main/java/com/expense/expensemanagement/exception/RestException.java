@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.NoSuchElementException;
+
 @ControllerAdvice
 public class RestException extends ResponseEntityExceptionHandler {
 
@@ -28,6 +30,14 @@ public class RestException extends ResponseEntityExceptionHandler {
                 ErrorResponse.of(ex.getMessage().split(":")[1], ErrorCode.DUPLICATE_FIELD, HttpStatus.BAD_REQUEST );
         errorResponse.setIsErrorFieldName(ex.getMessage().split(":")[0]);
         return new ResponseEntity(errorResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({NoSuchElementException.class})
+    public ResponseEntity<ErrorResponse> handleNoSuchException(Exception ex){
+        return new ResponseEntity(
+                ErrorResponse.of(ex.getMessage(), ErrorCode.NO_ELEMENT, HttpStatus.BAD_REQUEST),
+                new HttpHeaders(), HttpStatus.BAD_REQUEST
+        );
     }
 
     @ExceptionHandler({ Exception.class })
