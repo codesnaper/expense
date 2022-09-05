@@ -10,11 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.expense.expensemanagement.config.security.auth.JwtAuthenticationToken;
-import com.expense.expensemanagement.model.CognitoAuthenticationResultHolder;
-import com.expense.expensemanagement.model.Constants;
-import com.expense.expensemanagement.model.User;
-import com.expense.expensemanagement.model.UserContext;
+import com.expense.expensemanagement.model.*;
 import com.expense.expensemanagement.service.cognito.CognitoService;
+import com.expense.expensemanagement.service.profile.IProfileService;
+import com.expense.expensemanagement.service.profile.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,6 +33,9 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 	CognitoService cognitoService;
 
 	@Autowired
+	private IProfileService profileService;
+
+	@Autowired
 	public AuthenticationSuccessHandler(final ObjectMapper mapper,
                                         final CognitoAuthenticationResultHolder cognitoAuthenticationResultHolder) {
 		this.mapper = mapper;
@@ -49,15 +51,16 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 		response.setHeader(Constants.REFRESH_TOKEN, cognitoAuthenticationResultHolder.getAuthResult().getRefreshToken());
 		response.setStatus(HttpStatus.OK.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		//TODO: send Setting data for user
 		Map<String, Object> responseMap = new HashMap<>();
 		Map<String, String> userDetail = new HashMap<>();
 		User user = cognitoService.getUser(
 				((UserContext) authentication.getPrincipal()).getUsername()
 		);
+		ProfileModel profileModel = profileService.getProfile(((UserContext) authentication.getPrincipal()).getUsername());
 		userDetail.put("name", user.getName());
 		userDetail.put("email", user.getEmail());
 		responseMap.put("user", userDetail);
+		responseMap.put("profile", profileModel);
 		mapper.writeValue(response.getWriter(), responseMap);
 		clearAuthenticationAttributes(request);
 	}
