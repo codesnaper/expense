@@ -10,9 +10,11 @@ import com.expense.expensemanagement.model.SIAccountModel;
 import com.expense.expensemanagement.model.SavingCompoundInterestModel;
 import com.expense.expensemanagement.service.bank.IBankService;
 import com.expense.expensemanagement.service.tagMapping.TagMapping;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -58,7 +60,7 @@ public class AddAccountService implements IAddAccountService {
         Bank bank = this.bankService.findById(bankid);
         bank.setNAccount(bank.getNAccount() + 1);
         if (accountModel instanceof LoanAccountModel) {
-            ((LoanAccount) account).setTenure(calculateTenure(accountModel.getOpenDate(), ((LoanAccountModel) accountModel).getAccountEndDate()));
+            ((LoanAccount) account).setTenure(calculateTenure(accountModel.getOpenDate(), accountModel.getEndDate()));
             calculateLoanInterest((LoanAccount) account);
         } else if (accountModel instanceof SIAccountModel) {
             ((SavingInterestAccount) account).setTenure(calculateTenure(accountModel.getOpenDate(), ((SIAccountModel) accountModel).getAccountEndDate()));
@@ -73,14 +75,8 @@ public class AddAccountService implements IAddAccountService {
             calculateSCIAccount((SavingCompoundInterestAccount) account);
         }
         setBankAmount(bank, account);
-        try {
-            account = this.accountDAO.save(account);
-            accountModel.setId(account.getId());
-        } catch (DataIntegrityViolationException exception) {
-            throw new IllegalArgumentException("Provided Bank data is not available. Please add Bank first.");
-        } catch (Exception exception) {
-            throw exception;
-        }
+        account = this.accountDAO.save(account);
+        accountModel.setId(account.getId());
         this.tagMappingService.addTagMapping(accountModel);
         return accountEntityModel.getModel(account);
     }

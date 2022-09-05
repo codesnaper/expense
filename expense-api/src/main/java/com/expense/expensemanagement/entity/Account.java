@@ -1,7 +1,10 @@
 package com.expense.expensemanagement.entity;
 
+import com.expense.expensemanagement.model.AccountType;
+import com.expense.expensemanagement.model.AccountTypeValue;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -11,16 +14,16 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "em_account_t"
-//        indexes = {
-//                @Index(name = "account_bank_em_idx", columnList = "bank_id"),
-//                @Index(name = "account_bank_type_idx", columnList = "bank_id,account_type")
-//        }
+@Table(name = "em_account_t",
+        indexes = {
+                @Index(name = "account_bank_em_idx", columnList = "bank_id"),
+                @Index(name = "account_bank_type_idx", columnList = "bank_id,account_type")
+        }
 )
 @DiscriminatorColumn(name = "account_type",
         discriminatorType = DiscriminatorType.STRING)
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@DiscriminatorValue("account")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorValue(AccountTypeValue.ACCOUNT)
 @Data
 public class Account {
     @Id
@@ -50,7 +53,10 @@ public class Account {
     @Column(name = "account_open_date", nullable = false)
     private Date openDate;
 
-    @CreatedDate
+    @Column(name = "account_end_date")
+    private Date endDate;
+
+    @CreationTimestamp
     private Date createdDate;
 
     @Column

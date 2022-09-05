@@ -18,7 +18,7 @@ public interface IAccountService {
 
     ResponseList<? extends AccountModel> getAccount(long bankId, AccountType accountType, int pageNo, int pageSize);
 
-    void deleteAccount(long accountId);
+    void deleteAccount(long accountId, String userId);
 
     List<Object[]> getAccountGroupCount(long bankId);
 }

@@ -8,14 +8,18 @@ import com.expense.expensemanagement.model.AccountType;
 import com.expense.expensemanagement.model.ResponseList;
 import com.expense.expensemanagement.service.bank.IBankService;
 import com.expense.expensemanagement.service.tagMapping.TagMapping;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +32,9 @@ public class AccountService implements IAccountService {
     private final IAddAccountService addAccountService;
 
     private final IBankService bankService;
+
+    @Autowired
+    private TagMappingDAO tagMappingDAO;
 
     @Autowired
     private LoanAccountDAO loanAccountDAO;
@@ -53,7 +60,13 @@ public class AccountService implements IAccountService {
     @Transactional
     @Override
     public AccountModel addAccount(AccountModel accountModel, long bankid) {
-        return this.addAccountService.addAccount(accountModel, bankid);
+        try{
+            return this.addAccountService.addAccount(accountModel, bankid);
+        } catch (DataIntegrityViolationException ex){
+            throw new DuplicateKeyException("number: Account Number already exits. It should be unique");
+        } catch (Exception ex){
+            throw ex;
+        }
     }
 
     @Override
@@ -90,8 +103,11 @@ public class AccountService implements IAccountService {
 
     @Override
     @Transactional
-    public void deleteAccount(long accountId){
-        this.accountDAO.deleteById(accountId);
+    public void deleteAccount(long accountId, String userId){
+        Account account = this.accountDAO.findByUserIdAndId(userId, accountId).orElseThrow(() -> new NoSuchElementException("Account not found"));
+        account.getTagMappings().stream()
+                .forEach(tagMapping -> this.tagMappingDAO.delete(tagMapping));
+        this.accountDAO.deleteById(account.getId());
     }
 
     @Override

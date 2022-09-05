@@ -9,6 +9,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AccountDAO extends PagingAndSortingRepository<Account, Long > {
@@ -19,4 +20,6 @@ public interface AccountDAO extends PagingAndSortingRepository<Account, Long > {
             "SELECT account.accountType, COUNT(account.accountType) FROM Account AS account " +
             "where account.bankId =?1  GROUP BY account.accountType")
     List<Object[]> accountGroupType(long bankId);
+
+    Optional<Account> findByUserIdAndId(String userId, long id);
 }

@@ -3,6 +3,7 @@ package com.expense.expensemanagement.controller;
 import com.expense.expensemanagement.entity.SavingInterestAccount;
 import com.expense.expensemanagement.model.*;
 import com.expense.expensemanagement.service.account.IAccountService;
+import com.expense.expensemanagement.util.ExpenseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -10,9 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.websocket.server.PathParam;
+import java.security.Principal;
 
 @RestController
-@RequestMapping(value = "/bank/{bank-id}/account")
+@RequestMapping(value = "/expense/api/v1/bank/{bank-id}/account")
 public class AccountController {
 
     private final IAccountService accountService;
@@ -26,9 +28,11 @@ public class AccountController {
     public AccountModel addLoanAccount(
             @RequestBody() Object accountModel,
             @PathVariable("bank-id") long bankId,
-            @PathVariable("account-type") AccountType accountType
+            @PathVariable("account-type") AccountType accountType,
+            Principal principal
             ){
         AccountModel accountModelResponse = convertAccountModel(accountType,accountModel);
+        accountModelResponse.setUserId(ExpenseUtil.getUserId(principal));
         accountModelResponse = this.accountService.addAccount(accountModelResponse, bankId);
         return accountModelResponse;
     }
@@ -44,9 +48,10 @@ public class AccountController {
 
     @DeleteMapping(value = "/{account-id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteAccount(
-            @PathVariable("account-id") long accountId
+            @PathVariable("account-id") long accountId,
+            Principal principal
     ){
-        this.accountService.deleteAccount(accountId);
+        this.accountService.deleteAccount(accountId, ExpenseUtil.getUserId(principal));
     }
 
     @GetMapping(value = "/{account-id}", produces = MediaType.APPLICATION_JSON_VALUE)
