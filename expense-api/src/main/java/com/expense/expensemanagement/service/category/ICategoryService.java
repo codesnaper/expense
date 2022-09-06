@@ -3,6 +3,8 @@ package com.expense.expensemanagement.service.category;
 import com.expense.expensemanagement.entity.Category;
 import com.expense.expensemanagement.model.ResponseList;
 
+import java.security.Principal;
+
 public interface ICategoryService {
 
     /**
@@ -11,7 +13,7 @@ public interface ICategoryService {
      * @param pageSize
      * @return Responce list for the category details
      */
-   public ResponseList<Category> getCategory(int pageNo, int pageSize);
+   public ResponseList<Category> getCategory(int pageNo, int pageSize,String userId);
 
     /**
      *
@@ -25,11 +27,12 @@ public interface ICategoryService {
      * @param id
      * @param category
      */
-    public Category updateCategory(long id, com.expense.expensemanagement.model.Category category);
+    public Category updateCategory(com.expense.expensemanagement.model.Category category);
 
     /**
      *
      * @param id
+     * @param principal
      */
-    public void deleteCategory(long id);
+    public void deleteCategory(long id, Principal principal);
 }

@@ -7,12 +7,14 @@ import com.expense.expensemanagement.entity.Account;
 import com.expense.expensemanagement.entity.Limit;
 import com.expense.expensemanagement.model.LimitModel;
 import com.expense.expensemanagement.model.ResponseList;
+import com.expense.expensemanagement.util.ExpenseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -27,6 +29,7 @@ public class LimitService implements ILimitService {
 
     @Autowired
     private AccountDAO accountDAO;
+
 
     @Override
     public ResponseList<LimitModel> getLimits(int pageNo, int pageSize) {
@@ -43,23 +46,26 @@ public class LimitService implements ILimitService {
     public LimitModel addLimit(LimitModel limitModel) {
         Account account = accountDAO.findById(limitModel.getId()).orElse(new Account());
         limitModel.setAccount_id(account.getId());
-        Limit limit= limitDao.save(limitConversion.getEntity(limitModel));
+
+        Limit limit= limitDao.saveAndFlush(limitConversion.getEntity(limitModel));
         return limitConversion.getModel(limit);
     }
 
     @Override
-    public LimitModel updateLimit(long id, LimitModel limitModel) {
+    public LimitModel updateLimit(LimitModel limitModel) {
         Limit limit1 = null;
-        Limit limit=limitDao.findById(id).orElseThrow(NoSuchElementException::new);
-        if (limit.getId() == id) {
+        Limit limit=limitDao.findById(limitModel.getId()).orElseThrow(NoSuchElementException::new);
             limitModel.setId(limit.getId());
           limit1=  limitDao.save(limitConversion.getEntity(limitModel));
-        }
+
         return limitConversion.getModel(limit1);
     }
 
     @Override
-    public void deleteLimit(long id) {
-        limitDao.deleteById(id);
+    public void deleteLimit(long id, Principal principal) {
+        Limit limit=limitDao.findById(id).orElseThrow(NoSuchElementException::new);
+        if(limit.getUserid() == ExpenseUtil.getUserId(principal)) {
+            limitDao.deleteById(id);
+        }
     }
 }

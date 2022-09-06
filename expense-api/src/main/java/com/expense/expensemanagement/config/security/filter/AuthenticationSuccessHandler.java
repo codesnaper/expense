@@ -3,6 +3,7 @@ package com.expense.expensemanagement.config.security.filter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -56,7 +57,15 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 		User user = cognitoService.getUser(
 				((UserContext) authentication.getPrincipal()).getUsername()
 		);
-		ProfileModel profileModel = profileService.getProfile(((UserContext) authentication.getPrincipal()).getUsername());
+		ProfileModel profileModel = null;
+		try{
+			 profileModel = profileService.getProfile(((UserContext) authentication.getPrincipal()).getUsername());
+		} catch(NoSuchElementException ex){
+			this.profileService.newProfile(((UserContext) authentication.getPrincipal()).getUsername());
+			profileModel = profileService.getProfile(((UserContext) authentication.getPrincipal()).getUsername());
+		} catch(Exception ex){
+			throw ex;
+		}
 		userDetail.put("name", user.getName());
 		userDetail.put("email", user.getEmail());
 		responseMap.put("user", userDetail);

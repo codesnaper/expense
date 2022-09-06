@@ -3,6 +3,8 @@ package com.expense.expensemanagement.service.limit;
 import com.expense.expensemanagement.model.LimitModel;
 import com.expense.expensemanagement.model.ResponseList;
 
+import java.security.Principal;
+
 public interface ILimitService {
     /**
      *
@@ -25,13 +27,13 @@ public interface ILimitService {
      * @param limitModel
      * @return
      */
-    LimitModel updateLimit(long id,LimitModel limitModel);
+    LimitModel updateLimit(LimitModel limitModel);
 
     /**
      *
      * @param id
      */
-    void deleteLimit(long id);
+    void deleteLimit(long id, Principal principal);
 
 
 }
