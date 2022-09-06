@@ -1,5 +1,6 @@
 package com.expense.expensemanagement.entity;
 
+import com.expense.expensemanagement.model.AccountTypeValue;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -9,7 +10,7 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
-@DiscriminatorValue("Saving")
+@DiscriminatorValue(AccountTypeValue.SAVING_ACCOUNT)
 @Table(name = "em_saving_account_t")
 @Data
 public class SavingAccount extends Account{

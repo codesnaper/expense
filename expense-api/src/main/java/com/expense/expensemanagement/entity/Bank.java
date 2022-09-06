@@ -2,6 +2,7 @@ package com.expense.expensemanagement.entity;
 
 import com.expense.expensemanagement.model.CurrencyType;
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -25,7 +26,16 @@ import java.util.List;
 public class Bank {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "bank-sequence-generator")
+    @GenericGenerator(
+            name = "bank-sequence-generator",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "em_bank_sequence"),
+                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+            }
+    )
     private long id;
 
     @Column(name = "name", nullable = false)

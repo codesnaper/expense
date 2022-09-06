@@ -4,12 +4,8 @@ import com.expense.expensemanagement.conversion.EntityModalConversion;
 import com.expense.expensemanagement.dao.BankDAO;
 import com.expense.expensemanagement.dao.TagMappingDAO;
 import com.expense.expensemanagement.entity.Bank;
-import com.expense.expensemanagement.entity.Tag;
-import com.expense.expensemanagement.entity.TagMapping;
 import com.expense.expensemanagement.model.BankModel;
 import com.expense.expensemanagement.model.ResponseList;
-import com.expense.expensemanagement.model.TagMappingType;
-import com.expense.expensemanagement.service.tag.ITagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,8 +17,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -70,8 +64,8 @@ public class BankService implements IBankService {
         return responseList;
     }
 
-    public void deleteBank(long id) {
-        Bank bankEntity = this.bankDAO.findById(id).orElseThrow(NoSuchElementException::new);
+    public void deleteBank(String userId, long id ) {
+        Bank bankEntity = this.bankDAO.findByUserIdAndId(userId, id).orElseThrow(() -> new NoSuchElementException("Bank id not found"));
         if (bankEntity.getAccounts().size() != 0) {
             throw new IllegalStateException("There are account tagged to bank. Can Delete the bank.");
         }
@@ -81,6 +75,10 @@ public class BankService implements IBankService {
     }
 
     public BankModel updateBank(BankModel bankModel) {
+        Bank bank = this.bankDAO.findByUserIdAndId(bankModel.getUserId(), bankModel.getId()).orElseThrow(() -> new IllegalArgumentException("Bank id is not available. Create Bank first."));
+        bank.getTagMappings().stream()
+                .forEach(tagMapping -> this.tagMappingDAO.delete(tagMapping));
+        this.tagMappingService.addTagMapping(bankModel);
         Bank bankEntity = this.bankDAO.save(bankEntityModalConversion.getEntity(bankModel));
         return bankEntityModalConversion.getModel(bankEntity);
     }

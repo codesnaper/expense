@@ -1,20 +1,20 @@
 package com.expense.expensemanagement.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import com.expense.expensemanagement.model.ProfileModel;
 import com.expense.expensemanagement.model.User;
 import com.expense.expensemanagement.service.cognito.CognitoService;
+import com.expense.expensemanagement.service.profile.IProfileService;
+import com.expense.expensemanagement.util.ExpenseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.amazonaws.services.cognitoidp.model.ListUsersResult;
 import com.amazonaws.services.cognitoidp.model.UserType;
@@ -25,8 +25,10 @@ public class UserController {
 	@Autowired
 	private CognitoService cognitoService;
 
+	@Autowired
+	private IProfileService profileService;
+
 	@RequestMapping(method = RequestMethod.GET, value = "/api/users")
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	public List<UserType> getUsers() {
 		ListUsersResult listUsersResult = cognitoService.getUsers();
 		List<UserType> userTypeList = listUsersResult.getUsers();
@@ -40,8 +42,13 @@ public class UserController {
 		return user;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "api/user")
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PostMapping(value = "/expense/api/v1/user/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("isAuthenticated()")
+	public void addProfile(Principal principal){
+		profileService.newProfile(ExpenseUtil.getUserId(principal));
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/user")
 	public ResponseEntity<?> createUser(@RequestBody User user) {
 		ResponseEntity<?> response;
 		try {

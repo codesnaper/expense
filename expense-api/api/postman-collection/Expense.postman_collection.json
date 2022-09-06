@@ -1,0 +1,537 @@
+{
+	"info": {
+		"_postman_id": "73e8201e-cee7-404c-9267-e56b346f0557",
+		"name": "Expense",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Tag",
+			"item": [
+				{
+					"name": "Get All Tags",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiIzQ0FTQ3dVd0ZNYzJmMUtOZmRRbnVNVmE4WFdGMit4c2lhWnFYQ0VRZ2ZvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNzUwNWYxYS0zNmQxLTQ5MmYtODlhYS0xYTg1OGQxOTU5OGMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3B2RXVEVm02MyIsImNsaWVudF9pZCI6IjY0ZXFsZDB0MWNqMzd1dWZlc2Q5NTl0OXRoIiwib3JpZ2luX2p0aSI6ImVmMzVmOGVjLTliMjYtNDJmNS1hOTg5LTQ4YzIwM2M5MWQ2YyIsImV2ZW50X2lkIjoiMjZiYWQ1NmQtMDBiOS00Nzc0LWJjOWItN2E4ZTg1ZWIyYjAzIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY2MjMzMDc2NywiZXhwIjoxNjYyMzM0MzY3LCJpYXQiOjE2NjIzMzA3NjcsImp0aSI6ImQxNzA5MWFmLTBlNjAtNDBmOS1iYzMxLWFmMjlkYjg0Zjk4NiIsInVzZXJuYW1lIjoiMTc1MDVmMWEtMzZkMS00OTJmLTg5YWEtMWE4NThkMTk1OThjIn0.fsHiseblH2UNhwisxdsaczDHo8fYFM5pTZDXo6V2Ou1Z3hRhvXeTNe9uyZeNYJzUMwpLZc-nZLROBqUETQzgxHG0Ah8V0WKJi6p-BXsHiZilcSqzaJ0qUgJYqmdQASaU61K6mEPaNTULqyr8xWlLyqRBbnW4Q1SUJuKcDSExj7GRKc0U3LiO-sxnRiqtrj56v91AZoU9FwWdImgEeVhdFf1H8m-in8BOR9AWiwA5UUdLk1MbUQ4Rpq6SL1Rva1GblOJThYCSPC0L8hpzA8RxAZ2egUCd93g8DJvFpbfdF55et4aTXSwfbWvw_cCbQ-X4HtSlCYQyejxVAaZEWtxyUw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8090/expense/api/v1/tag/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"expense",
+								"api",
+								"v1",
+								"tag",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Tag",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiIzQ0FTQ3dVd0ZNYzJmMUtOZmRRbnVNVmE4WFdGMit4c2lhWnFYQ0VRZ2ZvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNzUwNWYxYS0zNmQxLTQ5MmYtODlhYS0xYTg1OGQxOTU5OGMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3B2RXVEVm02MyIsImNsaWVudF9pZCI6IjY0ZXFsZDB0MWNqMzd1dWZlc2Q5NTl0OXRoIiwib3JpZ2luX2p0aSI6ImVmMzVmOGVjLTliMjYtNDJmNS1hOTg5LTQ4YzIwM2M5MWQ2YyIsImV2ZW50X2lkIjoiMjZiYWQ1NmQtMDBiOS00Nzc0LWJjOWItN2E4ZTg1ZWIyYjAzIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY2MjMzMDc2NywiZXhwIjoxNjYyMzM0MzY3LCJpYXQiOjE2NjIzMzA3NjcsImp0aSI6ImQxNzA5MWFmLTBlNjAtNDBmOS1iYzMxLWFmMjlkYjg0Zjk4NiIsInVzZXJuYW1lIjoiMTc1MDVmMWEtMzZkMS00OTJmLTg5YWEtMWE4NThkMTk1OThjIn0.fsHiseblH2UNhwisxdsaczDHo8fYFM5pTZDXo6V2Ou1Z3hRhvXeTNe9uyZeNYJzUMwpLZc-nZLROBqUETQzgxHG0Ah8V0WKJi6p-BXsHiZilcSqzaJ0qUgJYqmdQASaU61K6mEPaNTULqyr8xWlLyqRBbnW4Q1SUJuKcDSExj7GRKc0U3LiO-sxnRiqtrj56v91AZoU9FwWdImgEeVhdFf1H8m-in8BOR9AWiwA5UUdLk1MbUQ4Rpq6SL1Rva1GblOJThYCSPC0L8hpzA8RxAZ2egUCd93g8DJvFpbfdF55et4aTXSwfbWvw_cCbQ-X4HtSlCYQyejxVAaZEWtxyUw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Sample\",\n    \"description\": \"Sample tag\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/expense/api/v1/tag/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"expense",
+								"api",
+								"v1",
+								"tag",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Tag",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiIzQ0FTQ3dVd0ZNYzJmMUtOZmRRbnVNVmE4WFdGMit4c2lhWnFYQ0VRZ2ZvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNzUwNWYxYS0zNmQxLTQ5MmYtODlhYS0xYTg1OGQxOTU5OGMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3B2RXVEVm02MyIsImNsaWVudF9pZCI6IjY0ZXFsZDB0MWNqMzd1dWZlc2Q5NTl0OXRoIiwib3JpZ2luX2p0aSI6ImM3YjE4OWVjLTYwMzItNDY3Ni04NWIxLWUyNjQyYWM2YWFiMSIsImV2ZW50X2lkIjoiN2VhOTg1MzMtNWIwYy00ZGJhLWIxZDEtYjA2YTZhYmY0MjI3IiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY2MjMwODMwOSwiZXhwIjoxNjYyMzExOTA5LCJpYXQiOjE2NjIzMDgzMDksImp0aSI6ImEwOTFjN2IzLWI5ZjAtNGFlMi1hODA4LTcwMGFmMGIwYTQyYyIsInVzZXJuYW1lIjoiMTc1MDVmMWEtMzZkMS00OTJmLTg5YWEtMWE4NThkMTk1OThjIn0.QNiGbM18cXC2p4SQ11fGb43lJLG6952gKq2CouDVs48cpOrcEQ4AD-mQmpvYWLuf7XxGWQAfHBo6EwRtiiSFEBnZkoU13r2Lq0WdDl-u6knBz-QG_VQe_pBmo9yFQ9I1TAGCYgnIUlfjBkd3c8ICFFW91cDYDDVRSIhVYSq7WdQylgrXz4yvIzRTZ_-FCFjOu7lP3ULw4-MRaSKLKepdlPu63FL1_as7N-2GkJPqstKIHo7JVBCtKOcSAdGIHgpmUKIKRPv2ToDxFw2n1GIFFmvTt1QVpiz8vm9zmCgmMMk9bh4fE-ekBc7Lyqf0mHdTQUhV1jVOIlkVW-SDBZXoKA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/expense/api/v1/tag/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"expense",
+								"api",
+								"v1",
+								"tag",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bank",
+			"item": [
+				{
+					"name": "Get All Bank",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiIzQ0FTQ3dVd0ZNYzJmMUtOZmRRbnVNVmE4WFdGMit4c2lhWnFYQ0VRZ2ZvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNzUwNWYxYS0zNmQxLTQ5MmYtODlhYS0xYTg1OGQxOTU5OGMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3B2RXVEVm02MyIsImNsaWVudF9pZCI6IjY0ZXFsZDB0MWNqMzd1dWZlc2Q5NTl0OXRoIiwib3JpZ2luX2p0aSI6Ijc3MjVhNWEzLTc3Y2MtNGU4Zi04ZGI2LWIyMWU1Y2E1YWY1MSIsImV2ZW50X2lkIjoiYjJhY2JlN2YtNWZiZi00ZDk5LWE2NmEtNDgzODVlYjhiMzJjIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY2MjI5NTcyOSwiZXhwIjoxNjYyMjk5MzI5LCJpYXQiOjE2NjIyOTU3MjksImp0aSI6IjlkY2ZiM2FiLWYxODEtNDlkZS04NzczLWRhYTBhNjZmYjNjOCIsInVzZXJuYW1lIjoiMTc1MDVmMWEtMzZkMS00OTJmLTg5YWEtMWE4NThkMTk1OThjIn0.yyl90v3He0Pgl-hXftTM47Sda-1ZyJW9twIRDvuaYG23TQmZNhMcedviNHeXBSrxOU0KDIyNOrMJjOC-i_N71a9LP2wYnGgQ4jU6dIYNMeudweUVfvujtCz4HYmGd43PJkyhhxqlV6u4JuIoNB7gsfsVHcApaqDEovXBsTdDwR3p0KXKdUr4Q_t48vQHqbYA6MRtA75jMVIsNMM5sSiFzFnpYwJWMhw_-GObLPhPb0r52DWKLyOKK6lO4PsNl6ZurM3kF_9tQhWQJghpO3StcHjfXTRJAZYFXfTzO1gE-9YM9tyOpgqpoFiBy0_hEWzOw2le2ltQCt5J8IDWoTZ9_g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8090/expense/api/v1/tag/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"expense",
+								"api",
+								"v1",
+								"tag",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Bank",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiIzQ0FTQ3dVd0ZNYzJmMUtOZmRRbnVNVmE4WFdGMit4c2lhWnFYQ0VRZ2ZvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNzUwNWYxYS0zNmQxLTQ5MmYtODlhYS0xYTg1OGQxOTU5OGMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3B2RXVEVm02MyIsImNsaWVudF9pZCI6IjY0ZXFsZDB0MWNqMzd1dWZlc2Q5NTl0OXRoIiwib3JpZ2luX2p0aSI6ImVmMzVmOGVjLTliMjYtNDJmNS1hOTg5LTQ4YzIwM2M5MWQ2YyIsImV2ZW50X2lkIjoiMjZiYWQ1NmQtMDBiOS00Nzc0LWJjOWItN2E4ZTg1ZWIyYjAzIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY2MjMzMDc2NywiZXhwIjoxNjYyMzM0MzY3LCJpYXQiOjE2NjIzMzA3NjcsImp0aSI6ImQxNzA5MWFmLTBlNjAtNDBmOS1iYzMxLWFmMjlkYjg0Zjk4NiIsInVzZXJuYW1lIjoiMTc1MDVmMWEtMzZkMS00OTJmLTg5YWEtMWE4NThkMTk1OThjIn0.fsHiseblH2UNhwisxdsaczDHo8fYFM5pTZDXo6V2Ou1Z3hRhvXeTNe9uyZeNYJzUMwpLZc-nZLROBqUETQzgxHG0Ah8V0WKJi6p-BXsHiZilcSqzaJ0qUgJYqmdQASaU61K6mEPaNTULqyr8xWlLyqRBbnW4Q1SUJuKcDSExj7GRKc0U3LiO-sxnRiqtrj56v91AZoU9FwWdImgEeVhdFf1H8m-in8BOR9AWiwA5UUdLk1MbUQ4Rpq6SL1Rva1GblOJThYCSPC0L8hpzA8RxAZ2egUCd93g8DJvFpbfdF55et4aTXSwfbWvw_cCbQ-X4HtSlCYQyejxVAaZEWtxyUw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Bank\",\n    \"location\": \"india\",\n    \"currency\": \"INR\",\n    \"tags\": [{\n        \"id\": 1\n    }]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/expense/api/v1/tag/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"expense",
+								"api",
+								"v1",
+								"tag",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Bank",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiIzQ0FTQ3dVd0ZNYzJmMUtOZmRRbnVNVmE4WFdGMit4c2lhWnFYQ0VRZ2ZvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNzUwNWYxYS0zNmQxLTQ5MmYtODlhYS0xYTg1OGQxOTU5OGMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3B2RXVEVm02MyIsImNsaWVudF9pZCI6IjY0ZXFsZDB0MWNqMzd1dWZlc2Q5NTl0OXRoIiwib3JpZ2luX2p0aSI6ImM3YjE4OWVjLTYwMzItNDY3Ni04NWIxLWUyNjQyYWM2YWFiMSIsImV2ZW50X2lkIjoiN2VhOTg1MzMtNWIwYy00ZGJhLWIxZDEtYjA2YTZhYmY0MjI3IiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY2MjMwODMwOSwiZXhwIjoxNjYyMzExOTA5LCJpYXQiOjE2NjIzMDgzMDksImp0aSI6ImEwOTFjN2IzLWI5ZjAtNGFlMi1hODA4LTcwMGFmMGIwYTQyYyIsInVzZXJuYW1lIjoiMTc1MDVmMWEtMzZkMS00OTJmLTg5YWEtMWE4NThkMTk1OThjIn0.QNiGbM18cXC2p4SQ11fGb43lJLG6952gKq2CouDVs48cpOrcEQ4AD-mQmpvYWLuf7XxGWQAfHBo6EwRtiiSFEBnZkoU13r2Lq0WdDl-u6knBz-QG_VQe_pBmo9yFQ9I1TAGCYgnIUlfjBkd3c8ICFFW91cDYDDVRSIhVYSq7WdQylgrXz4yvIzRTZ_-FCFjOu7lP3ULw4-MRaSKLKepdlPu63FL1_as7N-2GkJPqstKIHo7JVBCtKOcSAdGIHgpmUKIKRPv2ToDxFw2n1GIFFmvTt1QVpiz8vm9zmCgmMMk9bh4fE-ekBc7Lyqf0mHdTQUhV1jVOIlkVW-SDBZXoKA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/expense/api/v1/bank/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"expense",
+								"api",
+								"v1",
+								"bank",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiIzQ0FTQ3dVd0ZNYzJmMUtOZmRRbnVNVmE4WFdGMit4c2lhWnFYQ0VRZ2ZvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNzUwNWYxYS0zNmQxLTQ5MmYtODlhYS0xYTg1OGQxOTU5OGMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3B2RXVEVm02MyIsImNsaWVudF9pZCI6IjY0ZXFsZDB0MWNqMzd1dWZlc2Q5NTl0OXRoIiwib3JpZ2luX2p0aSI6ImM3YjE4OWVjLTYwMzItNDY3Ni04NWIxLWUyNjQyYWM2YWFiMSIsImV2ZW50X2lkIjoiN2VhOTg1MzMtNWIwYy00ZGJhLWIxZDEtYjA2YTZhYmY0MjI3IiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY2MjMwODMwOSwiZXhwIjoxNjYyMzExOTA5LCJpYXQiOjE2NjIzMDgzMDksImp0aSI6ImEwOTFjN2IzLWI5ZjAtNGFlMi1hODA4LTcwMGFmMGIwYTQyYyIsInVzZXJuYW1lIjoiMTc1MDVmMWEtMzZkMS00OTJmLTg5YWEtMWE4NThkMTk1OThjIn0.QNiGbM18cXC2p4SQ11fGb43lJLG6952gKq2CouDVs48cpOrcEQ4AD-mQmpvYWLuf7XxGWQAfHBo6EwRtiiSFEBnZkoU13r2Lq0WdDl-u6knBz-QG_VQe_pBmo9yFQ9I1TAGCYgnIUlfjBkd3c8ICFFW91cDYDDVRSIhVYSq7WdQylgrXz4yvIzRTZ_-FCFjOu7lP3ULw4-MRaSKLKepdlPu63FL1_as7N-2GkJPqstKIHo7JVBCtKOcSAdGIHgpmUKIKRPv2ToDxFw2n1GIFFmvTt1QVpiz8vm9zmCgmMMk9bh4fE-ekBc7Lyqf0mHdTQUhV1jVOIlkVW-SDBZXoKA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n            \"accounts\": null,\n            \"name\": \"Sample Bank\",\n            \"location\": \"india\",\n            \"currency\": \"INR\",\n            \"tags\": [\n                {\n                    \"ID\": 1\n                }\n            ],\n            \"USERID\": \"17505f1a-36d1-492f-89aa-1a858d19598c\",\n            \"ID\": 5,\n            \"creditAmount\": 0.00,\n            \"debitAmount\": 0.00,\n            \"holdAmount\": 0.00,\n            \"totalAccounts\": 0\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/expense/api/v1/bank/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"expense",
+								"api",
+								"v1",
+								"bank",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Add Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiIzQ0FTQ3dVd0ZNYzJmMUtOZmRRbnVNVmE4WFdGMit4c2lhWnFYQ0VRZ2ZvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNzUwNWYxYS0zNmQxLTQ5MmYtODlhYS0xYTg1OGQxOTU5OGMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3B2RXVEVm02MyIsImNsaWVudF9pZCI6IjY0ZXFsZDB0MWNqMzd1dWZlc2Q5NTl0OXRoIiwib3JpZ2luX2p0aSI6ImVmMzVmOGVjLTliMjYtNDJmNS1hOTg5LTQ4YzIwM2M5MWQ2YyIsImV2ZW50X2lkIjoiMjZiYWQ1NmQtMDBiOS00Nzc0LWJjOWItN2E4ZTg1ZWIyYjAzIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY2MjMzMDc2NywiZXhwIjoxNjYyMzM0MzY3LCJpYXQiOjE2NjIzMzA3NjcsImp0aSI6ImQxNzA5MWFmLTBlNjAtNDBmOS1iYzMxLWFmMjlkYjg0Zjk4NiIsInVzZXJuYW1lIjoiMTc1MDVmMWEtMzZkMS00OTJmLTg5YWEtMWE4NThkMTk1OThjIn0.fsHiseblH2UNhwisxdsaczDHo8fYFM5pTZDXo6V2Ou1Z3hRhvXeTNe9uyZeNYJzUMwpLZc-nZLROBqUETQzgxHG0Ah8V0WKJi6p-BXsHiZilcSqzaJ0qUgJYqmdQASaU61K6mEPaNTULqyr8xWlLyqRBbnW4Q1SUJuKcDSExj7GRKc0U3LiO-sxnRiqtrj56v91AZoU9FwWdImgEeVhdFf1H8m-in8BOR9AWiwA5UUdLk1MbUQ4Rpq6SL1Rva1GblOJThYCSPC0L8hpzA8RxAZ2egUCd93g8DJvFpbfdF55et4aTXSwfbWvw_cCbQ-X4HtSlCYQyejxVAaZEWtxyUw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"acc1\",\n    \"accountNumber\": \"123\",\n    \"amount\": \"2000\",\n    \"openDate\":\"2022-10-19\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/expense/api/v1/bank/1/account/type=ACCOUNT",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"expense",
+								"api",
+								"v1",
+								"bank",
+								"1",
+								"account",
+								"type=ACCOUNT"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiIzQ0FTQ3dVd0ZNYzJmMUtOZmRRbnVNVmE4WFdGMit4c2lhWnFYQ0VRZ2ZvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNzUwNWYxYS0zNmQxLTQ5MmYtODlhYS0xYTg1OGQxOTU5OGMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3B2RXVEVm02MyIsImNsaWVudF9pZCI6IjY0ZXFsZDB0MWNqMzd1dWZlc2Q5NTl0OXRoIiwib3JpZ2luX2p0aSI6ImVmMzVmOGVjLTliMjYtNDJmNS1hOTg5LTQ4YzIwM2M5MWQ2YyIsImV2ZW50X2lkIjoiMjZiYWQ1NmQtMDBiOS00Nzc0LWJjOWItN2E4ZTg1ZWIyYjAzIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY2MjMzMDc2NywiZXhwIjoxNjYyMzM0MzY3LCJpYXQiOjE2NjIzMzA3NjcsImp0aSI6ImQxNzA5MWFmLTBlNjAtNDBmOS1iYzMxLWFmMjlkYjg0Zjk4NiIsInVzZXJuYW1lIjoiMTc1MDVmMWEtMzZkMS00OTJmLTg5YWEtMWE4NThkMTk1OThjIn0.fsHiseblH2UNhwisxdsaczDHo8fYFM5pTZDXo6V2Ou1Z3hRhvXeTNe9uyZeNYJzUMwpLZc-nZLROBqUETQzgxHG0Ah8V0WKJi6p-BXsHiZilcSqzaJ0qUgJYqmdQASaU61K6mEPaNTULqyr8xWlLyqRBbnW4Q1SUJuKcDSExj7GRKc0U3LiO-sxnRiqtrj56v91AZoU9FwWdImgEeVhdFf1H8m-in8BOR9AWiwA5UUdLk1MbUQ4Rpq6SL1Rva1GblOJThYCSPC0L8hpzA8RxAZ2egUCd93g8DJvFpbfdF55et4aTXSwfbWvw_cCbQ-X4HtSlCYQyejxVAaZEWtxyUw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8090/expense/api/v1/bank/1/account/type=ACCOUNT",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"expense",
+								"api",
+								"v1",
+								"bank",
+								"1",
+								"account",
+								"type=ACCOUNT"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Loan Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiIzQ0FTQ3dVd0ZNYzJmMUtOZmRRbnVNVmE4WFdGMit4c2lhWnFYQ0VRZ2ZvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNzUwNWYxYS0zNmQxLTQ5MmYtODlhYS0xYTg1OGQxOTU5OGMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3B2RXVEVm02MyIsImNsaWVudF9pZCI6IjY0ZXFsZDB0MWNqMzd1dWZlc2Q5NTl0OXRoIiwib3JpZ2luX2p0aSI6ImQ2ZGY4ZTQ0LTNiNjEtNGQ0MC05Mzk0LTY5MjA2ODJmMjg5MCIsImV2ZW50X2lkIjoiOGRmZjQyNTktNzZmYi00NTUzLWEwODctZDY1MGZmNDY2YmNhIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY2MjMzMzQ0OSwiZXhwIjoxNjYyMzM3MDQ5LCJpYXQiOjE2NjIzMzM0NDksImp0aSI6IjExZTgwMTViLWUxMmQtNGM2MS05NmQyLTRhNThiNGUwZTU5MiIsInVzZXJuYW1lIjoiMTc1MDVmMWEtMzZkMS00OTJmLTg5YWEtMWE4NThkMTk1OThjIn0.jVlN-sFpZGQbdCkWNb-4Z4QD0P6UNqH9L2MOLSVsx4EG1M7VzEgl3G9sMTYY9o4CeRo-QOVPPVtbIvtBU2-QJU55gAsK2OLSSnxc_5m2oG8sPpaePUPmbzmFWd-unwnJo2gyrc7EOcU1y6_1m4kEPms80e4WOy6bQEylwzVMt9v2Sp7fbeRFt9kpAcgqnXZqkRC8CrjyiolFsq_8oWkFUjqUtiOdIs1o8cd3fnvPS90_B9NBHwoKHNBjXWBoveQwAtMLBBrL2hhrJwXOqPKvF1Eoe0vkKCFyr06ISHZADH8b_W7ebhG3kqYzerzteMWjXo-06Zb3h6NYsqfrOyVG7w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"acc1\",\n    \"accountNumber\": \"12345\",\n    \"amount\": \"2000\",\n    \"openDate\":\"2022-10-19\",\n    \"endDate\":\"2029-10-19\",\n    \"rate\": \"7\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/expense/api/v1/bank/1/account/type=LOAN",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"expense",
+								"api",
+								"v1",
+								"bank",
+								"1",
+								"account",
+								"type=LOAN"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiIzQ0FTQ3dVd0ZNYzJmMUtOZmRRbnVNVmE4WFdGMit4c2lhWnFYQ0VRZ2ZvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNzUwNWYxYS0zNmQxLTQ5MmYtODlhYS0xYTg1OGQxOTU5OGMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3B2RXVEVm02MyIsImNsaWVudF9pZCI6IjY0ZXFsZDB0MWNqMzd1dWZlc2Q5NTl0OXRoIiwib3JpZ2luX2p0aSI6IjJiMWI3Y2JlLWE4NTItNDMxNi1hYzgxLTdiYzk0YWJhZjE0YiIsImV2ZW50X2lkIjoiNTMzZTY1ZWQtY2ZiOS00MzcyLWEwYzMtYjFlZjQ1ZGJiNGZkIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY2MjM2NDk1OSwiZXhwIjoxNjYyMzY4NTU5LCJpYXQiOjE2NjIzNjQ5NTksImp0aSI6Ijk0ZWFlOTYzLWVlY2ItNGNjYi05YWI4LWEzYWNkYTUwMzdiMyIsInVzZXJuYW1lIjoiMTc1MDVmMWEtMzZkMS00OTJmLTg5YWEtMWE4NThkMTk1OThjIn0.VjSVuafjQ-aoYlI2t44d3VbFQ03Ny-33K_nLfdS_7BuUfqxLXlBHEPd7EMJrCUkHZFQ_AuNfn9WZm0788PAeerDyV6S0DIx_AFr1TxuoxEsDJ6_P5jPp4XnzE9f5iRxjPsVG_rWykP6L6CcWup38AYVaXpl1bLVGUXV87CpmnlRlb1NAvGOLEdwlBpAjLG_TdyFyPWistzEef1WhdgiXeH7R651MhwPf5gf7pxdwu4kURQ8oSkB5-YiWsLyCeeuLX0i80m0M4ixX-vSrD1yGfpyau30ilwxvLp-BRnljpJJqp7RKRYHEUF_4QQ5mI4wJQWIC89aMXXmiCEAMDgKjpQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/expense/api/v1/bank/4/account/12",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"expense",
+								"api",
+								"v1",
+								"bank",
+								"4",
+								"account",
+								"12"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"shubham.khandelwal019@gmail.com\", \"password\": \"O19@abcuv\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJraWQiOiIzQ0FTQ3dVd0ZNYzJmMUtOZmRRbnVNVmE4WFdGMit4c2lhWnFYQ0VRZ2ZvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNzUwNWYxYS0zNmQxLTQ5MmYtODlhYS0xYTg1OGQxOTU5OGMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3B2RXVEVm02MyIsImNsaWVudF9pZCI6IjY0ZXFsZDB0MWNqMzd1dWZlc2Q5NTl0OXRoIiwib3JpZ2luX2p0aSI6ImVmMzVmOGVjLTliMjYtNDJmNS1hOTg5LTQ4YzIwM2M5MWQ2YyIsImV2ZW50X2lkIjoiMjZiYWQ1NmQtMDBiOS00Nzc0LWJjOWItN2E4ZTg1ZWIyYjAzIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY2MjMzMDc2NywiZXhwIjoxNjYyMzM0MzY3LCJpYXQiOjE2NjIzMzA3NjcsImp0aSI6ImQxNzA5MWFmLTBlNjAtNDBmOS1iYzMxLWFmMjlkYjg0Zjk4NiIsInVzZXJuYW1lIjoiMTc1MDVmMWEtMzZkMS00OTJmLTg5YWEtMWE4NThkMTk1OThjIn0.fsHiseblH2UNhwisxdsaczDHo8fYFM5pTZDXo6V2Ou1Z3hRhvXeTNe9uyZeNYJzUMwpLZc-nZLROBqUETQzgxHG0Ah8V0WKJi6p-BXsHiZilcSqzaJ0qUgJYqmdQASaU61K6mEPaNTULqyr8xWlLyqRBbnW4Q1SUJuKcDSExj7GRKc0U3LiO-sxnRiqtrj56v91AZoU9FwWdImgEeVhdFf1H8m-in8BOR9AWiwA5UUdLk1MbUQ4Rpq6SL1Rva1GblOJThYCSPC0L8hpzA8RxAZ2egUCd93g8DJvFpbfdF55et4aTXSwfbWvw_cCbQ-X4HtSlCYQyejxVAaZEWtxyUw",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "username",
+			"value": "shubham.khandelwal019@gmail.com",
+			"type": "default"
+		},
+		{
+			"key": "password",
+			"value": "Sk@191094",
+			"type": "default"
+		}
+	]
+}

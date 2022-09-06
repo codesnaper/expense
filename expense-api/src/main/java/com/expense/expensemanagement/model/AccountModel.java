@@ -20,6 +20,9 @@ public class AccountModel {
     @DateTimeFormat(pattern = "dd.MM.yyyy", iso = DateTimeFormat.ISO.DATE)
     private Date openDate;
 
+    @DateTimeFormat(pattern = "dd.MM.yyyy", iso = DateTimeFormat.ISO.DATE)
+    private Date endDate;
+
     private Date createdDate;
 
     private Date updatedDate = new Date();

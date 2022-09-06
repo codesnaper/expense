@@ -11,8 +11,6 @@ public class LoanAccountModel extends AccountModel {
 
     private float rate;
 
-    private Date accountEndDate;
-
     private float tenure;
 
     private double interestAmount;

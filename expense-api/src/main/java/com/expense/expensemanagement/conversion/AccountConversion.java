@@ -53,6 +53,7 @@ public class AccountConversion implements EntityModalConversion<Account, Account
         accountModel.setName(account.getName());
         accountModel.setOpenDate(account.getOpenDate());
         accountModel.setUserId(account.getUserId());
+        accountModel.setEndDate(account.getEndDate());
         accountModel.setTags(
                 Optional.ofNullable(account.getTagMappings())
                         .orElse(new ArrayList<>())
@@ -94,7 +95,9 @@ public class AccountConversion implements EntityModalConversion<Account, Account
         account.setAmount(new BigDecimal(accountModel.getAmount()));
         account.setId(Optional.ofNullable(accountModel.getId()).orElse(null));
         account.setName(accountModel.getName());
+        account.setUserId(accountModel.getUserId());
         account.setOpenDate(accountModel.getOpenDate());
+        account.setEndDate(accountModel.getEndDate());
         return account;
     }
 }
