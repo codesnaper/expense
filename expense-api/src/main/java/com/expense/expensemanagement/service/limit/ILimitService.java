@@ -33,7 +33,7 @@ public interface ILimitService {
      *
      * @param id
      */
-    void deleteLimit(long id, Principal principal);
+    void deleteLimit(long id, String userId);
 
 
 }

@@ -39,7 +39,7 @@ public class CategoryController {
     }
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void deleteCategory(@PathVariable long id,Principal principal) throws IllegalAccessException {
-         this.categoryService.deleteCategory(id,principal);
+         this.categoryService.deleteCategory(id,ExpenseUtil.getUserId(principal));
     }
 
 

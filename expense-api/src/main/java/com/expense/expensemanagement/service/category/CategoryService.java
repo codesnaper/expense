@@ -58,8 +58,8 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public void deleteCategory(long id, Principal principal) {
-        Category category = categoryDao.findByUserIDAndId(ExpenseUtil.getUserId(principal), id).orElseThrow(NoSuchElementException::new);
+    public void deleteCategory(long id, String userId) {
+        Category category = categoryDao.findByUserIDAndId(userId, id).orElseThrow(NoSuchElementException::new);
         categoryDao.delete(category);
     }
 }

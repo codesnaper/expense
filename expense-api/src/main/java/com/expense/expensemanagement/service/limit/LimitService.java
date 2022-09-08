@@ -62,9 +62,9 @@ public class LimitService implements ILimitService {
     }
 
     @Override
-    public void deleteLimit(long id, Principal principal) {
+    public void deleteLimit(long id, String userId) {
         Limit limit=limitDao.findById(id).orElseThrow(NoSuchElementException::new);
-        if(limit.getUserid() == ExpenseUtil.getUserId(principal)) {
+        if(limit.getUserid() == userId) {
             limitDao.deleteById(id);
         }
     }

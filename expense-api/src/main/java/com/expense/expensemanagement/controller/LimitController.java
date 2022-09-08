@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
+@CrossOrigin
 @RestController
-@RequestMapping("/limit")
+@RequestMapping("/expense/api/v1/limit")
 public class LimitController {
 
     @Autowired
@@ -36,7 +37,7 @@ public class LimitController {
     }
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void deleteLimit(@PathVariable long id,Principal principal) throws IllegalAccessException {
-        this.limitService.deleteLimit(id,principal);
+        this.limitService.deleteLimit(id,ExpenseUtil.getUserId(principal));
     }
 
 

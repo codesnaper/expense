@@ -24,7 +24,7 @@ public interface ICategoryService {
 
     /**
      *
-     * @param id
+     *
      * @param category
      */
     public Category updateCategory(com.expense.expensemanagement.model.Category category);
@@ -34,5 +34,5 @@ public interface ICategoryService {
      * @param id
      * @param principal
      */
-    public void deleteCategory(long id, Principal principal);
+    public void deleteCategory(long id, String userId);
 }
