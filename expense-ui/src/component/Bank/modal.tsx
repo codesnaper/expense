@@ -7,7 +7,7 @@ import { BankModal } from "../../modal/bank";
 import { AlertType } from "../../modal/ExpenseAlert";
 import Draggable from 'react-draggable';
 import { OperationType } from "../../modal/OperationType";
-import TagSelect from "../Tag/TagForm";
+import TagSelect from "../Tag/TagSelect";
 import { Tag } from "../../modal/Tag";
 
 interface ModalBankProps {
