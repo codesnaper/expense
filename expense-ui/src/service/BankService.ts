@@ -1,99 +1,81 @@
 import { Configuration } from "../config/Configuration";
 import { BankModal, BankModalsResponse, ResponseDelete } from "../modal/bank";
+import Api from "./Api";
 
 export class BankService {
     baseUrl: string;
 
     constructor(){
-        this.baseUrl = Configuration.baseUrl;
+        this.baseUrl = Configuration.baseUrl+Configuration.resourceVersion;
     }
 
-    public fetchBanks(userId: string | undefined ): Promise<BankModalsResponse>{
+    public fetchBanks(): Promise<BankModalsResponse>{
         return new Promise((resolve, reject) => {
-            fetch(`${this.baseUrl}bank/`, {
-                headers: {
-                    'user-id': userId? userId: '',
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                }
-            })
-            .then(res=> res.json())
-            .then(res => resolve(res))
-            .catch(err => reject(err));
+            Api.get(`${this.baseUrl}bank/`)
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
         });
     }
 
-    public getBankById(id: string, userId: string): Promise<BankModal> {
+    public getBankById(id: string): Promise<BankModal> {
         return new Promise((resolve, reject) => {
-            fetch(`${this.baseUrl}bank/${id}`, {
-                headers: {
-                    'user-id': userId,
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                }
-            })
-            .then(res=> res.json())
-            .then(res => resolve(res))
-            .catch(err => reject(err));
+            Api.get(`${this.baseUrl}bank/${id}`)
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
         });
     }
 
     public addBank(bank: BankModal): Promise<BankModal>{
         return new Promise((resolve, reject) => {
-            fetch(`${this.baseUrl}bank/`, {
-                method: 'POST',
-                body: JSON.stringify(bank),
-                headers: {
-                    "Content-Type": "application/json",
-                    "user-id": bank.USERID
-                },
-            })
-            .then(function(res) {    
-                if(res.ok)
-                {
-                  return res.json();         
-                }
-                throw new Error(res.statusText);
-            }) 
-            .then(res => {
-                resolve(res)
-            })
-            .catch(err => {
-                reject(err);
-            });
+            Api.post(`${this.baseUrl}bank/`,JSON.stringify(bank))
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
         })
     }
 
-    updateBank(bank: BankModal, id: string , userId: string| undefined): Promise<BankModal>{
+    updateBank(bank: BankModal, id: string): Promise<BankModal>{
         return new Promise((resolve, reject) => {
-            fetch(`${this.baseUrl}bank/${id}`, {
-                headers: {
-                    'user-id': userId? userId: '',
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                method: 'PUT',
-                body: JSON.stringify(bank),
-            })
-            .then(res=> res.json())
-            .then(res => resolve(res))
-            .catch(err => reject(err));
+            Api.put(`${this.baseUrl}bank/${id}`, JSON.stringify(bank))
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
         })
     }
 
-    deleteBank(id: string, userId: string| undefined): Promise<ResponseDelete>{
+    deleteBank(id: string): Promise<ResponseDelete>{
         return new Promise((resolve, reject) => {
-            fetch(`${this.baseUrl}bank/${id}`, {
-                headers: {
-                    'user-id': userId? userId: '',
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                method: 'DELETE'
-            })
-            .then(res=> res.json())
-            .then(res => resolve(res))
-            .catch(err => reject(err));
+            Api.delete(`${this.baseUrl}bank/${id}`)
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
         })
     }
 }

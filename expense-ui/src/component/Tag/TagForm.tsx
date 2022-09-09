@@ -53,7 +53,6 @@ export default function TagSelect(props: TagSelectProps) {
             tags.push(tagForm);
             setTags([...tags]);
             handleTagModel();
-            alert(JSON.stringify(tagForm))
         },
     });
 
@@ -93,7 +92,7 @@ export default function TagSelect(props: TagSelectProps) {
     }
 
     useEffect(() => {
-        service.tagService?.fetchAllTag(user.id)
+        service.tagService?.fetchAllTag()
             .then((res: ResponseList<Tag>) => {
                 setTags(res.Items);
             })

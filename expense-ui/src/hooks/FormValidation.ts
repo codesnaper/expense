@@ -101,7 +101,6 @@ export const useFormValidation = <T extends Record<keyof T, any> = {}>(options?:
     setErrors({});
 
     if (options?.onSubmit) {
-      alert('submitting')
       options.onSubmit();
     }
   };

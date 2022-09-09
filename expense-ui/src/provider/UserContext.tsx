@@ -1,22 +1,24 @@
 import { useEffect, useState } from 'react';
 import * as React from 'react';
-import { User } from '../modal/User';
 import { LocalizationContextProvider } from './LocalizationProvider';
 import Navbar from '../component/header/Navbar';
 import { ServiceContextProvider } from './ServiceContext';
-import { UserContext } from '../context';
+import { ServiceContext, UserContext } from '../context';
 import UserComponent from '../component/User';
 import ExpenseDrawer from '../component/header/Drawer/Drawer';
 import { createTheme, PaletteMode, ThemeProvider } from '@mui/material';
 import { Theme } from '@mui/system';
-import { blue, brown, cyan, grey } from '@mui/material/colors';
+import { brown, grey } from '@mui/material/colors';
+import { User } from '../modal/response/User';
+import { Profile } from '../modal/response/Profile';
+import { ApiError } from '../modal/response/Error';
 
 interface UserContextProps {
     children: React.ReactNode
 }
 
 const UserContextProvider = (props: UserContextProps) => {
-    const [user, setUser] = useState<Partial<User>>({});
+    const [user, setUser] = useState<User>({ user: {}, profile: {} });
     const [loader, setLoader] = useState<Boolean>(true);
     const [openDrawer, setOpenDrawer] = useState<boolean>(false);
     const [appTheme, setAppTheme] = useState<Theme>(
@@ -26,47 +28,44 @@ const UserContextProvider = (props: UserContextProps) => {
             },
         })
     );
-    const handleSetTheme = (theme: string) => {
-        const mode: PaletteMode = theme === 'dark'? 'dark': 'light';
-        setAppTheme(createTheme({
-            palette: {
-                mode: mode
-            },
-        }));
-        const body: HTMLElement = document.getElementsByTagName('body')[0];
-        if(theme === 'dark'){
-            body.style.backgroundColor = `${grey[500]}`
-        } else{
-            body.style.backgroundColor = `${brown[50]}`
+    const handleSetProfile = (profile: Profile) => {
+        const userStr: string | null = localStorage.getItem('user');
+        if (userStr) {
+            const mode: PaletteMode = profile.theme === 'dark' ? 'dark' : 'light';
+            setAppTheme(createTheme({
+                palette: {
+                    mode: mode
+                },
+            }));
+            const body: HTMLElement = document.getElementsByTagName('body')[0];
+            if (profile.theme === 'dark') {
+                body.style.backgroundColor = `${grey[500]}`
+            } else {
+                body.style.backgroundColor = `${brown[50]}`
+            }
+            const user: User = JSON.parse(userStr);
+            user.profile = profile;
+            localStorage.setItem('user',JSON.stringify(user));
         }
     }
 
-    useEffect(() => {        
-        const body: HTMLElement = document.getElementsByTagName('body')[0];
-        body.style.backgroundColor = `${brown[50]}`
-        const userSession = window.sessionStorage.getItem('user');
-        if (userSession) {
-            const userSessionObj:
-                {
-                    username: string,
-                    attributes: { name: string, email: string },
-                    signInUserSession: {
-                        accessToken: {
-                            jwtToken: string
-                        }
-                        refreshToken: {
-                            token: string
-                        }
-                    }
-                } = JSON.parse(userSession);
-            const user: User = {
-                id: userSessionObj.username,
-                name: userSessionObj.attributes.name,
-                email: userSessionObj.attributes.email,
-                accessToken: userSessionObj.signInUserSession.accessToken.jwtToken,
-                refreshToken: userSessionObj.signInUserSession.refreshToken.token,
-            }
+    useEffect(() => {
+        const userStr: string | null = localStorage.getItem('user');
+        if (userStr) {
+            const user: User = JSON.parse(userStr);
             setUser(user);
+            const body: HTMLElement = document.getElementsByTagName('body')[0];
+            const mode: PaletteMode = user.profile?.theme === 'dark' ? 'dark' : 'light';
+            setAppTheme(createTheme({
+                palette: {
+                    mode: mode
+                },
+            }));
+            if (user.profile?.theme === 'dark') {
+                body.style.backgroundColor = `${grey[500]}`
+            } else {
+                body.style.backgroundColor = `${brown[50]}`
+            }
         }
         setLoader(false);
     }, []);
@@ -80,20 +79,20 @@ const UserContextProvider = (props: UserContextProps) => {
         <ThemeProvider theme={appTheme}>
             <UserContext.Provider value={user}>
                 <LocalizationContextProvider>
-                    {!loader && <>
-                        {!user.id ?
-                            <>
-                                <UserComponent />
-                            </>
-                            :
-                            <>
-                                <Navbar openDrawer={handleOpenDrawer} setTheme={handleSetTheme}></Navbar>
-                                <ExpenseDrawer open={openDrawer} openDrawer={handleOpenDrawer}></ExpenseDrawer>
-                                <ServiceContextProvider>
+                    <ServiceContextProvider>
+                        {!loader && <>
+                            {!user.user.name ?
+                                <>
+                                    <UserComponent />
+                                </>
+                                :
+                                <>
+                                    <Navbar openDrawer={handleOpenDrawer} updateUserProfile={handleSetProfile}></Navbar>
+                                    <ExpenseDrawer open={openDrawer} openDrawer={handleOpenDrawer}></ExpenseDrawer>
                                     {props.children}
-                                </ServiceContextProvider>
-                            </>
-                        }</>}
+                                </>
+                            }</>}
+                    </ServiceContextProvider>
                 </LocalizationContextProvider>
             </UserContext.Provider>
         </ThemeProvider>

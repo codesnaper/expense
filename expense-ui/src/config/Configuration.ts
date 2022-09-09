@@ -1,6 +1,7 @@
 export const Configuration = {
     profile: 'dev',
     baseUrl: 'http://localhost:8090/',
+    resourceVersion: 'expense/api/v1/',
     group: 'group/',
     version: '0.0.1',
     github: 'https://github.com/codesnaper/expense'

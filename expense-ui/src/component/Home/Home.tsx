@@ -7,7 +7,7 @@ export default function Home(){
     const user = React.useContext(UserContext);
 
     useEffect(() => {
-        alert.setAlert?.(`Welcome ${user.name}!!!`,AlertType.SUCCESS);
+        alert.setAlert?.(`Welcome ${user.user?.name}!!!`,AlertType.SUCCESS);
     }, [])
     
     

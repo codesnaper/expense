@@ -21,6 +21,11 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -76,16 +81,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		logger.debug("Completed auth endpoints");
 	}
 
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		logger.debug("Configuring security endpoints");
 		List<String> permitAllEndpointList = Arrays.asList(Constants.AUTHENTICATION_URL, Constants.REFRESH_TOKEN_URL,
-				Constants.FORGOT_PASSWORD, Constants.RESET_PASSWORD, Constants.SWAGGER_URL);
+				Constants.FORGOT_PASSWORD, Constants.RESET_PASSWORD, Constants.SWAGGER_URL, Constants.CREATE_USER);
 
 		http.csrf().disable().exceptionHandling().authenticationEntryPoint(this.authenticationEntryPoint)
-
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
 				.and().authorizeRequests()
 				.antMatchers(permitAllEndpointList.toArray(new String[permitAllEndpointList.size()])).permitAll().and()
 				.authorizeRequests().antMatchers(Constants.API_ROOT_URL).authenticated().and()
@@ -96,6 +100,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						UsernamePasswordAuthenticationFilter.class);
 
 		logger.debug("Completed security endpoints");
+	}
+
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+		configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
 	}
 
 }

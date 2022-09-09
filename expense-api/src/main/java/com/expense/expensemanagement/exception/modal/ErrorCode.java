@@ -1,19 +1,10 @@
 package com.expense.expensemanagement.exception.modal;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 public enum ErrorCode {
-	AUTHENTICATION(11), JWT_TOKEN_EXPIRED(12), JWT_TOKEN_INVLID(13), USER_CREATION_FAILED(21), NEW_PASSWORD_REQUIRED(
-			22), MISSING_FIELD(1), SERVER_ERROR(0), DUPLICATE_FIELD(2), NO_ELEMENT(3);
-
-	private int errorCode;
-
-	private ErrorCode(int errorCode) {
-		this.errorCode = errorCode;
-	}
-
-	@JsonValue
-	public int getErrorCode() {
-		return errorCode;
-	}
+	AUTHENTICATION, JWT_TOKEN_EXPIRED, JWT_TOKEN_INVLID, USER_CREATION_FAILED, NEW_PASSWORD_REQUIRED, MISSING_FIELD
+	, SERVER_ERROR, DUPLICATE_FIELD, NO_ELEMENT;
 }

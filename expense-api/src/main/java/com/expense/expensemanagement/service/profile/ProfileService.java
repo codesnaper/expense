@@ -42,4 +42,12 @@ public class ProfileService implements IProfileService{
         this.profileDAO.save(profileModelEntity.getEntity(profileModel));
         return profileModel;
     }
+
+    @Override
+    public ProfileModel updateTheme(String userId, String theme) {
+        Profile profile = this.profileDAO.findById(userId).orElseThrow(NoSuchElementException::new);
+        profile.setTheme(theme);
+        this.profileDAO.save(profile);
+        return profileModelEntity.getModel(profile);
+    }
 }

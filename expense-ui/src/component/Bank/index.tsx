@@ -126,7 +126,7 @@ export default function BankComponent() {
     }
 
     useEffect(() => {
-        service.bankService?.fetchBanks(user.id)
+        service.bankService?.fetchBanks()
             .then((response: BankModalsResponse) => {
                 let banks: BankModal[] = [];
                 let sumCreditAmount: number = 0;
@@ -147,8 +147,7 @@ export default function BankComponent() {
                 createBankDataSet(banks);
                 setLoader(false);
             }).catch(err => {
-                expenseAlert.setAlert?.(`${localization.getString?.('Bank.error.404', localization.getLanguage?.())}`, AlertType.SUCCESS);
-                console.error(err);
+                expenseAlert.setAlert?.(`${localization.getString?.('Bank.error.404', localization.getLanguage?.())}`, AlertType.ERROR);
                 setLoader(false);
             });
     }, [service])
@@ -206,7 +205,7 @@ export default function BankComponent() {
     }
 
     const deleteBank = (bank: BankModal) => {
-        service.bankService?.deleteBank(bank.ID, user.id)
+        service.bankService?.deleteBank(bank.ID)
             .then((res: ResponseDelete) => {
                 if (bankDataSet) {
                     let bankModals: Array<BankModal> = bankDataSet.rows;
@@ -222,14 +221,13 @@ export default function BankComponent() {
                 }
             }).
             catch(err => {
-                console.error(err);
-                expenseAlert.setAlert?.(`${localization.getString?.('Bank.error.delete', localization.getLanguage?.())}`, AlertType.SUCCESS);
+                expenseAlert.setAlert?.(`${localization.getString?.('Bank.error.delete', localization.getLanguage?.())}`, AlertType.ERROR);
             })
     }
 
     return (
         <>
-            <Box component={Container} maxWidth={'lg'} height={'100vh'} sx={{padding: '40px'}} >
+            <Box component={Container} maxWidth={'false'} height={'100vh'} sx={{paddingTop: '40px'}} >
                     {loader ? <>
                         <ContentLoader heading={`${localization.getString?.('Bank.appLoading', localization.getLanguage?.(), true)}`}>
                         </ContentLoader>

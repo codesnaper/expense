@@ -310,7 +310,7 @@ export default function AccountComponent() {
         if (bankId) {
             service.accountService?.fetchAccounts(bankId)
                 .then((response: AccountResponse) => {
-                    service.bankService?.getBankById(bankId, user.id ? user.id : '')
+                    service.bankService?.getBankById(bankId)
                         .then((bankResponse: BankModal) => {
                             setBank(bankResponse);
                             const loanAccounts: Array<LoanAccount> = new Array();

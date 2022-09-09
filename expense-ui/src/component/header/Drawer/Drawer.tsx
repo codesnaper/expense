@@ -32,7 +32,6 @@ export default function ExpenseDrawer(props: ExpenseDrawerProps) {
                 }
                 props.open = open;
                 setRefresh(!refresh);
-                alert(open)
                 props.openDrawer?.(open);
             };
 

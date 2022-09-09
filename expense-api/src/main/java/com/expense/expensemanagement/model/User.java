@@ -16,6 +16,7 @@ public class User {
     private Logger logger = LoggerFactory.getLogger(User.class);
 
     private UserType user;
+
     private List<String> groups;
 
     /**

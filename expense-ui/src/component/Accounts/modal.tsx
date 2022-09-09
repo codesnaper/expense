@@ -85,7 +85,7 @@ export default function ModalAccount(props: ModalAccountProps) {
             }
         },
         initialValues: {
-            
+
         },
         onSubmit: () => { addAccount() }
     });
@@ -99,23 +99,21 @@ export default function ModalAccount(props: ModalAccountProps) {
                 props.bank.creditAmount = Number(props.bank.creditAmount) + Number(formData.principal);
             }
             if (props.operationType === OperationType.ADD) {
-                if (user.id) {
-                    formData.BANKID = props.bank.ID;
-                    service.accountService?.addAccount(user.id, {account: formData, bank: props.bank})
-                        .then((account: AccountResponseItem) => {
-                            setLoader(false);
-                            expenseAlert.setAlert?.(`New Account added successfully`, AlertType.SUCCESS);
-                            props.closeModalCallback();
-                            // props.addCallback(formData);
-                            //             props.bankUpdateCallback(props.bank);
-                            
-                        })
-                        .catch(err => {
-                            setLoader(false);
-                            expenseAlert.setAlert?.(`Failed to add account`, AlertType.ERROR);
-                            console.error(err);
-                        })
-                }
+                formData.BANKID = props.bank.ID;
+                service.accountService?.addAccount({ account: formData, bank: props.bank })
+                    .then((account: AccountResponseItem) => {
+                        setLoader(false);
+                        expenseAlert.setAlert?.(`New Account added successfully`, AlertType.SUCCESS);
+                        props.closeModalCallback();
+                        // props.addCallback(formData);
+                        //             props.bankUpdateCallback(props.bank);
+
+                    })
+                    .catch(err => {
+                        setLoader(false);
+                        expenseAlert.setAlert?.(`Failed to add account`, AlertType.ERROR);
+                        console.error(err);
+                    })
             }
             setLoader(false);
         }
@@ -223,7 +221,7 @@ export default function ModalAccount(props: ModalAccountProps) {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <FormGroup>
-                                    <FormControlLabel control={<Switch onChange={(event) => setValue('isInterest', event.target.checked)}  />} label="Interest" />
+                                    <FormControlLabel control={<Switch onChange={(event) => setValue('isInterest', event.target.checked)} />} label="Interest" />
                                 </FormGroup>
                             </Grid>
                             {formData.isInterest &&

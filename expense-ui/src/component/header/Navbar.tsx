@@ -15,11 +15,14 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import AdbIcon from '@mui/icons-material/Adb';
-import { UserContext } from '../../context';
-import { Auth } from 'aws-amplify';
+import { AlertContext, ServiceContext, UserContext } from '../../context';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { Avatar, Collapse, Divider, List, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import { ExpandLess, ExpandMore, LightMode, Logout } from '@mui/icons-material';
+import { User } from '../../modal/response/User';
+import { Profile } from '../../modal/response/Profile';
+import { ApiError } from '../../modal/response/Error';
+import { AlertType } from '../../modal/ExpenseAlert';
 
 function stringToColor(string: string) {
     let hash = 0;
@@ -92,22 +95,21 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 interface NavbarProps {
     openDrawer?: (open: boolean) => void;
-    setTheme?: (theme: string) => void;
+    updateUserProfile?: (profile: Profile) => void;
 }
 
 export default function Navbar(props: NavbarProps) {
     const [open, setOpen] = React.useState(false);
     const [darkMode, setDarkMode] = React.useState<boolean>(false);
-
+    const service = React.useContext(ServiceContext);
+    const expenseAlert = React.useContext(AlertContext);
     const handleClick = () => {
         setOpen(!open);
     };
-
-    const user = React.useContext(UserContext);
+    const user:User = React.useContext(UserContext);
     const signOut = async () => {
         try {
-            await Auth.signOut();
-            sessionStorage.removeItem('user');
+            localStorage.clear();
             window.location.href = '/';
         } catch (error) {
             console.log('error signing out: ', error);
@@ -138,9 +140,19 @@ export default function Navbar(props: NavbarProps) {
     };
 
     const setTheme = (theme: string, darkMode: boolean) => {
-        props.setTheme?.(theme);
-        setDarkMode(darkMode);
+        service.profileService?.updateTheme(theme)
+        .then((profile: Profile) => {
+            props.updateUserProfile?.(profile);
+            setDarkMode(darkMode);
+        })
+        .catch((err: ApiError) => {
+            expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+        })
     }
+
+    React.useEffect(() => {
+        setDarkMode(user.profile?.theme === 'dark');
+    },[user])
 
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -165,9 +177,9 @@ export default function Navbar(props: NavbarProps) {
                     aria-label="account name"
                     color="inherit"
                 >
-                    {<Avatar {...stringAvatar(`${user.name}`)} />}
+                    {<Avatar {...stringAvatar(`${user.user.name}`)} />}
                 </IconButton>
-                <p>{user.name}</p>
+                <p>{user.user.name}</p>
             </MenuItem>
             <Divider></Divider>
             {!darkMode &&
@@ -258,9 +270,9 @@ export default function Navbar(props: NavbarProps) {
                     aria-label="account name"
                     color="inherit"
                 >
-                    {<Avatar {...stringAvatar(`${user.name}`)} />}
+                    {<Avatar {...stringAvatar(`${user.user.name}`)} />}
                 </IconButton>
-                <p>{user.name}</p>
+                <p>{user.user.name}</p>
                 {open ? <ExpandLess /> : <ExpandMore />}
             </MenuItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
@@ -366,7 +378,7 @@ export default function Navbar(props: NavbarProps) {
                                 onClick={handleProfileMenuOpen}
                                 color="inherit"
                             >
-                                {<Avatar {...stringAvatar(`${user.name}`)} />}
+                                {<Avatar {...stringAvatar(`${user.user.name}`)} />}
                             </IconButton>
                         </Tooltip>
                     </Box>

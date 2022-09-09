@@ -90,7 +90,6 @@ export default function ModalBank(props: ModalBankProps) {
     const addBank = () => {
         if (props.operationType === OperationType.ADD) {
             setAddLoader(true);
-            data.USERID = user.id ? user.id : '';
             service.bankService?.addBank(data)
                 .then(res => {
                     setAddLoader(false);
@@ -106,7 +105,7 @@ export default function ModalBank(props: ModalBankProps) {
             setAddLoader(true);
             if (props.bank) {
                 const id = props.bank.ID;
-                service.bankService?.updateBank(data, id, user.id)
+                service.bankService?.updateBank(data, id)
                     .then(res => {
                         setAddLoader(false);
                         handleClose();
