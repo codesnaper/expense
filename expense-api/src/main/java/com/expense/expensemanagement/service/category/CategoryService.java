@@ -4,12 +4,14 @@ import com.expense.expensemanagement.conversion.EntityModalConversion;
 import com.expense.expensemanagement.dao.CategoryDao;
 import com.expense.expensemanagement.entity.Category;
 import com.expense.expensemanagement.model.ResponseList;
+import com.expense.expensemanagement.util.ExpenseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.NoSuchElementException;
 
 /**
@@ -27,8 +29,8 @@ public class CategoryService implements ICategoryService{
 
 
     @Override
-    public ResponseList<Category> getCategory(int pageNo, int pageSize) {
-        Page page= categoryDao.findAll(PageRequest.of(pageNo,pageSize));
+    public ResponseList<Category> getCategory(int pageNo, int pageSize, String userid) {
+        Page page= categoryDao.findByUserID(userid,PageRequest.of(pageNo,pageSize));
         ResponseList<Category> responseList=new ResponseList<>();
         responseList.setPageNo(page.getNumber());
         responseList.setTotalPage(page.getTotalPages());
@@ -45,23 +47,20 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public Category updateCategory(long id, com.expense.expensemanagement.model.Category category) {
-        Category categoryDto1 = null;
-         Category categoryDto = categoryDao.findById(id).orElseThrow(NoSuchElementException::new);
-        if (categoryDto.getId() == null) {
+    public Category updateCategory(com.expense.expensemanagement.model.Category category) {
+         Category categoryDto = categoryDao.findByUserIDAndId(category.getUserID(), category.getId()).orElseThrow(NoSuchElementException::new);
+        if (categoryDto.getUserID() == null) {
             throw new IllegalStateException("Category not exist ");
-        } else if (categoryDto.getId()==id) {
-             category.setId(categoryDto.getId());
-             categoryDto1 = categoryDao.save(categoryConversion.getEntity(category));
         }
+             category.setId(categoryDto.getId());
+            return categoryDao.save(categoryConversion.getEntity(category));
 
-
-        return categoryDto1;
     }
 
     @Override
-    public void deleteCategory(long id) {
-
-        categoryDao.deleteById(id);
+    public void deleteCategory(long id, String userId) {
+        Category category = categoryDao.findByUserIDAndId(userId, id).orElseThrow(NoSuchElementException::new);
+        categoryDao.delete(category);
     }
 }
+

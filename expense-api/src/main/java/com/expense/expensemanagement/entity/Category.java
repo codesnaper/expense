@@ -6,16 +6,19 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name = "em_category_t")
+@Table(name = "em_category_t" ,uniqueConstraints = {
+        @UniqueConstraint(name = "nameAndUserId", columnNames = {"name", "user_id"})
+}
+)
 @Data
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id",nullable = false)
     private String userID;
-    @Column(name = "name")
+    @Column(name = "name",nullable = false)
     private String name;
     @Column(name = "description")
     private String description;
