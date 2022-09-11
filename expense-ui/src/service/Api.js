@@ -5,7 +5,7 @@ const api = axios.create({
     baseURL: Configuration.baseUrl,
     headers: {
         "Content-Type": "application/json",
-        Accept: "application/json",
+        Accept: "*/*",
     },
     timeout: 10000,
     timeoutErrorMessage: 'Server not responded . Try again after some time.',

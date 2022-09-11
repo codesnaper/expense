@@ -23,6 +23,7 @@ import { User } from '../../modal/response/User';
 import { Profile } from '../../modal/response/Profile';
 import { ApiError } from '../../modal/response/Error';
 import { AlertType } from '../../modal/ExpenseAlert';
+import ContentLoader from '../ContentLoader';
 
 function stringToColor(string: string) {
     let hash = 0;
@@ -101,6 +102,7 @@ interface NavbarProps {
 export default function Navbar(props: NavbarProps) {
     const [open, setOpen] = React.useState(false);
     const [darkMode, setDarkMode] = React.useState<boolean>(false);
+    const [loader, setLoader] = React.useState<boolean>(false);
     const service = React.useContext(ServiceContext);
     const expenseAlert = React.useContext(AlertContext);
     const handleClick = () => {
@@ -140,6 +142,7 @@ export default function Navbar(props: NavbarProps) {
     };
 
     const setTheme = (theme: string, darkMode: boolean) => {
+        setLoader(true);
         service.profileService?.updateTheme(theme)
         .then((profile: Profile) => {
             props.updateUserProfile?.(profile);
@@ -147,6 +150,9 @@ export default function Navbar(props: NavbarProps) {
         })
         .catch((err: ApiError) => {
             expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+        })
+        .finally(() => {
+            setLoader(false);
         })
     }
 
@@ -322,6 +328,8 @@ export default function Navbar(props: NavbarProps) {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
+            {loader &&<ContentLoader heading={`Applying theme !!!`}>
+                        </ContentLoader>}
             <AppBar position="static">
                 <Toolbar>
                     <IconButton

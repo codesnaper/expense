@@ -1,15 +1,9 @@
-import { esES } from "@mui/x-date-pickers";
-import { Configuration } from "../config/Configuration";
-import { BankModal, BankModalsResponse, ResponseDelete } from "../modal/bank";
-import { ApiError,  ErrorCode } from "../modal/response/Error";
+import { ApiError } from "../modal/response/Error";
 import { LoginCredential, User, UserToken } from "../modal/response/User";
 import Api from "./Api";
 export class UserService {
-    baseUrl: string;
 
-    constructor(){
-        this.baseUrl = Configuration.baseUrl;
-    }
+    constructor(){}
 
     public loginUser(credential: LoginCredential, rememberFlag: boolean = false): Promise<User> {
         return new Promise((resolve, reject) => {

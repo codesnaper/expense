@@ -1,10 +1,13 @@
-import { Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, InputLabel, ListItemButton, ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, InputLabel, ListItemButton, ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import { useContext, useEffect, useState } from "react";
-import { ServiceContext, UserContext } from "../../context";
+import { AlertContext, ServiceContext, UserContext } from "../../context";
 import { useFormValidation } from "../../hooks/FormValidation";
 import { ResponseList } from "../../modal/ResponseList";
-import { Tag } from "../../modal/Tag";
+import { Tag } from "../../modal/response/Tag";
+import { ApiError, ErrorCode } from "../../modal/response/Error";
+import { AlertType } from "../../modal/ExpenseAlert";
+import { blue } from "@mui/material/colors";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -18,20 +21,24 @@ const MenuProps = {
 
 interface TagSelectProps {
     onChange?: (tags: Array<Tag>) => void;
+    refreshError?: () => void;
     error: boolean;
     helperText: string;
 }
 
 export default function TagSelect(props: TagSelectProps) {
-    const user = useContext(UserContext);
     const service = useContext(ServiceContext);
+    const expenseAlert = useContext(AlertContext);
     const [tagName, setTagName] = useState<string[]>([]);
     const [tags, setTags] = useState<Array<Tag>>([]);
     const [openTagModel, setOpenTagModel] = useState<boolean>(false);
+    const [isNameError, setIsNameError] = useState<boolean>(false);
+    const [nameErrorText, setNameErrorText] = useState<string>("");
+    const [loader, setLoader] = useState<boolean>(false);
     const { handleSubmit, handleChange: handleTagFormChange, data: tagForm, errors: tagFormError } = useFormValidation<Tag>({
         validations: {
             name: {
-                required:{
+                required: {
                     value: true,
                     message: "Tag Name is required"
                 }
@@ -50,11 +57,29 @@ export default function TagSelect(props: TagSelectProps) {
             }
         },
         onSubmit() {
-            tags.push(tagForm);
-            setTags([...tags]);
-            handleTagModel();
+            saveTag(tagForm);
         },
     });
+
+    const saveTag = (tag: Tag) => {
+        props.refreshError?.();
+        setLoader(true);
+        service.tagService?.saveTag(tag)
+            .then((response: Tag) => {
+                tags.push(tagForm);
+                setTags([...tags]);
+                handleTagModel();
+            }).catch((err: ApiError) => {
+                if (ErrorCode[err.errorCode] === ErrorCode.DUPLICATE_FIELD) {
+                    setIsNameError(true);
+                    setNameErrorText(err.message);
+                } else {
+                    expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+                }
+            }).finally(() => {
+                setLoader(false);
+            })
+    }
 
     const handleChange = (event: SelectChangeEvent<typeof tagName>) => {
         let selectedTags: Array<Tag> = [];
@@ -126,7 +151,7 @@ export default function TagSelect(props: TagSelectProps) {
                     ))}
                     <MenuItem key='new Tag Button'>
                         <ListItemButton disableRipple={true}>
-                            <Button  onClick={handleTagModel} disableRipple={true} sx={{ width: '100%' }}>
+                            <Button onClick={handleTagModel} disableRipple={true} sx={{ width: '100%' }}>
                                 <ListItemText primary="Create New Tag" />
                             </Button>
                         </ListItemButton>
@@ -147,8 +172,8 @@ export default function TagSelect(props: TagSelectProps) {
                             type="email"
                             fullWidth
                             variant="standard"
-                            error = {tagFormError.name ? true: false}
-                            helperText={tagFormError.name}
+                            error={tagFormError.name || isNameError ? true : false}
+                            helperText={tagFormError.name ? tagFormError.name : "" + nameErrorText ? ". " + nameErrorText : ""}
                             onChange={handleTagFormChange('name')}
                         />
                         <TextField
@@ -159,14 +184,22 @@ export default function TagSelect(props: TagSelectProps) {
                             type="text"
                             fullWidth
                             variant="standard"
-                            error = {tagFormError.description ? true: false}
+                            error={tagFormError.description ? true : false}
                             helperText={tagFormError.description}
                             onChange={handleTagFormChange('description')}
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleTagModel}>Cancel</Button>
-                        <Button type="submit" form="tagForm">Add Tag</Button>
+                        <Button disabled={loader} onClick={handleTagModel}>Cancel</Button>
+                        <Button type="submit" disabled={loader} form="tagForm">Add Tag</Button>
+                        {loader &&
+                            <CircularProgress
+                                size={24}
+                                sx={{
+                                    color: blue[200],
+                                }}
+                            />
+                        }
                     </DialogActions>
                 </Box>
             </Dialog>

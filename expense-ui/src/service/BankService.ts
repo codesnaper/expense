@@ -6,7 +6,7 @@ export class BankService {
     baseUrl: string;
 
     constructor(){
-        this.baseUrl = Configuration.baseUrl+Configuration.resourceVersion;
+        this.baseUrl = Configuration.resourceVersion;
     }
 
     public fetchBanks(): Promise<BankModalsResponse>{

@@ -1,12 +1,12 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BankService } from "../service/BankService";
 import * as React from "react";
-import { Service } from "../modal/Service";
 import { ServiceContext } from "../context";
 import { AccountService } from "../service/AccountService";
 import { TagService } from "../service/TagService";
 import { UserService } from "../service/UserService";
 import { ProfileService } from "../service/ProfileService";
+import { CategoryService } from "../service/CategoryService";
 
 interface ServiceContextProps  { 
     children: React.ReactNode
@@ -22,7 +22,8 @@ const ServiceContextProvider = (props: ServiceContextProps) => {
             accountService: new AccountService(),
             tagService: new TagService(),
             userService: new UserService(),
-            profileService: new ProfileService()
+            profileService: new ProfileService(),
+            categoryService: new CategoryService()
         });
     }, []);
 

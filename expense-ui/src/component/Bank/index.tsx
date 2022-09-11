@@ -15,7 +15,7 @@ import ExpenseTable from "../Table";
 import { OperationType } from "../../modal/OperationType";
 import InfoCardComponent from "../Card/InfoCard";
 import { green, red } from "@mui/material/colors";
-import { Tag } from "../../modal/Tag";
+import { Tag } from "../../modal/response/Tag";
 
 export default function BankComponent() {
     const [openModal, setOpenModal] = useState<boolean>(false);

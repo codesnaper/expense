@@ -1,4 +1,4 @@
-import { Tag } from "./Tag";
+import { Tag } from "./response/Tag";
 
 export class BankModal{
     name!: string;

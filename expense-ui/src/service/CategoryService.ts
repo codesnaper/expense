@@ -1,18 +1,23 @@
 import { Configuration } from "../config/Configuration";
-import { AccountResponse, AccountResponseItem } from "../modal/Account";
-import { BankModal } from "../modal/bank";
+import { Category } from "../modal/response/Category";
+import { ResponseList } from "../modal/ResponseList";
 import Api from "./Api";
 
-export class AccountService {
+export class CategoryService{
     baseUrl: string;
-
-    constructor() {
+    
+    constructor(){
         this.baseUrl = Configuration.resourceVersion;
     }
 
-    public fetchAccounts(bankId: string): Promise<AccountResponse> {
+    public fetchCategory(pageNo: number =0, pageSize: number = 10): Promise<ResponseList<Category>> {
         return new Promise((resolve, reject) => {
-            Api.get(`${this.baseUrl}account/${bankId}`)
+            Api.get(`${this.baseUrl}category/`,{
+                headers:{
+                    'pageNo': Number(pageNo).toString(),
+                    'pageSize': Number(pageSize).toString()
+                }
+            })
             .then(res => resolve(res.data))
             .catch(err => reject({
                 status: err.response.data?.status,
@@ -24,9 +29,9 @@ export class AccountService {
         });
     }
 
-    public addAccount(bodyData: {account:AccountResponseItem , bank: BankModal}): Promise<AccountResponseItem> {
+    public addCategory(category: Category): Promise<Category>{
         return new Promise((resolve, reject) => {
-            Api.post(`${this.baseUrl}account/`, JSON.stringify(bodyData))
+            Api.post(`${this.baseUrl}category/`,JSON.stringify(category))
             .then(res => resolve(res.data))
             .catch(err => reject({
                 status: err.response.data?.status,
@@ -38,9 +43,9 @@ export class AccountService {
         })
     }
 
-    public updateAccount(accountId: string, bankId: string, body: AccountResponseItem): Promise<AccountResponseItem>{
+    public updateCategory(category: Category): Promise<Category>{
         return new Promise((resolve, reject) => {
-            Api.put(`${this.baseUrl}account/${accountId}/${bankId}`, JSON.stringify(body))
+            Api.put(`${this.baseUrl}category/`, JSON.stringify(category))
             .then(res => resolve(res.data))
             .catch(err => reject({
                 status: err.response.data?.status,
@@ -49,6 +54,22 @@ export class AccountService {
                 field: err.response.data?.field,
                 timestamp: err.response.data?.timestamp
             }));
-        });
+        })
     }
+
+    public deleteCategory(id: number): Promise<any>{
+        return new Promise((resolve, reject) => {
+            Api.delete(`${this.baseUrl}category/${id}`)
+            .then(res => resolve({}))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
+        })
+    }
+
+
 }

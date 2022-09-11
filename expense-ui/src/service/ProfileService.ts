@@ -5,7 +5,7 @@ export class ProfileService {
     baseUrl: string;
 
     constructor(){
-        this.baseUrl = Configuration.baseUrl+ Configuration.resourceVersion;
+        this.baseUrl = Configuration.resourceVersion;
     }
 
     public updateTheme(theme: string): Promise<Profile> {

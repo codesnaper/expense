@@ -21,13 +21,13 @@ public class CategoryController {
     public ICategoryService categoryService;
 
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseList<Category> getCategory(Principal principal,@RequestHeader(name = "pageNo",defaultValue = "0", required = false) int pageNo,
                                               @RequestHeader(name = "size",defaultValue = "10", required = false) int pageSize) throws IllegalAccessException {
         return this.categoryService.getCategory(pageNo,pageSize, ExpenseUtil.getUserId(principal));
 
     }
-    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public com.expense.expensemanagement.model.Category addCategory(@RequestBody com.expense.expensemanagement.model.Category category) throws IllegalAccessException {
         return this.categoryService.addCategory(category);
 

@@ -8,7 +8,7 @@ import { AlertType } from "../../modal/ExpenseAlert";
 import Draggable from 'react-draggable';
 import { OperationType } from "../../modal/OperationType";
 import TagSelect from "../Tag/TagSelect";
-import { Tag } from "../../modal/Tag";
+import { Tag } from "../../modal/response/Tag";
 
 interface ModalBankProps {
     operationType: OperationType;
@@ -59,7 +59,7 @@ export default function ModalBank(props: ModalBankProps) {
         { name: 'PLN', value: 'PLN' }
     ];
 
-    const { handleSubmit, handleChange, handleSelectChange, handleTagValue, data, errors } = useFormValidation<BankModal>({
+    const { handleSubmit, handleChange, handleSelectChange, handleTagValue, data, errors, refreshError } = useFormValidation<BankModal>({
         validations: {
             name: {
                 custom: {
@@ -99,7 +99,6 @@ export default function ModalBank(props: ModalBankProps) {
                 })
                 .catch(err => {
                     expenseAlert.setAlert?.(`${localization.formatString?.(localization.getString ? localization.getString('Bank.error.500', localization.getLanguage?.()) : "", 'adding', data.name)}`, AlertType.SUCCESS);
-                    console.error(err);
                 })
         } else {
             setAddLoader(true);
@@ -120,6 +119,10 @@ export default function ModalBank(props: ModalBankProps) {
         }
     }
 
+    const formRefreshError = () => {
+        refreshError();
+    }
+
     return (
         <>
             <Dialog PaperComponent={PaperComponent} open={props.openModal} aria-labelledby="draggable-dialog-title" onClose={handleClose}>
@@ -127,9 +130,6 @@ export default function ModalBank(props: ModalBankProps) {
                     <DialogTitle className="grabbable"
                         id="draggable-dialog-title">
                         {props.operationType === OperationType.ADD ? localization.getString?.('Bank.modal.addTitle', localization.getLanguage?.()) : localization.getString?.('Bank.modal.editTitle', localization.getLanguage?.())}
-                        {errors && <>
-                            <br></br><Typography variant="caption" color={red[600]}>There are some error in form</Typography>
-                        </>}
                     </DialogTitle>
                     <DialogContent sx={{ maxHeight: '50vh' }}>
                         <FormControl fullWidth margin="normal">
@@ -176,6 +176,7 @@ export default function ModalBank(props: ModalBankProps) {
                         <TagSelect
                             onChange={handleTagValue('tags')}
                             error={errorTag}
+                            refreshError={formRefreshError}
                             helperText='Max Tag selected can be 5'
                         ></TagSelect>
                     </DialogContent>
