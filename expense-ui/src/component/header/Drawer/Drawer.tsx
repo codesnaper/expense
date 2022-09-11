@@ -11,14 +11,17 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import DrawerHeaderLogo from './DrawerHeader';
-
-interface ExpenseDrawerProps{
+import CategoryIcon from '@mui/icons-material/Category';
+import MoneyIcon from '@mui/icons-material/Money';
+import PermDataSettingIcon from '@mui/icons-material/PermDataSetting';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+interface ExpenseDrawerProps {
     open: boolean;
     openDrawer?: (open: boolean) => void;
 }
 export default function ExpenseDrawer(props: ExpenseDrawerProps) {
 
-    const[refresh, setRefresh] = React.useState<boolean>(true);
+    const [refresh, setRefresh] = React.useState<boolean>(true);
 
     const toggleDrawer =
         (open: boolean) =>
@@ -43,19 +46,42 @@ export default function ExpenseDrawer(props: ExpenseDrawerProps) {
         >
             <DrawerHeaderLogo></DrawerHeaderLogo>
             <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+                <ListItem key={'1'} disablePadding>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <MoneyIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={'Expense'} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem key={'1'} disablePadding>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <PermDataSettingIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={'Limit'} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem key={'1'} disablePadding>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <CategoryIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={'Category'} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem key={'1'} disablePadding>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <AccountBalanceIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={'Bank'} />
+                    </ListItemButton>
+                </ListItem>
             </List>
+
             <Divider />
-            <List>
+            {/* <List>
                 {['All mail', 'Trash', 'Spam'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton>
@@ -66,7 +92,7 @@ export default function ExpenseDrawer(props: ExpenseDrawerProps) {
                         </ListItemButton>
                     </ListItem>
                 ))}
-            </List>
+            </List> */}
         </Box>
     );
 

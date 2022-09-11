@@ -29,6 +29,20 @@ export class CategoryService{
         });
     }
 
+    public fetchAllCategory(): Promise<Array<Category>> {
+        return new Promise((resolve, reject) => {
+            Api.get(`${this.baseUrl}category/all`)
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
+        });
+    }
+
     public addCategory(category: Category): Promise<Category>{
         return new Promise((resolve, reject) => {
             Api.post(`${this.baseUrl}category/`,JSON.stringify(category))

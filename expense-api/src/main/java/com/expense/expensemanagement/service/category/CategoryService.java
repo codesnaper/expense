@@ -12,7 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -61,6 +63,13 @@ public class CategoryService implements ICategoryService{
     public void deleteCategory(long id, String userId) {
         Category category = categoryDao.findByUserIDAndId(userId, id).orElseThrow(NoSuchElementException::new);
         categoryDao.delete(category);
+    }
+
+    @Override
+    public List<com.expense.expensemanagement.model.Category> fetchAllCategory(String userId) {
+        return this.categoryDao.findByUserID(userId).stream()
+                .map(categoryConversion::getModel)
+                .collect(Collectors.toList());
     }
 }
 

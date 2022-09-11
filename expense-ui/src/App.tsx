@@ -6,6 +6,7 @@ import { UserContextProvider } from './provider/UserContext';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AlertContextProvider } from './provider/AlertProvider';
 import CategoryComponent from './component/Category';
+import LimitComponent from './component/Limit';
 const Home = React.lazy(() => import('./component/Home/Home'));
 const BankComponent = React.lazy(() => import('./component/Bank'));
 const AccountComponent = React.lazy(() => import('./component/Accounts'));
@@ -20,6 +21,7 @@ function App() {
               <Route path="/bank" element={<BankComponent />} />
               <Route path="/account/:bankId" element={<AccountComponent></AccountComponent>}/>
               <Route path="/category" element={<CategoryComponent />} />
+              <Route path="/limit" element={<LimitComponent/>} />
             </Routes>
           </UserContextProvider>
         </AlertContextProvider>

@@ -1,5 +1,5 @@
 import { Configuration } from "../config/Configuration";
-import { AccountResponse, AccountResponseItem } from "../modal/Account";
+import { Account, AccountResponse, AccountResponseItem } from "../modal/Account";
 import { BankModal } from "../modal/bank";
 import Api from "./Api";
 
@@ -13,6 +13,20 @@ export class AccountService {
     public fetchAccounts(bankId: string): Promise<AccountResponse> {
         return new Promise((resolve, reject) => {
             Api.get(`${this.baseUrl}account/${bankId}`)
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
+        });
+    }
+
+    public fetchAllSavingAccounts(): Promise<Array<Account>>{
+        return new Promise((resolve, reject) => {
+            Api.get(`${this.baseUrl}account/all`)
             .then(res => resolve(res.data))
             .catch(err => reject({
                 status: err.response.data?.status,

@@ -1,4 +1,4 @@
-import { Alert, Card, CardContent, Container, Divider, Grid, Paper, Typography } from "@mui/material";
+import { Container, Divider, Grid, Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useContext, useEffect, useState } from "react";
 import { AlertContext, ServiceContext } from "../../context";
@@ -10,6 +10,7 @@ import { ResponseList } from "../../modal/ResponseList";
 import ContentLoader from "../ContentLoader";
 import Pagination from "../Pagination";
 import CategoryCard from "./CategoryCard";
+import CategoryIcon from '@mui/icons-material/Category';
 
 export default function CategoryComponent() {
 
@@ -44,17 +45,36 @@ export default function CategoryComponent() {
             })
     }, [service])
 
-    const operationEvent = (category: Category, operation: OperationType) => {
-        if (operation === OperationType.ADD) {
-            service.categoryService?.addCategory(category)
-                .then((res: Category) => {
-                    setCategories([...categories, res]);
-                    expenseAlert.setAlert?.('Category Addedd Successfully', AlertType.SUCCESS);
-                    setTotalElement(totalElement+1);
-                })
-                .catch((err: ApiError) => {
-                    expenseAlert.setAlert?.(err.message, AlertType.ERROR);
-                })
+    const operationEvent = (newCategory: Category, operation: OperationType) => {
+        switch (operation) {
+            case OperationType.ADD:
+                setCategories([...categories, newCategory]);
+                setTotalElement(totalElement + 1);
+                break;
+
+            case OperationType.EDIT:
+                const updatedCategories: Array<Category> = categories.map((category: Category) => {
+                    if (category.id === newCategory.id) {
+                        category.name = newCategory.name;
+                        category.description = newCategory.description;
+                    }
+                    return category;
+                });
+                setCategories(updatedCategories);
+                break;
+
+            case OperationType.DELETE:
+                const index: number = categories.findIndex((category: Category) => category.id === newCategory.id);
+                if (index !== -1) {
+                    const updatedCategories: Array<Category> = categories.splice(index, 1);
+                    setCategories(updatedCategories);
+                    setTotalElement(totalElement - 1);
+                }
+                break;
+
+            default:
+                break;
+
         }
     }
 
@@ -70,9 +90,9 @@ export default function CategoryComponent() {
         }
         <Box component={Container} sx={{ paddingTop: '40px' }} maxWidth={'false'}>
             <Paper elevation={6} sx={{ padding: '24px' }}>
-                <Typography variant="h5" component={'div'} sx={{ marginBottom: '12px' }}>Category</Typography>
+                <Typography variant="h5" component={'div'} sx={{ marginBottom: '12px' }}><CategoryIcon></CategoryIcon>  Category</Typography>
                 <Divider></Divider>
-                <Grid container spacing={2} sx={{marginTop: '12px'}}>
+                <Grid container spacing={2} sx={{ marginTop: '12px' }}>
                     {categories.map((category: Category, index: number) =>
                         <>
                             <Grid item key={index} xs={4}>
