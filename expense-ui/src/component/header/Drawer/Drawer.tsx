@@ -11,10 +11,8 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import DrawerHeaderLogo from './DrawerHeader';
-import CategoryIcon from '@mui/icons-material/Category';
-import MoneyIcon from '@mui/icons-material/Money';
-import PermDataSettingIcon from '@mui/icons-material/PermDataSetting';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import { MenuLinks } from '../../../modal/MenuLink';
+
 interface ExpenseDrawerProps {
     open: boolean;
     openDrawer?: (open: boolean) => void;
@@ -22,6 +20,7 @@ interface ExpenseDrawerProps {
 export default function ExpenseDrawer(props: ExpenseDrawerProps) {
 
     const [refresh, setRefresh] = React.useState<boolean>(true);
+
 
     const toggleDrawer =
         (open: boolean) =>
@@ -46,38 +45,16 @@ export default function ExpenseDrawer(props: ExpenseDrawerProps) {
         >
             <DrawerHeaderLogo></DrawerHeaderLogo>
             <List>
-                <ListItem key={'1'} disablePadding>
+                {MenuLinks.map(menuLink => <>
+                    <ListItem key={'1'} disablePadding selected={menuLink.isActive()} onClick={() => {menuLink.navigateLink()}}>
                     <ListItemButton>
                         <ListItemIcon>
-                            <MoneyIcon />
+                            <menuLink.icon />
                         </ListItemIcon>
-                        <ListItemText primary={'Expense'} />
+                        <ListItemText primary={menuLink.title} />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={'1'} disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <PermDataSettingIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={'Limit'} />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem key={'1'} disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <CategoryIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={'Category'} />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem key={'1'} disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <AccountBalanceIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={'Bank'} />
-                    </ListItemButton>
-                </ListItem>
+                </>)}
             </List>
 
             <Divider />

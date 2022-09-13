@@ -7,6 +7,7 @@ import { TagService } from "../service/TagService";
 import { UserService } from "../service/UserService";
 import { ProfileService } from "../service/ProfileService";
 import { CategoryService } from "../service/CategoryService";
+import { LimitService } from "../service/LimitService";
 
 interface ServiceContextProps  { 
     children: React.ReactNode
@@ -23,7 +24,8 @@ const ServiceContextProvider = (props: ServiceContextProps) => {
             tagService: new TagService(),
             userService: new UserService(),
             profileService: new ProfileService(),
-            categoryService: new CategoryService()
+            categoryService: new CategoryService(),
+            limitService: new LimitService(),
         });
     }, []);
 

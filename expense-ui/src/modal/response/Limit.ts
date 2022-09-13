@@ -1,12 +1,16 @@
+
 export interface Limit {
+    id: number
     name: string;
     description: string;
     minAmount: number;
     maxAmount: number;
     thresoldWarningAmount: number;
-    resetRecursive: Recursively;
+    resetRecursively: Recursively;
     priority: Priority;
     usedAmount: number;
+    accountId: number;
+    categoryId: number
 }
 
 export enum Recursively {

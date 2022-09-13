@@ -37,17 +37,17 @@ public class LimitConversion implements EntityModalConversion<Limit, LimitModel>
     public LimitModel getModel(Limit limit) {
         LimitModel limitModel=new LimitModel();
         limitModel.setId(limit.getId());
-        limitModel.setAccount_id(accountConversion.getModel(limit.getAccount()).getId());
+        limitModel.setAccountId(accountConversion.getModel(limit.getAccount()).getId());
         limitModel.setName(limit.getName());
         limitModel.setDescription(limit.getDescription());
-        limitModel.setCategory_id(categoryConversion.getModel(limit.getCategory()).getId());
-        limitModel.setMax_amount(limit.getMax_amount());
-        limitModel.setMin_amount(limit.getMin_amount());
+        limitModel.setCategoryId(categoryConversion.getModel(limit.getCategory()).getId());
+        limitModel.setMaxAmount(limit.getMax_amount());
+        limitModel.setMinAmount(limit.getMin_amount());
         limitModel.setPriority(limit.getPriority());
-        limitModel.setReset_recursively(limit.getReset_recursively());
+        limitModel.setResetRecursively(limit.getReset_recursively());
         limitModel.setUserid(limit.getUserid());
-        limitModel.setUsed_amount(limit.getUsed_amount());
-        limitModel.setThresold_warning_amount(limit.getThresold_warning_amount());
+        limitModel.setUsedAmount(limit.getUsed_amount());
+        limitModel.setThresoldWarningAmount(limit.getThresold_warning_amount());
 
         return limitModel;
     }
@@ -56,19 +56,17 @@ public class LimitConversion implements EntityModalConversion<Limit, LimitModel>
     public Limit getEntity(LimitModel limitModel) {
         Limit limit=new Limit();
         limit.setId(limitModel.getId());
-         Account account=accountDAO.findById(limitModel.getAccount_id()).orElse(new Account());
+         Account account=accountDAO.findById(limitModel.getAccountId()).orElse(new Account());
         limit.setAccount(account);
         limit.setName(limitModel.getName());
         limit.setDescription(limitModel.getDescription());
-//        Category category=
-//        limit.setCategory();
-        limit.setMax_amount(limitModel.getMax_amount());
-        limit.setMin_amount(limitModel.getMin_amount());
+        limit.setMax_amount(limitModel.getMaxAmount());
+        limit.setMin_amount(limitModel.getMinAmount());
         limit.setPriority(limitModel.getPriority());
-        limit.setReset_recursively(limitModel.getReset_recursively());
+        limit.setReset_recursively(limitModel.getResetRecursively());
         limit.setUserid(limitModel.getUserid());
-        limit.setUsed_amount(limitModel.getUsed_amount());
-        limit.setThresold_warning_amount(limitModel.getThresold_warning_amount());
+        limit.setUsed_amount(limitModel.getUsedAmount());
+        limit.setThresold_warning_amount(limitModel.getThresoldWarningAmount());
         return limit;
     }
 }

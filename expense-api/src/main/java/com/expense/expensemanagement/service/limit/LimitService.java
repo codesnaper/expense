@@ -45,7 +45,7 @@ public class LimitService implements ILimitService {
     @Override
     public LimitModel addLimit(LimitModel limitModel) {
         Account account = accountDAO.findById(limitModel.getId()).orElse(new Account());
-        limitModel.setAccount_id(account.getId());
+        limitModel.setAccountId(account.getId());
 
         Limit limit= limitDao.saveAndFlush(limitConversion.getEntity(limitModel));
         return limitConversion.getModel(limit);
