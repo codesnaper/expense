@@ -46,8 +46,9 @@ logging:
   level:
     com:
       expense: DEBUG
-
     org:
+      springframework:
+        web: DEBUG
       hibernate:
         SQL: debug
         type:

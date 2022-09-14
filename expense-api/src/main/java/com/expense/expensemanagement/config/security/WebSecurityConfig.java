@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -67,6 +68,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return filter;
 	}
 
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+
 	protected JwtAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter(List<String> pathsToSkip,
 																							String pattern) throws Exception {
 		SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, pattern);
@@ -95,6 +102,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and().authorizeRequests()
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+				.antMatchers("/expense/ws/**").permitAll()
 				.antMatchers(permitAllEndpointList.toArray(new String[permitAllEndpointList.size()])).permitAll().and()
 				.authorizeRequests().antMatchers(Constants.API_ROOT_URL).authenticated().and()
 				.addFilterBefore(buildExampleAuthenticationFilter(Constants.AUTHENTICATION_URL),

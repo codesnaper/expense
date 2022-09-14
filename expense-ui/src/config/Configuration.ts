@@ -4,7 +4,8 @@ export const Configuration = {
     resourceVersion: 'expense/api/v1/',
     group: 'group/',
     version: '0.0.1',
-    github: 'https://github.com/codesnaper/expense'
+    github: 'https://github.com/codesnaper/expense',
+    wsUrl: 'ws://localhost:8090/expense/ws/connect'
 }
 
 export const NavigationLink = [
