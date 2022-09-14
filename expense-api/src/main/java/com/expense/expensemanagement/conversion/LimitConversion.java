@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Component("limitConversion")
@@ -41,13 +42,13 @@ public class LimitConversion implements EntityModalConversion<Limit, LimitModel>
         limitModel.setName(limit.getName());
         limitModel.setDescription(limit.getDescription());
         limitModel.setCategoryId(categoryConversion.getModel(limit.getCategory()).getId());
-        limitModel.setMaxAmount(limit.getMax_amount());
-        limitModel.setMinAmount(limit.getMin_amount());
+        limitModel.setMaxAmount(limit.getMaxAmount().longValue());
+        limitModel.setMinAmount(limit.getMinAmount().longValue());
         limitModel.setPriority(limit.getPriority());
-        limitModel.setResetRecursively(limit.getReset_recursively());
+        limitModel.setResetRecursively(limit.getResetRecursively());
         limitModel.setUserid(limit.getUserid());
-        limitModel.setUsedAmount(limit.getUsed_amount());
-        limitModel.setThresoldWarningAmount(limit.getThresold_warning_amount());
+        limitModel.setUsedAmount(limit.getUsedAmount().longValue());
+        limitModel.setThresoldWarningAmount(limit.getThresoldWarningAmount());
 
         return limitModel;
     }
@@ -60,13 +61,13 @@ public class LimitConversion implements EntityModalConversion<Limit, LimitModel>
         limit.setAccount(account);
         limit.setName(limitModel.getName());
         limit.setDescription(limitModel.getDescription());
-        limit.setMax_amount(limitModel.getMaxAmount());
-        limit.setMin_amount(limitModel.getMinAmount());
+        limit.setMaxAmount(new BigDecimal(limitModel.getMaxAmount()));
+        limit.setMinAmount(new BigDecimal(limitModel.getMinAmount()));
         limit.setPriority(limitModel.getPriority());
-        limit.setReset_recursively(limitModel.getResetRecursively());
+        limit.setResetRecursively(limitModel.getResetRecursively());
         limit.setUserid(limitModel.getUserid());
-        limit.setUsed_amount(limitModel.getUsedAmount());
-        limit.setThresold_warning_amount(limitModel.getThresoldWarningAmount());
+        limit.setUsedAmount(new BigDecimal(limitModel.getUsedAmount()));
+        limit.setThresoldWarningAmount(limitModel.getThresoldWarningAmount());
         return limit;
     }
 }

@@ -70,7 +70,7 @@ public class LimitScheduler {
         Page<Limit> limitPage= this.limitService.fetchAllLimit(recursive, page);
         while (limitPage.hasNext()){
             List<Limit> limits = limitPage.getContent().stream().parallel().map(limit -> {
-                limit.setUsed_amount(new BigDecimal(0));
+                limit.setUsedAmount(new BigDecimal(0));
                 Notification notification = new Notification();
                 notification.setDescription(String.format("%s limit amount has been reset to 0. Expenses can be added", limit.getName()));
                 notification.setHeading(String.format("%s limit amount reset", limit.getName()));

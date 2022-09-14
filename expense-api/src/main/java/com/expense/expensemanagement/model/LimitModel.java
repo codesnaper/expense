@@ -30,5 +30,5 @@ public class LimitModel {
 
     private String priority;
 
-    private String usedAmount;
+    private long usedAmount;
 }

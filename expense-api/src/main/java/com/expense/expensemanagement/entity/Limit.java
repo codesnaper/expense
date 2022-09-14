@@ -31,23 +31,25 @@ public class Limit {
     @JsonBackReference
     private Account account;
 
-    @Column
-    private BigDecimal min_amount;
-    @Column
-    private BigDecimal max_amount;
-    @Column
-    private Long thresold_warning_amount;
-    @Column
-    @Enumerated(EnumType.ORDINAL)
-    private Recursive reset_recursively;
+    @Column(name = "min_amount")
+    private BigDecimal minAmount;
 
-    
+    @Column(name = "max_amount")
+    private BigDecimal maxAmount;
+
+    @Column(name = "thresold_warning_amount")
+    private Long thresoldWarningAmount;
+
+    @Column(name = "reset_recursively")
+    @Enumerated(EnumType.ORDINAL)
+    private Recursive resetRecursively;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id",referencedColumnName = "id")
     private Category category;
 
     @Column
     private String priority;
-    @Column
-    private BigDecimal used_amount;
+    @Column(name = "used_amount")
+    private BigDecimal usedAmount;
 }

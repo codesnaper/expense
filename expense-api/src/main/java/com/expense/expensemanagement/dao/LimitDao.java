@@ -15,7 +15,7 @@ import java.lang.reflect.Array;
 @Repository
 public interface LimitDao extends PagingAndSortingRepository<Limit, Long> , JpaRepository<Limit, Long> {
 
-    Page<Limit> findByReset_recursively(Recursive reset_recursively, PageRequest pageRequest);
+    Page<Limit> findByResetRecursively(Recursive resetRecursively, PageRequest pageRequest);
 
 
 }

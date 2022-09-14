@@ -72,6 +72,6 @@ public class LimitService implements ILimitService {
 
     @Override
     public Page<Limit> fetchAllLimit(Recursive recursive, PageRequest pageRequest) {
-        return this.limitDao.findByReset_recursively(recursive, pageRequest);
+        return this.limitDao.findByResetRecursively(recursive, pageRequest);
     }
 }
