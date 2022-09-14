@@ -5,6 +5,7 @@ import com.expense.expensemanagement.model.*;
 import com.expense.expensemanagement.service.account.IAccountService;
 import com.expense.expensemanagement.util.ExpenseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping(value = "/expense/api/v1/bank/{bank-id}/account")
+@Slf4j
 public class AccountController {
 
     private final IAccountService accountService;
@@ -25,6 +27,7 @@ public class AccountController {
     }
 
     @PostMapping(value = "/type={account-type}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @LogExecutionTime
     public AccountModel addLoanAccount(
             @RequestBody() Object accountModel,
             @PathVariable("bank-id") long bankId,

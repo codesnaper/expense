@@ -6,17 +6,18 @@ import com.expense.expensemanagement.dao.LimitDao;
 import com.expense.expensemanagement.entity.Account;
 import com.expense.expensemanagement.entity.Limit;
 import com.expense.expensemanagement.model.LimitModel;
+import com.expense.expensemanagement.model.Recursive;
 import com.expense.expensemanagement.model.ResponseList;
-import com.expense.expensemanagement.util.ExpenseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class LimitService implements ILimitService {
@@ -67,5 +68,10 @@ public class LimitService implements ILimitService {
         if(limit.getUserid() == userId) {
             limitDao.deleteById(id);
         }
+    }
+
+    @Override
+    public Page<Limit> fetchAllLimit(Recursive recursive, PageRequest pageRequest) {
+        return this.limitDao.findByReset_recursively(recursive, pageRequest);
     }
 }

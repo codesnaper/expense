@@ -24,7 +24,7 @@ public class LimitModel {
 
     private Long thresoldWarningAmount;
 
-    private String resetRecursively;
+    private Recursive resetRecursively;
 
     private Long categoryId;
 
