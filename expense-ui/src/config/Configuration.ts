@@ -5,7 +5,9 @@ export const Configuration = {
     group: 'group/',
     version: '0.0.1',
     github: 'https://github.com/codesnaper/expense',
-    wsUrl: 'ws://localhost:8090/expense/ws/connect'
+    wsUrl: 'ws://localhost:8090/expense/ws/connect',
+    debug: true,
+    connectionTimeout: 3000
 }
 
 export const NavigationLink = [

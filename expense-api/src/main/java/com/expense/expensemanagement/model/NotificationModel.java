@@ -1,10 +1,8 @@
 package com.expense.expensemanagement.model;
 
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Column;
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 public class NotificationModel {
@@ -15,10 +13,10 @@ public class NotificationModel {
 
     private String description;
 
-    private String userId;
-
-    private Date createdDate;
-
     private boolean isUnread;
+
+    private NotificationType notificationType;
+
+    private Date date;
 
 }

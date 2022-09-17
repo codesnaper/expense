@@ -15,7 +15,6 @@ import PasswordResetForm from './PasswordResetForm';
 import { PasswordReset } from '../../modal/PasswordReset';
 import { LoginCredential } from '../../modal/response/User';
 import { ApiError, ErrorCode } from '../../modal/response/Error';
-import { NotificationService } from '../../service/NotificationService';
 
 export default function UserComponent() {
     const query = useQuery();
@@ -28,7 +27,6 @@ export default function UserComponent() {
     const localization = React.useContext(LocalizationContext);
     const expenseAlertModal = React.useContext(AlertContext);
     const service = React.useContext(ServiceContext);
-    new NotificationService();
 
     const loginCallback =  (loginCredential: LoginCredential, rememberFlag: boolean) => {
         setLoader(true);

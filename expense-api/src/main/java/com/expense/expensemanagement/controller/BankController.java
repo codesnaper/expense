@@ -1,10 +1,10 @@
 package com.expense.expensemanagement.controller;
 
 import com.expense.expensemanagement.config.security.auth.JwtAuthenticationToken;
-import com.expense.expensemanagement.model.BankModel;
-import com.expense.expensemanagement.model.ResponseList;
-import com.expense.expensemanagement.model.UserContext;
+import com.expense.expensemanagement.entity.Notification;
+import com.expense.expensemanagement.model.*;
 import com.expense.expensemanagement.service.bank.IBankService;
+import com.expense.expensemanagement.service.notification.INotificationService;
 import com.expense.expensemanagement.util.ExpenseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,6 +22,12 @@ public class BankController {
     private final AccountController accountController;
 
     @Autowired
+    private INotificationService notificationService;
+
+    @Autowired
+    private NotificationSocketController socketController;
+
+    @Autowired
     public BankController(IBankService bankService, AccountController accountController) {
         this.bankService = bankService;
         this.accountController = accountController;
@@ -31,7 +37,7 @@ public class BankController {
             @RequestBody BankModel bankModel,
             Principal principal
     ){
-        bankModel.setUserId(((UserContext)((JwtAuthenticationToken) principal).getPrincipal()).getUsername());
+
         return this.bankService.addBank(bankModel);
     }
 
@@ -41,6 +47,7 @@ public class BankController {
             @RequestHeader(name = "size",defaultValue = "10", required = false) int pageSize,
             Principal principal
     ){
+        notificationService.sendNewNotification(ExpenseUtil.getUserId(principal), "Sample","This is sample notification", NotificationType.INFO);
         return this.bankService.getAllBanks(((UserContext)((JwtAuthenticationToken) principal).getPrincipal()).getUsername(), pageNo,pageSize);
     }
 

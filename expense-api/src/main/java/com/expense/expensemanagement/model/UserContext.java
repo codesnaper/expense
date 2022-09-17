@@ -1,11 +1,12 @@
 package com.expense.expensemanagement.model;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 
-public class UserContext {
+public class UserContext implements Principal {
 	private final String username;
 	private final String name;
 	private final List<GrantedAuthority> authorities;

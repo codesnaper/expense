@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
 import * as React from 'react';
 import { LocalizationContextProvider } from './LocalizationProvider';
-import Navbar from '../component/header/Navbar';
+import Navbar from '../component/Header/Navbar';
 import { ServiceContextProvider } from './ServiceContext';
 import { ServiceContext, UserContext } from '../context';
 import UserComponent from '../component/User';
-import ExpenseDrawer from '../component/header/Drawer/Drawer';
+import ExpenseDrawer from '../component/Header/Drawer/Drawer';
 import { createTheme, PaletteMode, ThemeProvider } from '@mui/material';
 import { Theme } from '@mui/system';
 import { brown, grey } from '@mui/material/colors';
 import { User } from '../modal/response/User';
 import { Profile } from '../modal/response/Profile';
 import { ApiError } from '../modal/response/Error';
+import { NotificationContextProvider } from './NotificationProvider';
 
 interface UserContextProps {
     children: React.ReactNode
@@ -45,7 +46,7 @@ const UserContextProvider = (props: UserContextProps) => {
             }
             const user: User = JSON.parse(userStr);
             user.profile = profile;
-            localStorage.setItem('user',JSON.stringify(user));
+            localStorage.setItem('user', JSON.stringify(user));
         }
     }
 
@@ -87,9 +88,11 @@ const UserContextProvider = (props: UserContextProps) => {
                                 </>
                                 :
                                 <>
-                                    <Navbar openDrawer={handleOpenDrawer} updateUserProfile={handleSetProfile}></Navbar>
-                                    <ExpenseDrawer open={openDrawer} openDrawer={handleOpenDrawer}></ExpenseDrawer>
-                                    {props.children}
+                                    <NotificationContextProvider>
+                                        <Navbar openDrawer={handleOpenDrawer} updateUserProfile={handleSetProfile}></Navbar>
+                                        <ExpenseDrawer open={openDrawer} openDrawer={handleOpenDrawer}></ExpenseDrawer>
+                                        {props.children}
+                                    </NotificationContextProvider>
                                 </>
                             }</>}
                     </ServiceContextProvider>
