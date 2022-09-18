@@ -51,9 +51,9 @@ export class BankService {
         })
     }
 
-    updateBank(bank: BankModal, id: string): Promise<BankModal>{
+    updateBank(bank: BankModal): Promise<BankModal>{
         return new Promise((resolve, reject) => {
-            Api.put(`${this.baseUrl}bank/${id}`, JSON.stringify(bank))
+            Api.put(`${this.baseUrl}bank/`, JSON.stringify(bank))
             .then(res => resolve(res.data))
             .catch(err => reject({
                 status: err.response.data?.status,
