@@ -1,6 +1,6 @@
 import { Configuration } from "../config/Configuration";
-import { Account, AccountResponse, AccountResponseItem } from "../modal/Account";
-import { BankModal } from "../modal/bank";
+import { Account, AccountResponse, AccountResponseItem } from "../modal/response/Account";
+import { BankModal } from "../modal/response/Bank";
 import Api from "./Api";
 
 export class AccountService {

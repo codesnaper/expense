@@ -1,4 +1,3 @@
-import { BankModal } from "./bank";
 
 export class Account {
     ID = '';

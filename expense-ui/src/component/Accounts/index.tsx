@@ -11,13 +11,13 @@ import { TableAction, TableDataSet } from "../../modal/TableDataSet";
 import { HeaderDisplay, HeaderType } from "../../modal/Header";
 import ExpenseTable from "../Table";
 import { OperationType } from "../../modal/OperationType";
-import { Account, AccountResponse, AccountResponseItem, LoanAccount, SavingInterestAccount } from "../../modal/Account";
+import { Account, AccountResponse, AccountResponseItem, LoanAccount, SavingInterestAccount } from "../../modal/response/Account";
 import { Box } from "@mui/system";
 import InfoCardComponent from "../Card/InfoCard";
 import { green, red } from "@mui/material/colors";
 import { CalendarMonth, ExpandLess, ExpandMore } from "@mui/icons-material";
 import PaymentIcon from '@mui/icons-material/Payment';
-import { BankModal } from "../../modal/bank";
+import { BankModal } from "../../modal/response/Bank";
 import ModalAccount from "./modal";
 
 export default function AccountComponent() {

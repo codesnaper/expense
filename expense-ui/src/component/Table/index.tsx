@@ -45,6 +45,10 @@ export default function ExpenseTable(props: ExpenseTableProps) {
         props.deleteActionCallback?.(props.dataset?.getIndexedData(index));
     }
 
+    const formatData = (data: string): string => {
+        return data.replaceAll(',',' , ')
+    }
+
     const renderSearch = () => {
         return (
             <>
@@ -123,13 +127,21 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                                                             <Checkbox checked={data === 'true' ? true : false} />
                                                         </>}
                                                         {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.tag) && <>
-                                                            {data !== '' && data.split(',').map((tag: string, index:number) => <div style={{paddingBottom: '10px'}}><Chip color="secondary" key={`chip-${index}`} icon={<BookmarkBorderIcon />} label={tag} /></div>)}
+                                                            {data !== '' &&
+                                                                <>
+                                                                    <div style={{ paddingBottom: '10px' }}>
+                                                                        <Tooltip title={data}>
+                                                                            <Chip color="secondary" key={`chip`} label={formatData(data)} icon={<BookmarkBorderIcon />} />
+                                                                        </Tooltip>
+                                                                    </div>
+                                                                </>
+                                                            }
                                                         </>}
                                                         {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.string) && <>
                                                             {data}
                                                         </>}
                                                         {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.number) && <>
-                                                            {Number.isNaN(Number(data)) ? 0: Number(data)}
+                                                            {Number.isNaN(Number(data)) ? 0 : Number(data)}
                                                         </>}
                                                     </TableCell>
                                                 )

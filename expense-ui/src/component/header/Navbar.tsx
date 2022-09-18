@@ -129,7 +129,6 @@ export default function Navbar(props: NavbarProps) {
 
     React.useEffect(() => {
         notificationContext.subscribeToCount?.((message: IMessage) => {
-            debugger;
             const notificaiton: NotificationSocketMessage  = JSON.parse(message.body);
             setNotificationCount(notificaiton.notification.count);
         })

@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ContentLoader from "./../ContentLoader";
 import PlaceholderCard from "./../PlaceholderCard";
 import { UserContext, ServiceContext, LocalizationContext, AlertContext } from './../../context';
-import { BankModal, BankModalsResponse, ResponseDelete } from "../../modal/bank";
+import { BankModal, BankModalsResponse, ResponseDelete } from "../../modal/response/Bank";
 import { AlertType } from "../../modal/ExpenseAlert";
 import ModalBank from "./modal";
 import { TableAction, TableDataSet } from "../../modal/TableDataSet";

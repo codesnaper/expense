@@ -1,5 +1,5 @@
 import { Configuration } from "../config/Configuration";
-import { BankModal, BankModalsResponse, ResponseDelete } from "../modal/bank";
+import { BankModal, BankModalsResponse, ResponseDelete } from "../modal/response/Bank";
 import Api from "./Api";
 
 export class BankService {

@@ -5,7 +5,7 @@ import { useContext, useState } from "react";
 import Draggable from "react-draggable";
 import { AlertContext, ServiceContext } from "../../context";
 import { useFormValidation } from "../../hooks/FormValidation";
-import { Account } from "../../modal/Account";
+import { Account } from "../../modal/response/Account";
 import { AlertType } from "../../modal/ExpenseAlert";
 import { Category } from "../../modal/response/Category";
 import { ApiError } from "../../modal/response/Error";

@@ -1,13 +1,13 @@
 import { Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, InputLabel, ListItemButton, ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { Box } from "@mui/system";
-import { useContext, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { AlertContext, ServiceContext, UserContext } from "../../context";
 import { useFormValidation } from "../../hooks/FormValidation";
 import { ResponseList } from "../../modal/ResponseList";
 import { Tag } from "../../modal/response/Tag";
 import { ApiError, ErrorCode } from "../../modal/response/Error";
 import { AlertType } from "../../modal/ExpenseAlert";
-import { blue } from "@mui/material/colors";
+import { blue, red } from "@mui/material/colors";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -21,9 +21,7 @@ const MenuProps = {
 
 interface TagSelectProps {
     onChange?: (tags: Array<Tag>) => void;
-    refreshError?: () => void;
-    error: boolean;
-    helperText: string;
+    error: string | undefined;
 }
 
 export default function TagSelect(props: TagSelectProps) {
@@ -61,12 +59,16 @@ export default function TagSelect(props: TagSelectProps) {
         },
     });
 
+    const submitForm = (event: FormEvent<HTMLFormElement>) => {
+        event.stopPropagation();
+        handleSubmit(event);
+    }
+
     const saveTag = (tag: Tag) => {
-        props.refreshError?.();
         setLoader(true);
         service.tagService?.saveTag(tag)
             .then((response: Tag) => {
-                tags.push(tagForm);
+                tags.push(response);
                 setTags([...tags]);
                 handleTagModel();
             }).catch((err: ApiError) => {
@@ -131,7 +133,7 @@ export default function TagSelect(props: TagSelectProps) {
                     labelId="demo-multiple-chip-label"
                     id="demo-multiple-chip"
                     multiple
-                    error={props.error}
+                    error={props.error? true: false}
                     value={tagName}
                     onChange={handleChange}
                     input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
@@ -157,11 +159,11 @@ export default function TagSelect(props: TagSelectProps) {
                         </ListItemButton>
                     </MenuItem>
                 </Select>
-                <FormHelperText>{props.helperText}</FormHelperText>
+                <FormHelperText sx={{color: red[700]}}>{props.error}</FormHelperText>
             </FormControl>
 
             <Dialog open={openTagModel} onClose={handleTagModel}>
-                <Box id="tagForm" component="form" noValidate onSubmit={handleSubmit}>
+                <Box id="tagForm" component="form" noValidate onSubmit={submitForm}>
                     <DialogTitle>Add Tag</DialogTitle>
                     <DialogContent>
                         <TextField
