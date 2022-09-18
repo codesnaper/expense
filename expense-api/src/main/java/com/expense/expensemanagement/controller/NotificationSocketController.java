@@ -29,11 +29,27 @@ public class NotificationSocketController {
     }
 
     @MessageMapping("/notification/delete/{notificationId}")
-    public void deleteNotification(@DestinationVariable long id, Principal user){
+    public void deleteNotification(@DestinationVariable long notificationId, Principal user){
         if(user == null && user.getName() == null){
             throw new AuthenticationFailedException("User not known");
         }
-        notificationService.removeNotification(id, user.getName());
+        notificationService.removeNotification(notificationId, user.getName());
+    }
+
+    @MessageMapping("/notification/markRead/{notificationId}")
+    public void markRead(@DestinationVariable long notificationId, Principal user){
+        if(user == null && user.getName() == null){
+            throw new AuthenticationFailedException("User not known");
+        }
+        notificationService.removeNotification(notificationId, user.getName());
+    }
+
+    @MessageMapping("/notification/unread/count")
+    public void sendCountToUser(Principal user){
+        if(user == null && user.getName() == null){
+            throw new AuthenticationFailedException("User not known");
+        }
+        notificationService.broadcastUnreadNotificationCount(user.getName());
     }
 
     @MessageExceptionHandler

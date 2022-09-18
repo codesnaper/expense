@@ -21,16 +21,27 @@ const NotificationContextProvider = (props: NotificationContextProps) => {
         if(notificationMessgae.notifications){
             setNotifications({
                 type: NotificationOperation.NEW,
-                notifications: notificationMessgae.notifications
+                notifications: notificationMessgae.notifications,
+                onDeleteNotification: deleteNotification,
+                subscribeToCount: subscribeToCount
             })
         } else {
             setNotifications({
                 type: NotificationOperation.APPEND,
-                notifications: [notificationMessgae.notification]
+                notifications: [notificationMessgae.notification],
+                onDeleteNotification: deleteNotification,
+                subscribeToCount: subscribeToCount
             })
-        }
-        
-    })
+        } 
+    });
+
+    const subscribeToCount = (callback: (message: IMessage) => void) => {
+        service.notificationService?.subscribeToBroadcastUnreadNotificationCount(callback);
+    }
+
+    const deleteNotification = (id: number) => {
+        service.notificationService?.deleteNotification(id);
+    }
 
     useEffect(() => {
         service.notificationService?.initialize(notificationCallback);

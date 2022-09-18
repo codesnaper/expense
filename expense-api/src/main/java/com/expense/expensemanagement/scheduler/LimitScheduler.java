@@ -9,10 +9,8 @@ import com.expense.expensemanagement.model.Recursive;
 import com.expense.expensemanagement.service.limit.ILimitService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -74,7 +72,6 @@ public class LimitScheduler {
                 Notification notification = new Notification();
                 notification.setDescription(String.format("%s limit amount has been reset to 0. Expenses can be added", limit.getName()));
                 notification.setHeading(String.format("%s limit amount reset", limit.getName()));
-                notification.setDeletedFalg(false);
                 notification.setUnread(true);
                 notification.setUserId(limit.getUserid());
                 notificationDao.save(notification);

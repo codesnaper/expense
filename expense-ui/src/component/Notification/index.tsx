@@ -29,7 +29,6 @@ export default function NotificationComponent() {
                 });
             }
         }
-        window.localStorage.setItem('nCount', Number(notifications.length).toString());
     }, [notificationContext]);
 
     const getColor = (notificationType: NotificationType | undefined): string => {
@@ -65,6 +64,14 @@ export default function NotificationComponent() {
                 return NotificationsIcon;
         }
     }
+    
+    const deleteNotification = (id: number) => {
+        notificationContext.onDeleteNotification?.(id);
+    }
+
+    const readNotification = (id: number) => {
+        notificationContext.onRead?.(id);
+    }
 
     const loadNotification = (readFlag: boolean) => {
         setNotifications(notifications.filter((notification: Notification) => !readFlag && notification.isUnread));
@@ -77,19 +84,21 @@ export default function NotificationComponent() {
                     <Grid item xs={12}>
                         <Stack direction={"row-reverse"} spacing={1}>
                             <Button variant="contained" color="secondary" onClick={() => { loadNotification(false) }}> Unread</Button>
-                            <Button variant="contained" color="secondary" onClick={() => { loadNotification(true) }}> Read </Button>
+                            <Button disableElevation={true} variant="contained" color="secondary" onClick={() => { loadNotification(true) }}> Read </Button>
                         </Stack>
                     </Grid>
                 </Grid>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sx={{ marginTop: '24px' }}>
                         <Paper elevation={3}>
-                            <List subheader={
+                            <List key={"notification-list"} subheader={
                                 <>
                                     <ListSubheader component="div" id="notificationListHeader">
                                         Notifications
                                     </ListSubheader>
-                                    <Divider />
+                                </>
+                            }>
+                                <Divider/>
                                     {!notifications &&
                                         <>
                                             <Card raised>
@@ -105,6 +114,7 @@ export default function NotificationComponent() {
                                         notifications?.map((notification: Notification | undefined) =>
                                             <>
                                                 <NotificationItem
+                                                    key={notification?.id}
                                                     heading={notification?.heading}
                                                     intro={notification?.description}
                                                     date={notification?.date}
@@ -112,12 +122,12 @@ export default function NotificationComponent() {
                                                     readFlag={notification?.isUnread}
                                                     color={getColor(notification?.notification)}
                                                     avatarIcon={getIcon(notification?.notification)}
+                                                    remove={deleteNotification}
+                                                    unread={readNotification}
                                                 ></NotificationItem>
                                             </>
                                         )
                                     }
-                                </>
-                            }>
                             </List>
                         </Paper>
                     </Grid>

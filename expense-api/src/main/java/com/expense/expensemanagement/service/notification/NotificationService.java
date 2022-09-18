@@ -3,6 +3,7 @@ package com.expense.expensemanagement.service.notification;
 import com.expense.expensemanagement.conversion.EntityModalConversion;
 import com.expense.expensemanagement.dao.NotificationDao;
 import com.expense.expensemanagement.entity.Notification;
+import com.expense.expensemanagement.model.NotificationCount;
 import com.expense.expensemanagement.model.NotificationModel;
 import com.expense.expensemanagement.model.NotificationSocketMessage;
 import com.expense.expensemanagement.model.NotificationType;
@@ -39,10 +40,12 @@ public class NotificationService implements INotificationService{
         notificationModel.setDescription(description);
         notificationModel.setNotificationType(notificationType);
         notificationModel.setUnread(true);
+        notificationModel.setUserId(userid);
         Notification notification = notificationDao.save(entityModalConversion.getEntity(notificationModel));
         message.setT(entityModalConversion.getModel(notification));
         message.setNotificationType("APPEND");
         messagingTemplate.convertAndSendToUser(userid, "/queue/notification", message);
+        this.broadcastUnreadNotificationCount(userid);
     }
 
     public void getNotifications(String userId){
@@ -55,6 +58,7 @@ public class NotificationService implements INotificationService{
         );
         message.setNotificationType("NEW");
         messagingTemplate.convertAndSendToUser(userId, "/queue/notification", message);
+        this.broadcastUnreadNotificationCount(userId);
     }
 
     public void broadcastNewNotificationToAllUser(String heading, String description, NotificationType notificationType){
@@ -73,6 +77,15 @@ public class NotificationService implements INotificationService{
     public void removeNotification(long id, String userId){
         Notification notification = this.notificationDao.findByUserIdAndId(userId, id).orElseThrow(NoSuchElementException::new);
         notificationDao.delete(notification);
+        this.broadcastUnreadNotificationCount(userId);
+    }
+
+    @Override
+    public void readNotification(long id, String userId) {
+        Notification notification = this.notificationDao.findByUserIdAndId(userId, id).orElseThrow(NoSuchElementException::new);
+        notification.setUnread(false);
+        notificationDao.save(notification);
+        this.broadcastUnreadNotificationCount(userId);
     }
 
     private List<NotificationModel> getNotificationForAllUser(){
@@ -82,5 +95,14 @@ public class NotificationService implements INotificationService{
                 .collect(Collectors.toList());
     }
 
-
+    @Override
+    public void broadcastUnreadNotificationCount(String userId) {
+        int count = this.notificationDao.countByUserIdAndIsUnread(userId, true);
+        NotificationSocketMessage<NotificationCount> message = new NotificationSocketMessage<>();
+        NotificationCount notificationCount = new NotificationCount();
+        notificationCount.setCount(count);
+        message.setT(notificationCount);
+        message.setNotificationType("COUNT");
+        messagingTemplate.convertAndSendToUser(userId, "/queue/count-notification",message);
+    }
 }

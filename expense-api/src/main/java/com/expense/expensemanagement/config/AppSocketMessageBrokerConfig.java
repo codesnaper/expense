@@ -36,7 +36,7 @@ public class AppSocketMessageBrokerConfig implements WebSocketMessageBrokerConfi
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/expense/ws/app") //Destination Header with this will go to controller with @MessageMapping
-                .enableSimpleBroker("/expense/ws/topic/broadcast", "/queue/notification"); //topic: It a Pub-SUB Channel.Queue: direct channel Destination Header with go to controller and resolve with @MessageMapping
+                .enableSimpleBroker("/expense/ws/topic/broadcast", "/queue/notification", "/queue/count-notification"); //topic: It a Pub-SUB Channel.Queue: direct channel Destination Header with go to controller and resolve with @MessageMapping
     }
 
     @Override

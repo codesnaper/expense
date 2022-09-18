@@ -16,4 +16,5 @@ public class NotificationSocketMessage<T extends NotificationModel>{
 
     @JsonProperty("operation")
     private String notificationType;
+
 }

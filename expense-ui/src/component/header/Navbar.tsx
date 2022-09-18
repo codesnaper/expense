@@ -25,6 +25,10 @@ import { ApiError } from '../../modal/response/Error';
 import { AlertType } from '../../modal/ExpenseAlert';
 import ContentLoader from '../ContentLoader';
 import { Stack } from '@mui/system';
+import { Service } from '../../modal/Service';
+import { IMessage } from '@stomp/stompjs';
+import { Notification } from '../../modal/response/Notification';
+import { NotificationOperation, NotificationSocketMessage } from '../../modal/response/NotificationSocketMessage';
 
 function stringToColor(string: string) {
     let hash = 0;
@@ -122,6 +126,14 @@ export default function Navbar(props: NavbarProps) {
     React.useEffect(() => {
         setDarkMode(user.profile?.theme === 'dark');
     },[user])
+
+    React.useEffect(() => {
+        notificationContext.subscribeToCount?.((message: IMessage) => {
+            debugger;
+            const notificaiton: NotificationSocketMessage  = JSON.parse(message.body);
+            setNotificationCount(notificaiton.notification.count);
+        })
+    }, [notificationContext]);
 
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -226,7 +238,7 @@ export default function Navbar(props: NavbarProps) {
                     aria-label="show 17 new notifications"
                     color="inherit"
                 >
-                    <Badge badgeContent={17} color="error">
+                    <Badge badgeContent={notificationCount} color="error">
                         <NotificationsIcon />
                     </Badge>
                 </IconButton>
@@ -332,7 +344,7 @@ export default function Navbar(props: NavbarProps) {
                             aria-label="show 17 new notifications"
                             color="inherit"
                         >
-                            <Badge badgeContent={17} color="error">
+                            <Badge badgeContent={notificationCount} color="error">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>

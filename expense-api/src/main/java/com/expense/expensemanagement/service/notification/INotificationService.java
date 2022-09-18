@@ -1,8 +1,5 @@
 package com.expense.expensemanagement.service.notification;
 
-import com.expense.expensemanagement.entity.Notification;
-import com.expense.expensemanagement.model.NotificationModel;
-import com.expense.expensemanagement.model.NotificationSocketMessage;
 import com.expense.expensemanagement.model.NotificationType;
 
 public interface INotificationService {
@@ -13,4 +10,8 @@ public interface INotificationService {
     void broadcastNewNotificationToAllUser(String heading, String description, NotificationType notificationType);
 
     void removeNotification(long id, String userId);
+
+    void readNotification(long id, String userId);
+
+    void broadcastUnreadNotificationCount(String userId);
 }

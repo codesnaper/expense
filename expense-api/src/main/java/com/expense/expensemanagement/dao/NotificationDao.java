@@ -11,4 +11,6 @@ public interface NotificationDao extends JpaRepository<Notification, Long> {
     List<Notification> findByUserId(String userId);
 
     Optional<Notification> findByUserIdAndId(String userId, long id);
+
+    int countByUserIdAndIsUnread(String userId, boolean isUnread);
 }

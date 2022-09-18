@@ -25,7 +25,6 @@ public class NotificationConversion implements EntityModalConversion<Notificatio
         Notification notification = new Notification();
         notification.setId(notificationModel.getId());
         notification.setUserId(notificationModel.getUserId());
-        notification.setDeletedFalg(true);
         notification.setNotificationType(notificationModel.getNotificationType());
         notification.setDescription(notificationModel.getDescription());
         notification.setHeading(notificationModel.getHeading());

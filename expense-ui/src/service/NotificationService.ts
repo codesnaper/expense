@@ -1,6 +1,7 @@
 import { Configuration } from "../config/Configuration";
 import { Client, IFrame, IMessage, StompHeaders, StompSubscription } from "@stomp/stompjs"
 import { ApiError } from "../modal/response/Error";
+import { rejects } from "assert";
 export class NotificationService {
 
     private wsUrl: string = Configuration.wsUrl;
@@ -103,10 +104,40 @@ export class NotificationService {
         });
     }
 
+    onReadNotification(id: number): void {
+        this.client?.then((client: Client) => {
+            client.publish({
+                destination: `/expense/ws/app/notification/markRead/${id}`,
+                headers: {
+                    'login': this.userName
+                }
+            });
+        });
+    }
+
     subscribeBroadcastAppNotification(headers: StompHeaders= {}): Promise<StompSubscription> {
         return new Promise((resolve, reject) => {
             this.client?.then((client: Client) => {
                 resolve(client.subscribe(`/expense/ws/topic/broadcast`, this.notificationResultCallback, headers));
+            }).catch((err: ApiError) => {
+                reject(err);
+            })
+        });
+    }
+
+    subscribeToBroadcastUnreadNotificationCount(countCallback: (message: IMessage) => void ,headers: StompHeaders= {}): Promise<StompSubscription> {
+        return new Promise((resolve, reject) => {
+            this.client?.then((client: Client) => {
+                resolve(client.subscribe(`/user/queue/count-notification`, countCallback, headers));
+                //On First Subscribe asking server to send result
+                this.client?.then((client: Client) => {
+                    client.publish({
+                        destination: `/expense/ws/app/notification/unread/count`,
+                        headers: {
+                            'login': this.userName
+                        }
+                    });
+                });
             }).catch((err: ApiError) => {
                 reject(err);
             })
