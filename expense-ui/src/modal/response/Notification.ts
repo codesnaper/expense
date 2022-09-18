@@ -5,6 +5,7 @@ export interface Notification{
     notification: NotificationType;
     date: string;
     id: number;
+    count: number;
 }
 
 export enum NotificationType{

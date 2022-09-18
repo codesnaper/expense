@@ -7,5 +7,5 @@ export interface NotificationSocketMessage {
 }
 
 export enum NotificationOperation{
-    NEW, APPEND, DELETE
+    NEW, APPEND, DELETE, COUNT
 }
