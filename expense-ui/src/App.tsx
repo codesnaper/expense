@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AlertContextProvider } from './provider/AlertProvider';
 import CategoryComponent from './component/Category';
 import LimitComponent from './component/Limit';
-import NotificationComponent from './component/Header/Notification';
+import NotificationComponent from './component/Notification';
 const Home = React.lazy(() => import('./component/Home/Home'));
 const BankComponent = React.lazy(() => import('./component/Bank'));
 const AccountComponent = React.lazy(() => import('./component/Accounts'));

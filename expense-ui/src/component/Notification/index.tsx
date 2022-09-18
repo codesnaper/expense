@@ -1,15 +1,15 @@
 import { Button, Card, Container, Divider, Grid, List, ListSubheader, Paper } from "@mui/material";
 import { blue, green, red, yellow } from "@mui/material/colors";
 import { Box, Stack } from "@mui/system";
-import { Notification, NotificationType } from "../../../modal/response/Notification";
-import PlaceholderCard from "../../PlaceholderCard";
+import { Notification, NotificationType } from "../../modal/response/Notification";
+import PlaceholderCard from "../PlaceholderCard";
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { useContext, useEffect, useState } from "react";
 import { InfoOutlined, MoneyOutlined, SummarizeOutlined, SvgIconComponent } from "@mui/icons-material";
 import RuleFolder from "@mui/icons-material/RuleFolder";
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { NotificationContext } from "../../../context";
-import { NotificationOperation, NotificationSocketMessage } from "../../../modal/response/NotificationSocketMessage";
+import { NotificationContext } from "../../context";
+import { NotificationOperation } from "../../modal/response/NotificationSocketMessage";
 import NotificationItem from "./Item";
 
 

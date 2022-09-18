@@ -56,6 +56,10 @@ export class NotificationService {
                     timestamp: new Date()
                 })
             };
+            client.onStompError = (reciept: IFrame) => {
+                console.log('error');
+                console.log(JSON.stringify(reciept.body))
+            }
         });
     }
 
@@ -82,6 +86,27 @@ export class NotificationService {
         return new Promise((resolve, reject) => {
             this.client?.then((client: Client) => {
                 resolve(client.subscribe(`/user/queue/notification`, this.notificationResultCallback, headers));
+            }).catch((err: ApiError) => {
+                reject(err);
+            })
+        });
+    }
+
+    deleteNotification(id: number): void {
+        this.client?.then((client: Client) => {
+            client.publish({
+                destination: `/expense/ws/app/notification/delete/${id}`,
+                headers: {
+                    'login': this.userName
+                }
+            });
+        });
+    }
+
+    subscribeBroadcastAppNotification(headers: StompHeaders= {}): Promise<StompSubscription> {
+        return new Promise((resolve, reject) => {
+            this.client?.then((client: Client) => {
+                resolve(client.subscribe(`/expense/ws/topic/broadcast`, this.notificationResultCallback, headers));
             }).catch((err: ApiError) => {
                 reject(err);
             })
