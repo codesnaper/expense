@@ -7,7 +7,10 @@ import com.expense.expensemanagement.model.NotificationType;
 
 public interface INotificationService {
 
-    void sendNotificationToUser(String userId, NotificationSocketMessage<NotificationModel> notification);
-
+    void getNotifications(String userId);
     void sendNewNotification(String userid,String heading, String description, NotificationType notificationType);
+
+    void broadcastNewNotificationToAllUser(String heading, String description, NotificationType notificationType);
+
+    void removeNotification(long id, String userId);
 }

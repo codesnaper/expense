@@ -3,7 +3,6 @@ import { blue, green, red, yellow } from "@mui/material/colors";
 import { Box, Stack } from "@mui/system";
 import { Notification, NotificationType } from "../../../modal/response/Notification";
 import PlaceholderCard from "../../PlaceholderCard";
-import NotificationItem from "./Item";
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { useContext, useEffect, useState } from "react";
 import { InfoOutlined, MoneyOutlined, SummarizeOutlined, SvgIconComponent } from "@mui/icons-material";
@@ -11,6 +10,7 @@ import RuleFolder from "@mui/icons-material/RuleFolder";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { NotificationContext } from "../../../context";
 import { NotificationOperation, NotificationSocketMessage } from "../../../modal/response/NotificationSocketMessage";
+import NotificationItem from "./Item";
 
 
 export default function NotificationComponent() {
@@ -84,7 +84,7 @@ export default function NotificationComponent() {
                 <Grid container spacing={2}>
                     <Grid item xs={12} sx={{ marginTop: '24px' }}>
                         <Paper elevation={3}>
-                            <List dense={true} subheader={
+                            <List subheader={
                                 <>
                                     <ListSubheader component="div" id="notificationListHeader">
                                         Notifications

@@ -1,18 +1,21 @@
 package com.expense.expensemanagement.service.notification;
 
+import com.expense.expensemanagement.conversion.EntityModalConversion;
+import com.expense.expensemanagement.dao.NotificationDao;
+import com.expense.expensemanagement.entity.Notification;
 import com.expense.expensemanagement.model.NotificationModel;
 import com.expense.expensemanagement.model.NotificationSocketMessage;
 import com.expense.expensemanagement.model.NotificationType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -21,17 +24,12 @@ public class NotificationService implements INotificationService{
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    @SendToUser
-    public void sendNotificationToUser(String userId, NotificationSocketMessage<NotificationModel> notification){
-        Assert.notNull(userId,"Userid should be present");
-        log.debug("Sending Notification to user...");
-        Map<String, Object> header = new HashMap<>();
-        header.put("TYPE","ADD");
-        System.out.println(userId);
-        messagingTemplate.convertAndSendToUser(userId, "/queue/notification", notification, header);
-        log.debug("Notification [{0}] has been send to user [{1}]", notification, userId);
-        log.info("Send notification to user {0}",userId);
-    }
+    @Autowired
+    private NotificationDao notificationDao;
+
+    @Autowired
+    @Qualifier("notificationConversion")
+    private EntityModalConversion<Notification, NotificationModel> entityModalConversion;
 
     @Override
     public void sendNewNotification(String userid, String heading, String description, NotificationType notificationType) {
@@ -41,11 +39,47 @@ public class NotificationService implements INotificationService{
         notificationModel.setDescription(description);
         notificationModel.setNotificationType(notificationType);
         notificationModel.setUnread(true);
-        notificationModel.setDate(new Date());
-        //TODO: save this model into db also
-        message.setT(notificationModel);
+        Notification notification = notificationDao.save(entityModalConversion.getEntity(notificationModel));
+        message.setT(entityModalConversion.getModel(notification));
         message.setNotificationType("APPEND");
         messagingTemplate.convertAndSendToUser(userid, "/queue/notification", message);
+    }
+
+    public void getNotifications(String userId){
+        NotificationSocketMessage<NotificationModel> message = new NotificationSocketMessage<>();
+        message.setTs(
+                notificationDao.findByUserId(userId)
+                        .stream()
+                        .map(entityModalConversion::getModel)
+                        .collect(Collectors.toList())
+        );
+        message.setNotificationType("NEW");
+        messagingTemplate.convertAndSendToUser(userId, "/queue/notification", message);
+    }
+
+    public void broadcastNewNotificationToAllUser(String heading, String description, NotificationType notificationType){
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.setUserId("-1");
+        notificationModel.setNotificationType(notificationType);
+        notificationModel.setHeading(heading);
+        notificationModel.setDescription(description);
+        Notification notification = this.notificationDao.save(entityModalConversion.getEntity(notificationModel));
+        NotificationSocketMessage<NotificationModel> message = new NotificationSocketMessage<>();
+        message.setT(entityModalConversion.getModel(notification));
+        message.setNotificationType("APPEND");
+        messagingTemplate.convertAndSend("/expense/ws/topic/broadcast", new GenericMessage<>(message));
+    }
+
+    public void removeNotification(long id, String userId){
+        Notification notification = this.notificationDao.findByUserIdAndId(userId, id).orElseThrow(NoSuchElementException::new);
+        notificationDao.delete(notification);
+    }
+
+    private List<NotificationModel> getNotificationForAllUser(){
+        return notificationDao.findByUserId("-1")
+                .stream()
+                .map(entityModalConversion::getModel)
+                .collect(Collectors.toList());
     }
 
 

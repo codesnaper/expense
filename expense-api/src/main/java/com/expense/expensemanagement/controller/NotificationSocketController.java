@@ -1,48 +1,54 @@
 package com.expense.expensemanagement.controller;
 
-import com.expense.expensemanagement.entity.Notification;
 import com.expense.expensemanagement.exception.AuthenticationFailedException;
 import com.expense.expensemanagement.exception.modal.ErrorCode;
 import com.expense.expensemanagement.exception.modal.ErrorResponse;
-import com.expense.expensemanagement.model.NotificationModel;
-import com.expense.expensemanagement.model.NotificationSocketMessage;
+import com.expense.expensemanagement.service.notification.INotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SendToUser;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.NoSuchElementException;
 
 @Controller
 public class NotificationSocketController {
+
+    @Autowired
+    private INotificationService notificationService;
 
     @MessageMapping("/notification/refresh")
     public void sendSpecific(Principal user) throws Exception {
         if(user == null && user.getName() == null){
             throw new AuthenticationFailedException("User not known");
         }
-        //fetch notification from service and send to sendNotification
-
+        notificationService.getNotifications(user.getName());
     }
 
-    //            simpMessagingTemplate.convertAndSend("/expense/ws/topic/notification",new GenericMessage<>(messages));
-
-    @MessageMapping("/notification")
-    @SendToUser("/queue/notification")
-    public NotificationSocketMessage<NotificationModel> sendNotification(NotificationSocketMessage<NotificationModel> message){
-        return message;
+    @MessageMapping("/notification/delete/{notificationId}")
+    public void deleteNotification(@DestinationVariable long id, Principal user){
+        if(user == null && user.getName() == null){
+            throw new AuthenticationFailedException("User not known");
+        }
+        notificationService.removeNotification(id, user.getName());
     }
 
     @MessageExceptionHandler
     public ErrorResponse handleException(Exception ex){
+        ErrorCode errorCode = ErrorCode.WS_NOTIFICATION_REFRESH;
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        if(ex instanceof AuthenticationFailedException){
+            errorCode = ErrorCode.AUTHENTICATION;
+            status = HttpStatus.UNAUTHORIZED;
+        } else if (ex instanceof NoSuchElementException) {
+            errorCode = ErrorCode.NO_ELEMENT;
+            status = HttpStatus.BAD_REQUEST;
+        }
         return new ErrorResponse(
-                ex.getMessage(), ErrorCode.WS_NOTIFICATION_REFRESH, HttpStatus.INTERNAL_SERVER_ERROR
+                ex.getMessage(), errorCode, status
         );
     }
 

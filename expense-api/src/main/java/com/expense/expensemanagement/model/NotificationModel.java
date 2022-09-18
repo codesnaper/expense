@@ -2,6 +2,7 @@ package com.expense.expensemanagement.model;
 
 import lombok.Data;
 
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Data
@@ -18,5 +19,8 @@ public class NotificationModel {
     private NotificationType notificationType;
 
     private Date date;
+
+    @Transient
+    private String userId;
 
 }

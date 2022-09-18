@@ -3,8 +3,6 @@ package com.expense.expensemanagement.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.support.ChannelInterceptor;
@@ -37,11 +35,8 @@ public class AppSocketMessageBrokerConfig implements WebSocketMessageBrokerConfi
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-//        registry.enableSimpleBroker("/queue/notification/refresh","/queue/notification");
-//        registry.setUserDestinationPrefix("/user");
         registry.setApplicationDestinationPrefixes("/expense/ws/app") //Destination Header with this will go to controller with @MessageMapping
-                .enableSimpleBroker("/expense/ws/topic", "/queue/notification"); //topic: It a Pub-SUB Channel.Queue: direct channel Destination Header with go to controller and resolve with @MessageMapping
-//        registry.setUserDestinationPrefix("/expense/ws/user"); //By Default spring take /user/ as destination prefix. We can override with this.
+                .enableSimpleBroker("/expense/ws/topic/broadcast", "/queue/notification"); //topic: It a Pub-SUB Channel.Queue: direct channel Destination Header with go to controller and resolve with @MessageMapping
     }
 
     @Override

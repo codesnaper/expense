@@ -1,5 +1,6 @@
 package com.expense.expensemanagement.entity;
 
+import com.expense.expensemanagement.model.NotificationType;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -40,6 +41,8 @@ public class Notification {
 
     @CreationTimestamp
     private Date createdDate;
+
+    private NotificationType notificationType;
 
     private boolean isUnread;
 
