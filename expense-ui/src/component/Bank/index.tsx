@@ -153,6 +153,7 @@ export default function BankComponent() {
     }, [service])
 
     const addModalCallback = (bank: BankModal) => {
+        bank.tagNames = bank.tags.map((tag:Tag) => tag.name ).join(',');
         if (bankDataSet) {
             createBankDataSet([...bankDataSet.rows, bank]);
         } else {
@@ -164,6 +165,7 @@ export default function BankComponent() {
     }
 
     const editModalCallback = (id: string, editedBank: BankModal) => {
+        editedBank.tagNames = editedBank.tags.map((tag:Tag) => tag.name ).join(',');
         if (bankDataSet) {
             const banks: Array<BankModal> = bankDataSet.rows
                 .map((bank: BankModal) => {
@@ -217,7 +219,7 @@ export default function BankComponent() {
                     setTotalBank(totalBank - 1);
                     setTotalCreditAmount(totalCreditAmount - Number(bank.creditAmount));
                     setTotalDebitAmount(totalDebitAmount - Number(bank.debitAmount));
-                    expenseAlert.setAlert?.(res.message, AlertType.SUCCESS);
+                    expenseAlert.setAlert?.('Bank has been deleted successfully', AlertType.SUCCESS);
                 }
             }).
             catch(err => {

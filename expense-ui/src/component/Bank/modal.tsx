@@ -123,7 +123,8 @@ export default function ModalBank(props: ModalBankProps) {
             setAddLoader(true);
             if (props.bank) {
                 const id = props.bank.ID;
-                service.bankService?.updateBank(data, id)
+                data.ID = id;
+                service.bankService?.updateBank(data)
                     .then(res => {
                         handleClose();
                         props.editCallback(id, res);
@@ -142,10 +143,6 @@ export default function ModalBank(props: ModalBankProps) {
                     })
             }
         }
-    }
-
-    const formRefreshError = () => {
-        refreshError();
     }
 
     return (
