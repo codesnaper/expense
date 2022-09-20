@@ -1,45 +1,52 @@
+import { BankModal } from "./Bank";
+import { Tag } from "./Tag";
 
-export class Account {
-    ID = '';
-    name = '' ;
-    accountNo = '';
-    principal = 0;
-    BANKID= '';
-    loanType=false;
-    isInterest=false;
-    openDate = '';
+export interface Account{
+    id: number;
+    name: string;
+    accountNumber: string;
+    amount: number;
+    openDate: Date;
+    endDate: Date;
+    createdDate: Date;
+    tags: Array<Tag>;
+    bank: BankModal;
 }
 
-export class LoanAccount extends Account {
-    rate = 0;
-    tenure = 0;
-    interestAmount = 0;
-    totalPayment = 0;
-    totalInterest =0;
-    emiPaid = 0;
+export interface LoanAccount extends Account{
+    rate: number;
+    tenure: number;
+    interestAmount: number;
+    isLendType: boolean
 }
 
-export class SavingInterestAccount extends Account{
-    compoundSaving = false;
-    compoundingYear = 0;
-    maturityAmount = 0;
+export interface SCIAccount extends Account{
+    rate: number;
+    tenure: number;
+    maturityAmount : number;
+    compoundYear: boolean
+    accountEndDate: Date;
 }
 
-export class AccountResponse{
-    Items!: Array<AccountResponseItem>;
+export interface SIAccount extends Account {
+    rate: number;
+    tenure: number;
+    maturityAmount: number;
+    accountEndDate: Date;
+}
+
+export class AccountResponse<T>{
+    Items!: Array<T>;
     Count!: number;
-    ScannedCount!: number;
+    pageNo!: number;
+    pageSize!: number;
 }
 
-export class AccountResponseItem extends Account{
-    rate = 0;
-    tenure = 0;
-    interestAmount = 0;
-    totalPayment = 0;
-    totalInterest =0;
-    emiPaid = 0;
-    compoundSaving = false;
-    compoundingYear = 0;
-    maturityAmount = 0;
-}
 
+export enum AccountType{
+    LOAN = 'LOAN',
+    ACCOUNT = 'ACCOUNT',
+    MONEY_LENDING = 'MONEY_LENDING',
+    SAVING_INTEREST = 'SAVING_INTEREST',
+    SAVING_COMPOUND_INTEREST = 'SAVING_COMPOUND_INTEREST'
+}

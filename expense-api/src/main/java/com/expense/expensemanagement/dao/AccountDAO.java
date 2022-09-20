@@ -1,7 +1,6 @@
 package com.expense.expensemanagement.dao;
 
 import com.expense.expensemanagement.entity.Account;
-import com.expense.expensemanagement.entity.Bank;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface AccountDAO extends PagingAndSortingRepository<Account, Long > {
 
-    Page<Account> findByBank(long bankId, Pageable pageable);
+    Page<Account> findByBankId(long bankId, Pageable pageable);
 
     @Query(value = "" +
             "SELECT account.accountType, COUNT(account.accountType) FROM Account AS account " +

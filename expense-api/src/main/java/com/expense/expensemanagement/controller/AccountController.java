@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping(value = "/expense/api/v1/bank/${expense.bank.variable.bankId}/account")
+@RequestMapping(value = "/expense/api/v1/bank/{bank-id}/account")
 @Slf4j
 public class AccountController {
 
@@ -61,7 +61,7 @@ public class AccountController {
         return null;
     }
 
-    @GetMapping(value = "${expense.account.bank.getAll}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/type={account-type}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseList<? extends AccountModel> accountModelResponseList(
             @PathVariable("account-type") AccountType accountType,
             @PathVariable("bank-id") long bankId,

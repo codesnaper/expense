@@ -9,9 +9,28 @@ export class BankService {
         this.baseUrl = Configuration.resourceVersion;
     }
 
-    public fetchBanks(): Promise<BankModalsResponse>{
+    public fetchBanks(pageNo: number, pageSize: number): Promise<BankModalsResponse>{
         return new Promise((resolve, reject) => {
-            Api.get(`${this.baseUrl}bank/`)
+            Api.get(`${this.baseUrl}bank/`, {
+                headers:{
+                    'pageNo': new Number(pageNo).toString(),
+                    'size': new Number(pageSize).toString()
+                }
+            })
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
+        });
+    }
+
+    public fetchBank(bankId: number): Promise<BankModal>{
+        return new Promise((resolve, reject) => {
+            Api.get(`${this.baseUrl}bank/${bankId}`)
             .then(res => resolve(res.data))
             .catch(err => reject({
                 status: err.response.data?.status,

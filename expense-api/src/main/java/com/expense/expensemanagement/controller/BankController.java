@@ -2,7 +2,6 @@ package com.expense.expensemanagement.controller;
 
 import com.expense.expensemanagement.config.security.auth.JwtAuthenticationToken;
 import com.expense.expensemanagement.model.BankModel;
-import com.expense.expensemanagement.model.NotificationType;
 import com.expense.expensemanagement.model.ResponseList;
 import com.expense.expensemanagement.model.UserContext;
 import com.expense.expensemanagement.service.bank.IBankService;
@@ -48,8 +47,15 @@ public class BankController {
             @RequestHeader(name = "size",defaultValue = "10", required = false) int pageSize,
             Principal principal
     ){
-        notificationService.sendNewNotification(ExpenseUtil.getUserId(principal), "Sample","This is sample notification", NotificationType.INFO);
         return this.bankService.getAllBanks(((UserContext)((JwtAuthenticationToken) principal).getPrincipal()).getUsername(), pageNo,pageSize);
+    }
+
+    @GetMapping(value = "/{bank-id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BankModel getBank(
+           @PathVariable("bank-id") long id,
+            Principal principal
+    ){
+        return this.bankService.findById(id, ExpenseUtil.getUserId(principal));
     }
 
     @DeleteMapping(value = "${expense.bank.delete}", produces = MediaType.APPLICATION_JSON_VALUE)

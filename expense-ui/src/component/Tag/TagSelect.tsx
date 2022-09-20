@@ -127,7 +127,7 @@ export default function TagSelect(props: TagSelectProps) {
 
     return (
         <>
-            <FormControl sx={{ m: 1, width: 300 }}>
+            <FormControl sx={{ m: 1, width: 300 }} >
                 <InputLabel id="demo-multiple-chip-label">Tag</InputLabel>
                 <Select
                     labelId="demo-multiple-chip-label"

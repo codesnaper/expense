@@ -32,6 +32,9 @@ export default function BankComponent() {
     const service = useContext(ServiceContext);
     const localization = useContext(LocalizationContext);
     const expenseAlert = useContext(AlertContext);
+    const [page, setPage] = useState<number>(0);
+    const [size, setSize] = useState<number>(10);
+    const [totalElement, setTotalElement] = useState<number>(0);
 
     const createBankDataSet = (banks: Array<BankModal>) => {
         const dataSet: TableDataSet<BankModal> = new TableDataSet<BankModal>(
@@ -126,7 +129,7 @@ export default function BankComponent() {
     }
 
     useEffect(() => {
-        service.bankService?.fetchBanks()
+        service.bankService?.fetchBanks(page, size)
             .then((response: BankModalsResponse) => {
                 let banks: BankModal[] = [];
                 let sumCreditAmount: number = 0;

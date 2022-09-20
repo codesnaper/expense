@@ -151,9 +151,9 @@ export default function LimitModal(props: LimitModalProps) {
                                 error={errors.accountId ? true : false}
                                 onChange={handleSelectChange('accountId')}
                             >
-                                {props.accounts.map((account: Account, index: number) => (
+                                {/* {props.accounts.map((account: Account, index: number) => (
                                     <MenuItem key={index} value={account.ID}>{account.name}</MenuItem>
-                                ))}
+                                ))} */}
                                 {props.accounts.length === 0 && <>
                                     <ListItemButton disableRipple={true}>
                                         <Button href="/bank" startIcon={<LaunchIcon></LaunchIcon>} disableRipple={true} sx={{ width: '100%' }}>

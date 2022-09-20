@@ -8,7 +8,6 @@ import com.expense.expensemanagement.model.AccountType;
 import com.expense.expensemanagement.model.ResponseList;
 import com.expense.expensemanagement.service.bank.IBankService;
 import com.expense.expensemanagement.service.tagMapping.TagMapping;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -76,7 +75,7 @@ public class AccountService implements IAccountService {
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
         switch (accountType) {
             case ACCOUNT:
-                accounts = this.accountDAO.findByBank(bankId, pageRequest);
+                accounts = this.accountDAO.findByBankId(bankId, pageRequest);
                 break;
             case LOAN:
                 accounts = this.loanAccountDAO.findByBankIdAndLendAccount(bankId, false, pageRequest);

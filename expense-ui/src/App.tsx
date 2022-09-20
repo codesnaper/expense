@@ -10,7 +10,7 @@ import LimitComponent from './component/Limit';
 import NotificationComponent from './component/Notification';
 const Home = React.lazy(() => import('./component/Home/Home'));
 const BankComponent = React.lazy(() => import('./component/Bank'));
-const AccountComponent = React.lazy(() => import('./component/Accounts'));
+const AccountComponent = React.lazy(() => import('./component/Accounts/accounts'));
 function App() {
   return (
     <Router>
@@ -20,6 +20,7 @@ function App() {
             <Routes>
               <Route path="/*" element={<Home />} />
               <Route path="/bank" element={<BankComponent />} />
+              <Route path="/account" element={<AccountComponent></AccountComponent>}/>
               <Route path="/account/:bankId" element={<AccountComponent></AccountComponent>}/>
               <Route path="/category" element={<CategoryComponent />} />
               <Route path="/limit" element={<LimitComponent/>} />

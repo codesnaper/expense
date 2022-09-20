@@ -87,6 +87,12 @@ public class BankService implements IBankService {
     }
 
     @Override
+    public BankModel findById(long id, String userId) {
+        Bank bank = this.bankDAO.findByUserIdAndId(userId, id).orElseThrow(() -> new NoSuchElementException("Bank Id is not found."));
+        return bankEntityModalConversion.getModel(bank);
+    }
+
+    @Override
     public Bank findById(long id) {
         return this.bankDAO.findById(id).orElseThrow(() -> new NoSuchElementException("Bank Id is not found."));
     }

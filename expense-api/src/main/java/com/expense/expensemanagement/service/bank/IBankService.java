@@ -34,5 +34,7 @@ public interface IBankService {
      */
     BankModel updateBank(BankModel bankModel);
 
+    BankModel findById(long id, String userId);
+
     Bank findById(long id);
 }
