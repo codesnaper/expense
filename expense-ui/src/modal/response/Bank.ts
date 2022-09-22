@@ -12,6 +12,7 @@ export class BankModal{
     debitAmount!: number;
     accounts!: number;
     holdAmount!: number;
+    totalAccounts!: number;
 }
 
 export class BankModalsResponse{

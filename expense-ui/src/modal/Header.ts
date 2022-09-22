@@ -12,11 +12,11 @@ export enum HeaderDisplay{
 }
 
 export interface Header{
-    alias: string;
-    isPrimaryKey: boolean;
-    isVisible: boolean;
-    type: HeaderType;
-    display: HeaderDisplay
+    alias?: string;
+    isPrimaryKey?: boolean;
+    isVisible?: boolean;
+    type?: HeaderType;
+    display?: HeaderDisplay
 }
 
 export type Headers<T extends {}> = Record<keyof T, Header>;

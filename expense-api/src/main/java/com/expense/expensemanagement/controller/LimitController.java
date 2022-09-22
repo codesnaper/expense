@@ -22,12 +22,15 @@ public class LimitController {
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseList<LimitModel> getLimits(@RequestHeader(name = "pageNo",defaultValue = "0", required = false) int pageNo,
-                                              @RequestHeader(name = "size",defaultValue = "10", required = false) int pageSize) throws IllegalAccessException {
-        return this.limitService.getLimits(pageNo,pageSize);
+                                              @RequestHeader(name = "size",defaultValue = "10", required = false) int pageSize,
+                                              Principal principal
+                                              ) throws IllegalAccessException {
+        return this.limitService.getLimits(pageNo,pageSize, ExpenseUtil.getUserId(principal));
 
     }
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public LimitModel addLimit(@RequestBody LimitModel limitModel) throws IllegalAccessException {
+    public LimitModel addLimit(@RequestBody LimitModel limitModel, Principal principal) throws IllegalAccessException {
+        limitModel.setUserid(ExpenseUtil.getUserId(principal));
         return this.limitService.addLimit(limitModel);
 
     }
@@ -37,7 +40,7 @@ public class LimitController {
         limitModel.setUserid(ExpenseUtil.getUserId(principal));
         return this.limitService.updateLimit(limitModel);
     }
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteLimit(@PathVariable long id,Principal principal) throws IllegalAccessException {
         this.limitService.deleteLimit(id,ExpenseUtil.getUserId(principal));
     }

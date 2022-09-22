@@ -1,3 +1,4 @@
+import { type } from "os";
 import { BankModal } from "./Bank";
 import { Tag } from "./Tag";
 
@@ -11,6 +12,7 @@ export interface Account{
     createdDate: Date;
     tags: Array<Tag>;
     bank: BankModal;
+    tagName: string;
 }
 
 export interface LoanAccount extends Account{
@@ -48,5 +50,9 @@ export enum AccountType{
     ACCOUNT = 'ACCOUNT',
     MONEY_LENDING = 'MONEY_LENDING',
     SAVING_INTEREST = 'SAVING_INTEREST',
-    SAVING_COMPOUND_INTEREST = 'SAVING_COMPOUND_INTEREST'
+    SAVING_COMPOUND_INTEREST = 'SAVING_COMPOUND_INTEREST',
+    ALL='ALL'
 }
+
+export type LoanAccountType = LoanAccount;
+export type AccountT = Account;

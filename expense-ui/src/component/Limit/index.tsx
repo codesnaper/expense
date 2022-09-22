@@ -1,10 +1,9 @@
-import { Button, Card, Divider, Grid, List, ListItem, Paper, Stack, Typography } from "@mui/material";
+import { Button, Card, CardContent, Divider, Grid, List, ListItem, Paper, Stack, Typography } from "@mui/material";
 import { Box, Container } from "@mui/system";
 import { useContext, useEffect, useState } from "react";
 import { AlertContext, ServiceContext } from "../../context";
 import ContentLoader from "../ContentLoader";
 import RuleFolderIcon from '@mui/icons-material/RuleFolder';
-import LimitItem from "./LimitItem";
 import { Limit } from "../../modal/response/Limit";
 import LimitModal from "./Model";
 import Pagination from "../Pagination";
@@ -13,10 +12,16 @@ import { ApiError } from "../../modal/response/Error";
 import { AlertType } from "../../modal/ExpenseAlert";
 import PlaceholderCard from "../PlaceholderCard";
 import AddIcon from '@mui/icons-material/Add';
+import { Category } from "../../modal/response/Category";
+import { TableDataSet } from "../../modal/TableDataSet";
+import limitDataSet from "../../Dataset/LimitDataSet";
+import ExpenseTable from "../Table";
 
 export default function LimitComponent() {
 
     const [loader, setLoader] = useState<boolean>(false);
+
+    const [deleteLoader, setDeleteLoader] = useState<boolean>(false);
 
     const service = useContext(ServiceContext);
 
@@ -32,16 +37,19 @@ export default function LimitComponent() {
 
     const [totalElement, setTotalElement] = useState<number>(0);
 
+    const [categories, setCategories] = useState<Category[]>([]);
+
+    const [limitTableDataset, setLimitTableDataset] = useState<TableDataSet<Limit>>(limitDataSet([]));
+
     const onSaveLimit = (limit: Limit) => {
-        setLimits([...limits, limit]);
-    }
-
-    const onEditLimit = (limit: Limit) => {
-        
-    }
-
-    const onDeleteLimit = (limit: Limit) => {
-        
+        if(totalElement <= 10){
+            const limits: Limit[] = limitTableDataset.rows;
+            limits.push(limit);
+            limitTableDataset.rows = limits;
+            setLimitTableDataset(limitTableDataset);
+            setTotalElement(totalElement + 1);
+        }
+        setOpenModel(false);
     }
 
     useEffect(() => {
@@ -52,18 +60,58 @@ export default function LimitComponent() {
                 setPage(res.pageNo);
                 setPageSize(res.pageSize);
                 setLimits(res.Items);
+                const limitTableDataSet = limitDataSet(res.Items);
+                limitTableDataSet.action = {
+                    add: true,
+                    show: false,
+                    delete: true,
+                    edit: true
+                }
+                setLimitTableDataset(limitTableDataSet);
+
+                service.categoryService?.fetchAllCategory().then((categories: Category[]) => {
+                    setCategories(categories);
+                    setLoader(false);
+                })
+                    .catch((err: ApiError) => {
+                        expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+                    })
+                    .finally(() => {
+                        setLoader(false);
+                    });
             })
             .catch((err: ApiError) => {
                 expenseAlert.setAlert?.(err.message, AlertType.ERROR);
             })
             .finally(() => {
                 setLoader(false);
-            })
+            });
     }, [service])
 
     const pageEvent = (pageNo: number, pageSize: number) => {
         setPage(pageNo);
         setPageSize(pageSize);
+    }
+
+    const deleteLimit = (deletedLimit: Limit) => {
+        setDeleteLoader(true);
+        service.limitService?.deleteLimit(deletedLimit.id)
+            .then(() => {
+                let limits: Array<Limit> = limitTableDataset.rows;
+                    const fetchIndex: number = limits.findIndex((limit: Limit) => limit.id === deletedLimit.id);
+                    if (fetchIndex !== -1) {
+                        limits.splice(fetchIndex, 1);
+                    }
+                    limitTableDataset.rows = limits;
+                    setLimitTableDataset(limitTableDataset)
+                    expenseAlert.setAlert?.('Limit has been deleted successfully', AlertType.SUCCESS);
+            }).
+            catch((err: ApiError) => {
+                expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+            })
+            .finally(() => {
+                setDeleteLoader(false);
+            })
     }
 
     return (
@@ -72,44 +120,52 @@ export default function LimitComponent() {
                 <ContentLoader heading={`Loading Limits !!!`}>
                 </ContentLoader>
             }
-            <Box component={Container} sx={{ paddingTop: '40px' }} maxWidth={'false'}>
-                {totalElement === 0 ?
-                    <>
-                        <Card raised sx={{ marginTop: '40px' }}>
-                            <PlaceholderCard heading='Limit'
-                                info='Add your limit to manage your expenses.'
-                            >
-                                <RuleFolderIcon fontSize="inherit"></RuleFolderIcon>
-                                <Button size="large" onClick={() => setOpenModel(true)} >
-                                    <AddIcon sx={{ mr: 1 }} />
-                                    Add Limit
-                                </Button>
-                            </PlaceholderCard>
-                        </Card>
-                    </> : <>
-                        <Paper elevation={6} sx={{ padding: '24px' }}>
-                            <Stack sx={{ marginBottom: '12px' }} direction='row'>
-                                <Typography variant="h5" component={'div'} ><RuleFolderIcon></RuleFolderIcon> Expense Limit</Typography>
-                                <Button sx={{ marginLeft: 'auto' }} variant="contained" onClick={() => setOpenModel(!openModel)}>Add Limit</Button>
-                            </Stack>
-                            <Divider></Divider>
-                            <Grid container spacing={2} sx={{ marginTop: '12px' }}>
-                                <List sx={{ width: '100vw' }}>
-                                    {limits.map((limit: Limit) => <>
-                                        <ListItem disablePadding>
-                                            <LimitItem onEdit={onEditLimit} onDelete={onDeleteLimit} limit={limit}></LimitItem>
-                                        </ListItem>
-                                    </>)}
-                                </List>
-                            </Grid>
-                            <Pagination page={page} pageSize={pageSize} totalElement={totalElement} onPageEvent={pageEvent}></Pagination>
-                        </Paper>
-                    </>
-                }
-            </Box>
+            {deleteLoader &&
+                <ContentLoader heading={`Deleting Limits !!!`}>
+                </ContentLoader>
+            }
+            {!loader &&
+                <>
+                    <Box component={Container}>
+                        {limitTableDataset.rows.length === 0 ?
+                            <>
+                                <Card raised sx={{ marginTop: '40px' }}>
+                                    <PlaceholderCard heading='Limit'
+                                        info='Add your limit to manage your expenses.'
+                                    >
+                                        <RuleFolderIcon fontSize="inherit"></RuleFolderIcon>
+                                        <Button size="large" onClick={() => setOpenModel(true)} >
+                                            <AddIcon sx={{ mr: 1 }} />
+                                            Add Limit
+                                        </Button>
+                                    </PlaceholderCard>
+                                </Card>
+                            </> : <>
+                                <Box component={Container} maxWidth={'false'} height={'100vh'} sx={{ paddingTop: '40px' }} >
+                                    <Grid container spacing={2} sx={{ marginTop: '12px', width: '100%' }}>
+                                        <Card raised sx={{ marginBottom: '40px', width: '100%' }}>
+                                            <CardContent>
+                                                <Typography variant="h5" component={'div'} ><RuleFolderIcon></RuleFolderIcon> Expense Limit</Typography>
+                                                <Divider sx={{ marginBottom: '12px', marginTop: '12px' }}></Divider>
+                                                <ExpenseTable
+                                                    dataset={limitTableDataset}
+                                                    // showActionCallback={(row) => viewAccounts(row)}
+                                                    // editActionCallback={(row) => editBank(row)}
+                                                    deleteActionCallback={deleteLimit}
+                                                    addActionCallback={() => setOpenModel(true)}
+                                                ></ExpenseTable>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                    <Pagination page={page} pageSize={pageSize} totalElement={totalElement} onPageEvent={pageEvent}></Pagination>
+                                </Box>
+                            </>
+                        }
+                    </Box>
+                </>
+            }
             <LimitModal
-                accounts={[]}
-                categories={[]}
+                categories={categories}
                 openModal={openModel}
                 onClose={(openModal: boolean) => setOpenModel(openModal)}
                 onSave={onSaveLimit}

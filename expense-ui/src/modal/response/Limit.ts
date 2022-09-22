@@ -14,9 +14,9 @@ export interface Limit {
 }
 
 export enum Recursively {
-    DAY = 'day',
-    MONTH = 'month',
-    YEAR = 'year'
+    DAY = 'DAILY',
+    MONTH = 'MONTHLY',
+    YEAR = 'YEARLY'
 }
 
 export enum Priority{

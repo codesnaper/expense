@@ -63,6 +63,13 @@ export default function SIAccountDataSet(accounts: Array<SIAccount>) : TableData
             },
             tags:{
                 alias: 'Tags',
+                display: HeaderDisplay.HIDDEN,
+                isPrimaryKey: false,
+                isVisible: true,
+                type: HeaderType.tag
+            },
+            tagName: {
+                alias: 'Tags',
                 display: HeaderDisplay.NONE,
                 isPrimaryKey: false,
                 isVisible: true,

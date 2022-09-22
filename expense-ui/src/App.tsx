@@ -10,7 +10,7 @@ import LimitComponent from './component/Limit';
 import NotificationComponent from './component/Notification';
 const Home = React.lazy(() => import('./component/Home/Home'));
 const BankComponent = React.lazy(() => import('./component/Bank'));
-const AccountComponent = React.lazy(() => import('./component/Accounts/accounts'));
+const AccountComponent = React.lazy(() => import('./component/Accounts'));
 function App() {
   return (
     <Router>

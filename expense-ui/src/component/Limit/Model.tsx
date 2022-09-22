@@ -1,19 +1,21 @@
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, ListItemButton, ListItemText, MenuItem, Paper, PaperProps, Select, Stack, TextField, Typography } from "@mui/material";
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, ListItemButton, ListItemText, MenuItem, OutlinedInput, Paper, PaperProps, Select, Stack, TextField, Typography } from "@mui/material";
 import { blue, red } from "@mui/material/colors";
 import { Box } from "@mui/system";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Draggable from "react-draggable";
 import { AlertContext, ServiceContext } from "../../context";
-import { useFormValidation } from "../../hooks/FormValidation";
+import { FormValidation, useFormValidation } from "../../hooks/FormValidation";
 import { Account } from "../../modal/response/Account";
 import { AlertType } from "../../modal/ExpenseAlert";
 import { Category } from "../../modal/response/Category";
 import { ApiError } from "../../modal/response/Error";
 import { Limit, Priority, Recursively } from "../../modal/response/Limit";
 import LaunchIcon from '@mui/icons-material/Launch';
+import Modal from "../modal";
+import { OperationType } from "../../modal/OperationType";
+import AccountSelect from "../Accounts/accountSelect";
 interface LimitModalProps {
     openModal: boolean;
-    accounts: Array<Account>;
     categories: Array<Category>;
     onClose: (closeFlag: boolean) => void;
     onSave: (limit: Limit) => void;
@@ -34,6 +36,10 @@ export default function LimitModal(props: LimitModalProps) {
 
     const [addLoader, setAddLoader] = useState<boolean>(false);
 
+    const [openAccount, setOpenAccount] = useState<boolean>(false);
+
+    const [selectedAccount, setSelectedAccount] = useState<Account>();
+
     const service = useContext(ServiceContext);
 
     const expenseAlert = useContext(AlertContext);
@@ -42,7 +48,17 @@ export default function LimitModal(props: LimitModalProps) {
         props.onClose(false);
     }
 
-    const { handleSubmit, handleChange, handleSelectChange, data: limitData, errors, refreshError } = useFormValidation<Limit>({
+    const handleAccountSelectOnClose = () => {
+        setOpenAccount(false);
+    }
+
+    const handleAccountSelectOnChange = (account: Account) => {
+        setSelectedAccount(account);
+        limitForm.data.accountId = account.id;
+        setOpenAccount(false);
+    }
+
+    const limitForm: FormValidation<Limit> = useFormValidation<Limit>({
         validations: {
             name: {
                 required: {
@@ -71,7 +87,7 @@ export default function LimitModal(props: LimitModalProps) {
             thresoldWarningAmount: {
                 custom: {
                     isValid(value) {
-                        return (limitData.minAmount <= Number(value) && Number(value) <= limitData.maxAmount);
+                        return (limitForm.data.minAmount <= Number(value) && Number(value) <= limitForm.data.maxAmount);
                     },
                     message: `Thresold amount should be in range of min and max amount`
                 }
@@ -79,7 +95,7 @@ export default function LimitModal(props: LimitModalProps) {
             accountId: {
                 required: {
                     value: true,
-                    message: 'Select account from drop down.'
+                    message: 'Select account.'
                 }
             },
             categoryId: {
@@ -95,7 +111,7 @@ export default function LimitModal(props: LimitModalProps) {
         },
         onSubmit() {
             setAddLoader(true);
-            service.limitService?.addLimit(limitData)
+            service.limitService?.addLimit(limitForm.data)
                 .then((limit: Limit) => {
                     props.onSave(limit);
                     expenseAlert.setAlert?.('Limit have been saved successfully', AlertType.SUCCESS);
@@ -111,70 +127,52 @@ export default function LimitModal(props: LimitModalProps) {
 
     return (
         <>
-            <Dialog PaperComponent={PaperComponent} open={props.openModal} aria-labelledby="draggable-dialog-title" onClose={handleClose}>
-                <Box id="limitForm" component="form" noValidate onSubmit={handleSubmit}>
-                    <DialogTitle className="grabbable"
-                        id="draggable-dialog-title">
-                        Add Limit
-                    </DialogTitle>
-                    <DialogContent sx={{ maxHeight: '50vh' }}>
-                        <FormControl fullWidth margin="normal">
-                            <TextField
-                                required
-                                id="name"
-                                label="Name"
-                                variant="outlined"
-                                error={errors.name ? true : false}
-                                helperText={errors.name}
-                                onChange={handleChange('name')}
-                            >
-                            </TextField>
-                            <TextField margin="normal"
-                                required
-                                id="name"
-                                label="Description"
-                                variant="outlined"
-                                multiline
-                                rows={3}
-                                error={errors.description ? true : false}
-                                helperText={errors.description}
-                                onChange={handleChange('description')}
-                            >
-                            </TextField>
-                        </FormControl>
-                        <FormControl fullWidth margin="normal">
-                            <InputLabel id="account">Accounts</InputLabel>
-                            <Select
-                                labelId="account"
-                                id="account-select"
-                                label='Account'
-                                error={errors.accountId ? true : false}
-                                onChange={handleSelectChange('accountId')}
-                            >
-                                {/* {props.accounts.map((account: Account, index: number) => (
-                                    <MenuItem key={index} value={account.ID}>{account.name}</MenuItem>
-                                ))} */}
-                                {props.accounts.length === 0 && <>
-                                    <ListItemButton disableRipple={true}>
-                                        <Button href="/bank" startIcon={<LaunchIcon></LaunchIcon>} disableRipple={true} sx={{ width: '100%' }}>
-                                            <ListItemText primary="Go To Bank" />
-                                        </Button>
-                                    </ListItemButton>
-                                </>}
-                            </Select>
-                            {errors.accountId &&
-                                <Typography sx={{ color: red[700] }} variant="caption" display="block" gutterBottom>{errors.accountId}</Typography>
-                            }
-                        </FormControl>
+            <AccountSelect show={openAccount} onClose={handleAccountSelectOnClose} onChange={handleAccountSelectOnChange}></AccountSelect>
+            <Modal
+                title={`Limit`}
+                loader={addLoader}
+                show={props.openModal}
+                onClose={handleClose}
+                onSubmit={limitForm.handleSubmit}
+                operationType={OperationType.ADD}
+            >
 
-                        <FormControl fullWidth margin="normal">
+                <FormControl margin="normal" fullWidth={true}>
+                    <TextField
+                        required
+                        id="name"
+                        label="Name"
+                        variant="outlined"
+                        error={limitForm.errors.name ? true : false}
+                        helperText={limitForm.errors.name}
+                        onChange={limitForm.handleChange('name')}
+                    >
+                    </TextField>
+                </FormControl>
+                <FormControl margin="normal" fullWidth={true}>
+                    <TextField margin="normal"
+                        required
+                        id="name"
+                        label="Description"
+                        variant="outlined"
+                        multiline
+                        rows={3}
+                        error={limitForm.errors.description ? true : false}
+                        helperText={limitForm.errors.description}
+                        onChange={limitForm.handleChange('description')}
+                    >
+                    </TextField>
+                </FormControl>
+                <FormControl fullWidth margin="normal">
+                    <Stack direction={'row'} spacing={2}>
+                        <FormControl fullWidth>
                             <InputLabel id="category">Category</InputLabel>
                             <Select
                                 labelId="category"
                                 id="category-select"
                                 label='Category'
-                                error={errors.categoryId ? true : false}
-                                onChange={handleSelectChange('categoryId')}
+                                error={limitForm.errors.categoryId ? true : false}
+                                onChange={limitForm.handleSelectChange('categoryId')}
                             >
                                 {props.categories.map((category: Category, index: number) => (
                                     <MenuItem key={index} value={category.id}>{category.name}</MenuItem>
@@ -187,108 +185,107 @@ export default function LimitModal(props: LimitModalProps) {
                                     </ListItemButton>
                                 </>}
                             </Select>
-                            {errors.categoryId &&
-                                <Typography sx={{ color: red[700] }} variant="caption" display="block" gutterBottom>{errors.categoryId}</Typography>
+                            {limitForm.errors.categoryId &&
+                                <Typography sx={{ color: red[700] }} variant="caption" display="block" gutterBottom>{limitForm.errors.categoryId}</Typography>
                             }
                         </FormControl>
+                        <FormControl fullWidth>
+                            {!selectedAccount && <><InputLabel htmlFor="outlined-adornment-password">Account</InputLabel></>}
+                            <OutlinedInput
+                                id="accountNumber"
+                                value={selectedAccount?.name}
+                                error={limitForm.errors.accountId? true: false}
+                                onChange={limitForm.handleChange('accountId')}
+                                disabled={true}
+                                endAdornment={
+                                    <>
+                                        <InputAdornment position="end">
+                                            <Button variant="text" onClick={() => { setOpenAccount(true) }}>
+                                                {selectedAccount?.name ? "Change":"Select"} Account
+                                            </Button>
+                                        </InputAdornment>
+                                    </>
+                                }
+                            />
+                            {limitForm.errors.accountId && <><FormHelperText sx={{color: red[700]}}>{limitForm.errors.accountId}</FormHelperText></>}
+                        </FormControl>
+                    </Stack>
 
-                        <FormControl fullWidth margin="normal">
+                </FormControl>
+                <FormControl fullWidth margin="normal">
+                    <Stack direction={'row'} spacing={2}>
+                        <FormControl fullWidth >
                             <InputLabel id="recursive">Recursive</InputLabel>
                             <Select
                                 labelId="recursive"
                                 id="recursive-select"
                                 label='recursive'
-                                error={errors.resetRecursively ? true : false}
-                                onChange={handleSelectChange('resetRecursively')}
+                                error={limitForm.errors.resetRecursively ? true : false}
+                                onChange={limitForm.handleSelectChange('resetRecursively')}
                             >
                                 <MenuItem key={0} value={Recursively.DAY}>{Recursively.DAY}</MenuItem>
                                 <MenuItem key={1} value={Recursively.MONTH}>{Recursively.MONTH}</MenuItem>
                                 <MenuItem key={2} value={Recursively.YEAR}>{Recursively.YEAR}</MenuItem>
                             </Select>
-                            {errors.resetRecursively &&
-                                <Typography sx={{ color: red[700] }} variant="caption" display="block" gutterBottom>{errors.resetRecursively}</Typography>
+                            {limitForm.errors.resetRecursively &&
+                                <Typography sx={{ color: red[700] }} variant="caption" display="block" gutterBottom>{limitForm.errors.resetRecursively}</Typography>
                             }
                         </FormControl>
 
-                        <FormControl fullWidth margin="normal">
+                        <FormControl fullWidth >
                             <InputLabel id="priority">Priority</InputLabel>
                             <Select
                                 labelId="priority"
                                 id="priority-select"
                                 label='priority'
-                                error={errors.priority ? true : false}
-                                onChange={handleSelectChange('priority')}
+                                error={limitForm.errors.priority ? true : false}
+                                onChange={limitForm.handleSelectChange('priority')}
                             >
                                 <MenuItem key={0} value={Priority.HIGH}>{Priority.HIGH}</MenuItem>
                                 <MenuItem key={1} value={Priority.NORMAL}>{Priority.NORMAL}</MenuItem>
                                 <MenuItem key={2} value={Priority.LOW}>{Priority.LOW}</MenuItem>
                             </Select>
-                            {errors.priority &&
-                                <Typography sx={{ color: red[700] }} variant="caption" display="block" gutterBottom>{errors.priority}</Typography>
+                            {limitForm.errors.priority &&
+                                <Typography sx={{ color: red[700] }} variant="caption" display="block" gutterBottom>{limitForm.errors.priority}</Typography>
                             }
                         </FormControl>
+                    </Stack>
+                </FormControl>
+                <FormControl margin="normal">
+                    <Stack spacing={2} direction='row'>
+                        <TextField
+                            required
+                            id="minAmount"
+                            label="Minimum Amount"
+                            variant="standard"
+                            defaultValue={limitForm.data.minAmount}
+                            onChange={limitForm.handleChange('minAmount')}
+                        >
+                        </TextField>
 
-                        <Stack spacing={2} direction='row'>
-                            <FormControl >
-                                <TextField
-                                    required
-                                    id="minAmount"
-                                    label="Minimum Amount"
-                                    variant="standard"
-                                    defaultValue={limitData.minAmount}
-                                    onChange={handleChange('minAmount')}
-                                >
-                                </TextField>
-                            </FormControl>
-
-                            <FormControl >
-                                <TextField
-                                    required
-                                    id="maxAmount"
-                                    label="Maximum Amount"
-                                    variant="standard"
-                                    defaultValue={0}
-                                    onChange={handleChange('maxAmount')}
-                                >
-                                </TextField>
-                            </FormControl>
-                        </Stack>
-
-                        <FormControl fullWidth margin="normal">
-                            <TextField
-                                required
-                                id="minAmount"
-                                label="Thresold Warning Amount"
-                                variant="standard"
-                                defaultValue={0}
-                                error={errors.thresoldWarningAmount ? true : false}
-                                onChange={handleChange('thresoldWarningAmount')}
-                                helperText={errors.thresoldWarningAmount}
-                            >
-                            </TextField>
-                        </FormControl>
-
-
-                    </DialogContent>
-                    <DialogActions>
-                        <Button type="submit" form="limitForm" disabled={addLoader}>
-                            Save
-                        </Button>
-                        {addLoader && (
-                            <CircularProgress
-                                size={24}
-                                sx={{
-                                    color: blue[200],
-                                }}
-                            />
-                        )}
-                        <Button onClick={handleClose}>
-                            Close
-                        </Button>
-                    </DialogActions>
-                </Box>
-            </Dialog>
-
+                        <TextField
+                            required
+                            id="maxAmount"
+                            label="Maximum Amount"
+                            variant="standard"
+                            defaultValue={0}
+                            onChange={limitForm.handleChange('maxAmount')}
+                        >
+                        </TextField>
+                        <TextField
+                            required
+                            id="minAmount"
+                            label="Thresold Warning Amount"
+                            variant="standard"
+                            defaultValue={0}
+                            error={limitForm.errors.thresoldWarningAmount ? true : false}
+                            onChange={limitForm.handleChange('thresoldWarningAmount')}
+                            helperText={limitForm.errors.thresoldWarningAmount}
+                        >
+                        </TextField>
+                    </Stack>
+                </FormControl>
+            </Modal>
         </>
     );
 }

@@ -55,13 +55,20 @@ export default function accountTableDataSet(accounts: Array<Account>) : TableDat
                 type: HeaderType.date
             },
             endDate: {
-                alias: 'End Date',
+                alias: 'Close Date',
                 display: HeaderDisplay.NONE,
                 isPrimaryKey: false,
-                isVisible: true,
+                isVisible: false,
                 type: HeaderType.date
             },
             tags:{
+                alias: 'Tags',
+                display: HeaderDisplay.HIDDEN,
+                isPrimaryKey: false,
+                isVisible: true,
+                type: HeaderType.tag
+            },
+            tagName: {
                 alias: 'Tags',
                 display: HeaderDisplay.NONE,
                 isPrimaryKey: false,

@@ -2,7 +2,6 @@ package com.expense.expensemanagement.conversion;
 
 import com.expense.expensemanagement.dao.AccountDAO;
 import com.expense.expensemanagement.dao.CategoryDao;
-import com.expense.expensemanagement.dao.LimitDao;
 import com.expense.expensemanagement.entity.Account;
 import com.expense.expensemanagement.entity.Category;
 import com.expense.expensemanagement.entity.Limit;
@@ -10,11 +9,9 @@ import com.expense.expensemanagement.model.AccountModel;
 import com.expense.expensemanagement.model.LimitModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Component("limitConversion")
 public class LimitConversion implements EntityModalConversion<Limit, LimitModel> {
@@ -49,7 +46,8 @@ public class LimitConversion implements EntityModalConversion<Limit, LimitModel>
         limitModel.setUserid(limit.getUserid());
         limitModel.setUsedAmount(limit.getUsedAmount().longValue());
         limitModel.setThresoldWarningAmount(limit.getThresoldWarningAmount());
-
+        limitModel.setCategory(categoryConversion.getModel(limit.getCategory()));
+        limitModel.setAccount(accountConversion.getModel(limit.getAccount()));
         return limitModel;
     }
 
@@ -68,6 +66,8 @@ public class LimitConversion implements EntityModalConversion<Limit, LimitModel>
         limit.setUserid(limitModel.getUserid());
         limit.setUsedAmount(new BigDecimal(limitModel.getUsedAmount()));
         limit.setThresoldWarningAmount(limitModel.getThresoldWarningAmount());
+        Category category = categoryDao.findById(limitModel.getCategoryId()).orElse(new Category());
+        limit.setCategory(category);
         return limit;
     }
 }

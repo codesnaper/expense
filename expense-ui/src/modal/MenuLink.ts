@@ -29,5 +29,6 @@ export const MenuLinks: Array<MenuLink> = [
    new MenuLink('Expense','/expense', MoneyIcon),
     new MenuLink('Limit', '/limit', PermDataSettingIcon),
     new MenuLink('Category', '/category', CategoryIcon),
+    new MenuLink('Account','/account', MoneyIcon),
     new MenuLink('Bank', '/bank', AccountBalanceIcon)
 ]

@@ -19,6 +19,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * TODO: add Loan Scheduler monthly anount to add.
+ */
 @Component
 @Slf4j
 public class LimitScheduler {

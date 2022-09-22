@@ -1,10 +1,6 @@
 package com.expense.expensemanagement.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
 
 @Data
 public class LimitModel {
@@ -31,4 +27,8 @@ public class LimitModel {
     private String priority;
 
     private long usedAmount;
+
+    private Category category;
+
+    private AccountModel account;
 }

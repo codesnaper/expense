@@ -10,14 +10,10 @@ import com.expense.expensemanagement.model.SIAccountModel;
 import com.expense.expensemanagement.model.SavingCompoundInterestModel;
 import com.expense.expensemanagement.service.bank.IBankService;
 import com.expense.expensemanagement.service.tagMapping.TagMapping;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
@@ -111,16 +107,10 @@ public class AddAccountService implements IAddAccountService {
     }
 
     private void setBankAmount(Bank bank, Account account) {
-        if (account instanceof LoanAccount) {
-            if (((LoanAccount) account).isLendAccount()) {
-                bank.setHoldAmount(bank.getHoldAmount().add(account.getAmount()));
-            } else {
-                bank.setDebitAmount(account.getAmount().add(account.getAmount()));
-            }
-        } else if (account instanceof SavingInterestAccount || account instanceof SavingCompoundInterestAccount) {
-            bank.setHoldAmount(bank.getHoldAmount().add(account.getAmount()));
-        } else {
-            bank.setCreditAmount(bank.getCreditAmount().add(account.getAmount()));
+        if(account instanceof LoanAccount){
+            bank.setDebitAmount(((LoanAccount) account).getTotalPayment());
+        } else if(account instanceof Account){
+            bank.setCreditAmount(account.getAmount().add(bank.getCreditAmount()));
         }
     }
 }

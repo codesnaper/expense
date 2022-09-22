@@ -5,46 +5,126 @@ import { AlertContext, ServiceContext } from "../../context";
 import accountTableDataSet from "../../Dataset/AccountDataSet";
 import { AlertType } from "../../modal/ExpenseAlert";
 import { OperationType } from "../../modal/OperationType";
-import { Account, AccountResponse, AccountType } from "../../modal/response/Account";
+import { Account, AccountResponse, AccountType, LoanAccount } from "../../modal/response/Account";
 import { ApiError } from "../../modal/response/Error";
+import { Tag } from "../../modal/response/Tag";
 import { TableDataSet } from "../../modal/TableDataSet";
 import Pagination from "../Pagination";
 import PlaceholderCard from "../PlaceholderCard";
 import ExpenseTable from "../Table";
 
 interface AccountPannelProps {
+    title?: string;
+    intro?: string;
     accountType: AccountType,
     bankId?: string,
-    onOperation?:(operationType: OperationType, account?: Account) => void
+    onOperation?: (operationType: OperationType, account?: Account | LoanAccount) => void
+    tableDataSet?: TableDataSet<Account>;
 }
 
 export default function AccountPannel(props: AccountPannelProps) {
 
     const [loader, setLoader] = useState<boolean>(false);
-    const [accounts, setAccounts] = useState<Array<Account>>([]);
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(10);
     const [totalElement, setTotalElement] = useState<number>(0);
-    const [tableDataSet, setTableDataSet] = useState<TableDataSet<Account>>(accountTableDataSet(accounts));
+    const [tableDataSet, setTableDataSet] = useState<TableDataSet<Account>>(accountTableDataSet([]));
     const service = useContext(ServiceContext);
     const expenseAlert = useContext(AlertContext);
 
     const fetchAccount = () => {
         setLoader(true);
-        service.accountService?.fetchAccounts<Account>(props.bankId ? props.bankId : '', props.accountType, page, pageSize)
-            .then((res: AccountResponse<Account>) => {
-                setTotalElement(res.Count);
-                setPage(res.pageNo);
-                setPageSize(res.pageSize === 0? 10: res.pageSize);
-                setAccounts(res.Items);
-                setTableDataSet(accountTableDataSet(accounts));
-            })
-            .catch((err: ApiError) => {
-                expenseAlert.setAlert?.(err.message, AlertType.ERROR);
-            })
-            .finally(() => {
-                setLoader(false);
-            })
+        switch (props.accountType) {
+            case AccountType.ACCOUNT:
+            case AccountType.ALL:
+                service.accountService?.fetchAccounts<Account>(props.bankId ? props.bankId : '', props.accountType, page, pageSize)
+                    .then((res: AccountResponse<Account>) => {
+                        setTotalElement(res.Count);
+                        setPage(res.pageNo);
+                        setPageSize(res.pageSize === 0 ? 10 : res.pageSize);
+                        const newtableDataSet = accountTableDataSet(res.Items.map((account: Account) => {
+                            const tagNames: Array<string> = [];
+                            account.tags.forEach((tag: Tag) => {
+                                tagNames.push(tag.name);
+                            })
+                            account.tagName = tagNames.join(',');
+                            return account;
+                        }));
+                        if (props.accountType === AccountType.ACCOUNT) {
+                            newtableDataSet.action = {
+                                add: true,
+                                delete: true,
+                                edit: true,
+                                show: false
+                            }
+                        }
+                        setTableDataSet(newtableDataSet);
+                    })
+                    .catch((err: ApiError) => {
+                        expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+                    })
+                    .finally(() => {
+                        setLoader(false);
+                    })
+                break;
+
+            case AccountType.LOAN:
+            case AccountType.MONEY_LENDING:
+                service.accountService?.fetchAccounts<LoanAccount>(props.bankId ? props.bankId : '', props.accountType, page, pageSize)
+                    .then((res: AccountResponse<LoanAccount>) => {
+                        setTotalElement(res.Count);
+                        setPage(res.pageNo);
+                        setPageSize(res.pageSize === 0 ? 10 : res.pageSize);
+                        const newtableDataSet = accountTableDataSet(res.Items.map((account: LoanAccount) => {
+                            const tagNames: Array<string> = [];
+                            account.tags.forEach((tag: Tag) => {
+                                tagNames.push(tag.name);
+                            })
+                            account.tagName = tagNames.join(',');
+                            return account;
+                        }));
+                        newtableDataSet.action = {
+                            add: true,
+                            delete: true,
+                            edit: true,
+                            show: false
+                        }
+                        setTableDataSet(newtableDataSet);
+                    })
+                    .catch((err: ApiError) => {
+                        expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+                    })
+                    .finally(() => {
+                        setLoader(false);
+                    })
+                break;
+
+            case AccountType.ALL:
+                service.accountService?.fetchAccounts<Account>(props.bankId ? props.bankId : '', props.accountType, page, pageSize)
+                    .then((res: AccountResponse<Account>) => {
+                        setTotalElement(res.Count);
+                        setPage(res.pageNo);
+                        setPageSize(res.pageSize === 0 ? 10 : res.pageSize);
+                        const newtableDataSet = accountTableDataSet(res.Items.map((account: Account) => {
+                            const tagNames: Array<string> = [];
+                            account.tags.forEach((tag: Tag) => {
+                                tagNames.push(tag.name);
+                            })
+                            account.tagName = tagNames.join(',');
+                            return account;
+                        }));
+                        setTableDataSet(newtableDataSet);
+                    })
+                    .catch((err: ApiError) => {
+                        expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+                    })
+                    .finally(() => {
+                        setLoader(false);
+                    })
+                break;
+
+        }
+
     };
 
     useEffect(() => {
@@ -59,6 +139,14 @@ export default function AccountPannel(props: AccountPannelProps) {
         fetchAccount();
     }
 
+    const sendOperation = (row: any, operationType: OperationType) => {
+        if (props.accountType === AccountType.ACCOUNT) {
+            props.onOperation?.(operationType, row);
+        } else if (props.accountType === AccountType.LOAN) {
+            props.onOperation?.(operationType, row);
+        }
+    }
+
     return (
         <>
             {!loader &&
@@ -66,11 +154,11 @@ export default function AccountPannel(props: AccountPannelProps) {
                     {(tableDataSet?.rows.length === 0) ?
                         <>
                             <Card raised>
-                                <PlaceholderCard heading={`Account Details`}
-                                    info={`Add Account for your bank to manage expense.`}
+                                <PlaceholderCard heading={`${props.title}`}
+                                    info={`${props.intro}`}
                                 >
                                     <AccountBalanceOutlined fontSize="inherit"></AccountBalanceOutlined>
-                                    <Button size="large" onClick={()=> props.onOperation?.(OperationType.ADD)} >
+                                    <Button size="large" onClick={() => props.onOperation?.(OperationType.ADD)} >
                                         <AddCircleOutlined sx={{ mr: 1 }} />
                                         Add Account
                                     </Button>
@@ -80,9 +168,9 @@ export default function AccountPannel(props: AccountPannelProps) {
                         <>
                             <ExpenseTable
                                 dataset={tableDataSet}
-                            // showActionCallback={(row) => viewAccounts(row)}
-                            // editActionCallback={(row) => editBank(row)}
-                            // deleteActionCallback={(row) => deleteBank(row)} addActionCallback={() => setOpenModal(true)}
+                                addActionCallback={() => sendOperation(undefined, OperationType.ADD)}
+                                editActionCallback={(row) => sendOperation(row, OperationType.EDIT)}
+                                deleteActionCallback={(row) => sendOperation(row, OperationType.DELETE)}
                             ></ExpenseTable>
                             <Pagination page={page} pageSize={pageSize} totalElement={totalElement} onPageEvent={pageEvent}></Pagination>
                         </>

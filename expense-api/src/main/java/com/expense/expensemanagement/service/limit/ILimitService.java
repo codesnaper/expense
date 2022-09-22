@@ -6,11 +6,6 @@ import com.expense.expensemanagement.model.Recursive;
 import com.expense.expensemanagement.model.ResponseList;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
-
-import java.security.Principal;
-import java.util.List;
-import java.util.stream.Stream;
 
 public interface ILimitService {
 
@@ -21,7 +16,7 @@ public interface ILimitService {
      * @param pageSize
      * @return
      */
-    ResponseList<LimitModel> getLimits(int pageNo,int pageSize);
+    ResponseList<LimitModel> getLimits(int pageNo,int pageSize, String userId);
 
     /**
      *

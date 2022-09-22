@@ -1,6 +1,6 @@
 import { Configuration } from "../config/Configuration";
-import { Account, AccountResponse, AccountType } from "../modal/response/Account";
-import { BankModal } from "../modal/response/Bank";
+import { AccountResponse, AccountType } from "../modal/response/Account";
+import { AccountSummary } from "../modal/response/AccountSummary";
 import Api from "./Api";
 
 export class AccountService {
@@ -29,45 +29,59 @@ export class AccountService {
         });
     }
 
-    // public fetchAllSavingAccounts(): Promise<Array<Account>>{
-    //     return new Promise((resolve, reject) => {
-    //         Api.get(`${this.baseUrl}account/all`)
-    //         .then(res => resolve(res.data))
-    //         .catch(err => reject({
-    //             status: err.response.data?.status,
-    //             errorCode: err.response.data?.errorCode,
-    //             message: err.response.data? err.response.data.message: err.message,
-    //             field: err.response.data?.field,
-    //             timestamp: err.response.data?.timestamp
-    //         }));
-    //     });
-    // }
+    public fetchAccountSummary(bankId: string): Promise<AccountSummary[]> {
+        return new Promise((resolve, reject) => {
+            Api.get(`${this.baseUrl}bank/${bankId}/account/summary`)
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
+        });
+    }
 
-    // public addAccount(bodyData: {account:AccountResponseItem , bank: BankModal}): Promise<AccountResponseItem> {
-    //     return new Promise((resolve, reject) => {
-    //         Api.post(`${this.baseUrl}account/`, JSON.stringify(bodyData))
-    //         .then(res => resolve(res.data))
-    //         .catch(err => reject({
-    //             status: err.response.data?.status,
-    //             errorCode: err.response.data?.errorCode,
-    //             message: err.response.data? err.response.data.message: err.message,
-    //             field: err.response.data?.field,
-    //             timestamp: err.response.data?.timestamp
-    //         }));
-    //     })
-    // }
+    public saveAccount<Type>(bankId: number, accountType: AccountType, account: Type): Promise<Type>{
+        return new Promise((resolve, reject) => {
+            Api.post(`${this.baseUrl}bank/${bankId}/account/type=${accountType}`,JSON.stringify(account))
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
+        })
+    }
 
-    // public updateAccount(accountId: string, bankId: string, body: AccountResponseItem): Promise<AccountResponseItem>{
-    //     return new Promise((resolve, reject) => {
-    //         Api.put(`${this.baseUrl}account/${accountId}/${bankId}`, JSON.stringify(body))
-    //         .then(res => resolve(res.data))
-    //         .catch(err => reject({
-    //             status: err.response.data?.status,
-    //             errorCode: err.response.data?.errorCode,
-    //             message: err.response.data? err.response.data.message: err.message,
-    //             field: err.response.data?.field,
-    //             timestamp: err.response.data?.timestamp
-    //         }));
-    //     });
-    // }
+    public updateAccount<Type>(bankId: number, accountType: AccountType, account: Type): Promise<Type>{
+        return new Promise((resolve, reject) => {
+            Api.put(`${this.baseUrl}bank/${bankId}/account/type=${accountType}`,JSON.stringify(account))
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
+        })
+    }
+
+    public deleteAccount(bankId: string, accountId: number): Promise<any>{
+        return new Promise((resolve, reject) => {
+            Api.delete(`${this.baseUrl}bank/${bankId}/account/${accountId}`)
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
+        })
+    }
 }

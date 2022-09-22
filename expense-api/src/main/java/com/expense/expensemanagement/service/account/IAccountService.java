@@ -1,7 +1,7 @@
 package com.expense.expensemanagement.service.account;
 
-import com.expense.expensemanagement.entity.Account;
 import com.expense.expensemanagement.model.AccountModel;
+import com.expense.expensemanagement.model.AccountSummary;
 import com.expense.expensemanagement.model.AccountType;
 import com.expense.expensemanagement.model.ResponseList;
 
@@ -20,5 +20,7 @@ public interface IAccountService {
 
     void deleteAccount(long accountId, String userId);
 
-    List<Object[]> getAccountGroupCount(long bankId);
+    List<AccountSummary> getAccountGroupCount(long bankId, String userId);
+
+    AccountModel updateAccount(AccountModel accountModel, String userId);
 }

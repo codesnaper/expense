@@ -7,4 +7,6 @@ public interface AccountTypeValue {
     String ACCOUNT="ACC";
     String SAVING_COMPOUND_INTEREST="SCI";
     String SAVING_ACCOUNT = "S-ACC";
+
+    String ALL = "ALL";
 }

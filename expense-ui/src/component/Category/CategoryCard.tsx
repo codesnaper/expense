@@ -31,7 +31,7 @@ export default function CategoryCard(props: CategoryCardProps) {
 
     const [loader, setLoader] = useState<boolean>(false);
 
-    const { handleSubmit, handleChange, data: categoryData, errors: formError } = useFormValidation<Category>({
+    const { handleSubmit, handleChange, data: categoryData, errors: formError, refreshError } = useFormValidation<Category>({
         validations: {
             name: {
                 required: {
@@ -53,7 +53,9 @@ export default function CategoryCard(props: CategoryCardProps) {
                         props.onEvent(res, OperationType.ADD);
                         categoryData.name = '';
                         categoryData.description = '';
+                        refreshError();
                         expenseAlert.setAlert?.('Category Addedd Successfully', AlertType.SUCCESS);
+
                     })
                     .catch((err: ApiError) => {
                         if (ErrorCode[err.errorCode] === ErrorCode.DUPLICATE_FIELD) {

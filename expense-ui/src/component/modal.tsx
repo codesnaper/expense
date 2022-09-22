@@ -3,10 +3,9 @@ import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Di
 import { blue } from "@mui/material/colors";
 import { FormEvent, useState } from "react";
 import Draggable from "react-draggable";
-import { OperationType } from "../../modal/OperationType";
 import Close from "@mui/icons-material/Close";
 import { Stack } from "@mui/system";
-import Loader from "../Loader";
+import { OperationType } from "../modal/OperationType";
 
 function PaperComponent(props: PaperProps) {
     return (
@@ -19,7 +18,7 @@ function PaperComponent(props: PaperProps) {
     );
 }
 
-interface AccountModelProps {
+interface ModelProps {
     title: string
     show: boolean;
     operationType: OperationType;
@@ -28,7 +27,7 @@ interface AccountModelProps {
     children: React.ReactNode,
     onClose: () => void;
 }
-export default function AccountModal(props: AccountModelProps) {
+export default function Modal(props: ModelProps) {
 
     return (
         <>

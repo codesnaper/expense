@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/expense/api/v1/bank/{bank-id}/account")
@@ -40,10 +41,11 @@ public class AccountController {
     @PutMapping(value = "${expense.account.bank.update}" , produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public AccountModel updateAccount(
             @RequestBody Object accountModel,
-            @PathVariable("account-type") AccountType accountType
+            @PathVariable("account-type") AccountType accountType,
+            Principal principal
     ){
         AccountModel accountModelResponse = convertAccountModel(accountType,accountModel);
-        return null;
+        return this.accountService.updateAccount(accountModelResponse, ExpenseUtil.getUserId(principal));
     }
 
     @DeleteMapping(value = "${expense.account.bank.delete}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -69,6 +71,14 @@ public class AccountController {
             @RequestHeader(name = "size",defaultValue = "10", required = false) int pageSize
     ){
         return this.accountService.getAccount(bankId, accountType, pageNo,pageSize);
+    }
+
+    @GetMapping(value = "/summary", produces= MediaType.APPLICATION_JSON_VALUE)
+    public List<AccountSummary> getSummary(
+            @PathVariable("bank-id")long bankId,
+            Principal principal
+    ){
+        return this.accountService.getAccountGroupCount(bankId, ExpenseUtil.getUserId(principal));
     }
 
     private AccountModel convertAccountModel(AccountType accountType, Object account){

@@ -2,11 +2,10 @@ import { FormControl, Stack, TextField } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { FormValidation } from "../../../hooks/FormValidation";
 import { OperationType } from "../../../modal/OperationType";
-import { Account, LoanAccount } from "../../../modal/response/Account";
+import { LoanAccount } from "../../../modal/response/Account";
 import TagSelect from "../../Tag/TagSelect";
 import AccountModal from "../modal";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { useEffect, useState } from "react";
 
 
 export interface LoanAccountFormProps {
@@ -15,6 +14,8 @@ export interface LoanAccountFormProps {
     operationType: OperationType;
     loader?: boolean
     onClose?: () => void;
+    defaultValue?: LoanAccount
+    title?: string;
 }
 
 export default function LoanAccountForm(props: LoanAccountFormProps) {
@@ -97,6 +98,7 @@ export default function LoanAccountForm(props: LoanAccountFormProps) {
                             fullWidth={true}
                             required
                             id="rate"
+                            type={'number'}
                             error={props.form.errors.rate ? true : false}
                             helperText={props.form.errors.rate}
                             defaultValue={props.form.data.rate}
@@ -104,18 +106,6 @@ export default function LoanAccountForm(props: LoanAccountFormProps) {
                             variant="outlined"
                             onChange={props.form.handleChange('rate')}
                         />
-
-                        {/* <TextField
-                            fullWidth={true}
-                            required
-                            id="amount"
-                            error={props.form.errors.amount ? true : false}
-                            helperText={props.form.errors.amount}
-                            defaultValue={props.form.data.amount}
-                            label='Amount'
-                            variant="outlined"
-                            onChange={props.form.handleChange('amount')}
-                        /> */}
                 </FormControl>
 
                 <FormControl margin="normal">

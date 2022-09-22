@@ -115,6 +115,13 @@ export default function BankComponent() {
                     isVisible: true,
                     alias: 'Hold Amount',
                     type: HeaderType.number
+                },
+                totalAccounts: {
+                    display: HeaderDisplay.NONE,
+                    isPrimaryKey: false,
+                    isVisible: true,
+                    alias: 'Total Account',
+                    type: HeaderType.number
                 }
             }
             , banks);
