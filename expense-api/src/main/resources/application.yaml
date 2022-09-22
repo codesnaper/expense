@@ -31,6 +31,11 @@ cors:
       - Authorization
       - refreshToken
 spring:
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: ALWAYS
   config:
     location: path.yaml
   datasource:
@@ -79,3 +84,5 @@ expense:
       delete: /{${expense.account.bank.variable.accountId}}
       get: /{${expense.account.bank.variable.accountId}}
       getAll: /type={${expense.account.bank.variable.accountType}}
+
+

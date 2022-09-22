@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -64,6 +65,7 @@ public class BankService implements IBankService {
         responseList.setTotalPage(bankPage.getTotalPages());
         responseList.setTotalCount(bankPage.getTotalElements());
         responseList.setData(bankPage.stream().map(bankModelEntity -> bankEntityModalConversion.getModel(bankModelEntity)).collect(Collectors.toList()));
+        //bankPage.stream().sorted(Comparator.comparing(b->b).thenComparing(b->b.getNumbers())).collect(Collectors.toList());
         return responseList;
     }
 

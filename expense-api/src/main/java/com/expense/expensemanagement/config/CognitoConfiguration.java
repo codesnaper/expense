@@ -15,9 +15,12 @@ import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
+import org.springframework.web.client.RestTemplate;
 
 @Component
 public class CognitoConfiguration {
+
+	//ResponseEntity<Microservice2> responseEntity=new RestTemplate().getForEntity("http://localhost:8000/microservice-1/from/USD/to/INR", Microservice2.class, uriVariables);
 
 	private Logger logger = LoggerFactory.getLogger(CognitoConfiguration.class);
 
@@ -69,7 +72,9 @@ public class CognitoConfiguration {
 				.withRegion(this.region)
 				.withCredentials(credProvider).build();
 		logger.debug("Cognito initialized successfully");
+
 		return cognitoIdentityProvider;
+
 	}
 
 	@Bean
