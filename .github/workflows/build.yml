@@ -51,4 +51,4 @@ jobs:
         aws_key_id: ${{ secrets.ACCESS_KEY }}
         aws_secret_access_key: ${{secrets.SECRET_KEY}}
         aws_bucket: em-jar
-        source_dir: expense-api/target/expense-management.jar
+        source_dir: expense-api/target
