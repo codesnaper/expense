@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import * as React from 'react';
 import { LocalizationContextProvider } from './LocalizationProvider';
-import Navbar from '../component/Header/Navbar';
+import Navbar from '../component/HeaderBar/Navbar';
 import { ServiceContextProvider } from './ServiceContext';
 import { ServiceContext, UserContext } from '../context';
 import UserComponent from '../component/User';
-import ExpenseDrawer from '../component/Header/Drawer/Drawer';
+import ExpenseDrawer from '../component/HeaderBar/Drawer/Drawer';
 import { createTheme, PaletteMode, ThemeProvider } from '@mui/material';
 import { Theme } from '@mui/system';
 import { brown, grey } from '@mui/material/colors';
