@@ -22,7 +22,6 @@ jobs:
     steps:
     - name: Cheking out
       uses: actions/checkout@v3
-    - run: cwd
     - name: Setting Node.js
       uses: actions/setup-node@v3
       with:
