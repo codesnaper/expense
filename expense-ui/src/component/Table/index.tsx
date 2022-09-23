@@ -119,8 +119,8 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                         <TableBody>
                             {
                                 props.dataset?.getRows().
-                                    map((rows: Array<string>, index: number) =>
-                                        <TableRow key={`row-${index}`} hover={true}>
+                                    map((rows: Array<string>, indexRow: number) =>
+                                        <TableRow key={`row-${indexRow}`} hover={true} sx={props.dataset?.getRowStyle(props.dataset?.rows[indexRow])}>
                                             {
                                                 rows.map((data: string, index: number) =>
                                                     <TableCell align="center" key={`cell-${index}`}>
@@ -143,6 +143,9 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                                                         </>}
                                                         {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.number) && <>
                                                             {Number.isNaN(Number(data)) ? 0 : Number(data)}
+                                                        </>}
+                                                        {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.custom) && <>
+                                                            {props.dataset?.getColumns()[index].customDisplay?.(props.dataset?.rows[indexRow])}
                                                         </>}
                                                         {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.date) &&
                                                             <>
@@ -168,7 +171,7 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                                                         {props.dataset?.action.show &&
                                                             <ButtonGroup orientation="vertical" variant="contained" aria-label="outlined primary button group">
                                                                 <Tooltip title={`View Details`}>
-                                                                    <Button variant="text" onClick={() => showButton(index)}>
+                                                                    <Button variant="text" onClick={() => showButton(indexRow)}>
                                                                         <VisibilityIcon />
                                                                     </Button>
                                                                 </Tooltip>
@@ -179,7 +182,7 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                                                             props.dataset?.action.edit &&
                                                             <ButtonGroup orientation="vertical" variant="contained" aria-label="outlined primary button group">
                                                                 <Tooltip title={`Edit Details`}>
-                                                                    <Button variant="text" onClick={() => editButton(index)}><EditIcon /></Button>
+                                                                    <Button variant="text" onClick={() => editButton(indexRow)}><EditIcon /></Button>
                                                                 </Tooltip>
                                                             </ButtonGroup>
                                                         }
@@ -188,7 +191,7 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                                                             props.dataset?.action.delete &&
                                                             <ButtonGroup orientation="vertical" variant="contained" aria-label="outlined primary button group">
                                                                 <Tooltip title={`Delete Details`}>
-                                                                    <Button variant="text" onClick={() => deleteButton(index)}><DeleteForeverIcon /></Button>
+                                                                    <Button variant="text" onClick={() => deleteButton(indexRow)}><DeleteForeverIcon /></Button>
                                                                 </Tooltip>
                                                             </ButtonGroup>
                                                         }

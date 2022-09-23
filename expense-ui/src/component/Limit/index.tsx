@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { AlertContext, ServiceContext } from "../../context";
 import ContentLoader from "../ContentLoader";
 import RuleFolderIcon from '@mui/icons-material/RuleFolder';
-import { Limit } from "../../modal/response/Limit";
+import { EnhancedLimit, Limit } from "../../modal/response/Limit";
 import LimitModal from "./Model";
 import Pagination from "../Pagination";
 import { ResponseList } from "../../modal/ResponseList";
@@ -39,13 +39,13 @@ export default function LimitComponent() {
 
     const [categories, setCategories] = useState<Category[]>([]);
 
-    const [limitTableDataset, setLimitTableDataset] = useState<TableDataSet<Limit>>(limitDataSet([]));
+    const [limitTableDataset, setLimitTableDataset] = useState<TableDataSet<EnhancedLimit>>(limitDataSet([]));
 
     const onSaveLimit = (limit: Limit) => {
         if(totalElement <= 10){
             const limits: Limit[] = limitTableDataset.rows;
             limits.push(limit);
-            limitTableDataset.rows = limits;
+            // limitTableDataset.rows = limits;
             setLimitTableDataset(limitTableDataset);
             setTotalElement(totalElement + 1);
         }
@@ -55,7 +55,7 @@ export default function LimitComponent() {
     useEffect(() => {
         setLoader(true);
         service.limitService?.fetchLimits(page, pageSize)
-            .then((res: ResponseList<Limit>) => {
+            .then((res: ResponseList<EnhancedLimit>) => {
                 setTotalElement(res.Count);
                 setPage(res.pageNo);
                 setPageSize(res.pageSize);
@@ -102,7 +102,7 @@ export default function LimitComponent() {
                     if (fetchIndex !== -1) {
                         limits.splice(fetchIndex, 1);
                     }
-                    limitTableDataset.rows = limits;
+                    // limitTableDataset.rows = limits;
                     setLimitTableDataset(limitTableDataset)
                     expenseAlert.setAlert?.('Limit has been deleted successfully', AlertType.SUCCESS);
             }).

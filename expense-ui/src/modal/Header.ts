@@ -3,7 +3,8 @@ export enum HeaderType{
     date = 'date',
     string = 'string',
     tag = 'tag',
-    number = 'number'
+    number = 'number',
+    custom = 'custom'
 }
 
 export enum HeaderDisplay{
@@ -17,6 +18,7 @@ export interface Header{
     isVisible?: boolean;
     type?: HeaderType;
     display?: HeaderDisplay
+    customDisplay?: (value: object) => string;
 }
 
 export type Headers<T extends {}> = Record<keyof T, Header>;

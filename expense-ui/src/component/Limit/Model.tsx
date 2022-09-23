@@ -103,7 +103,7 @@ export default function LimitModal(props: LimitModalProps) {
                     value: true,
                     message: 'Select Category from drop down.'
                 }
-            }
+            },
         },
         initialValues: {
             minAmount: 0,

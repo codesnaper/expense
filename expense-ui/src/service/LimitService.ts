@@ -1,5 +1,5 @@
 import { Configuration } from "../config/Configuration";
-import { Limit } from "../modal/response/Limit";
+import { EnhancedLimit, Limit } from "../modal/response/Limit";
 import { ResponseList } from "../modal/ResponseList";
 import Api from "./Api";
 
@@ -10,7 +10,7 @@ export class LimitService{
         this.baseUrl = Configuration.resourceVersion;
     }
 
-    public fetchLimits(pageNo: number =0, pageSize: number = 10): Promise<ResponseList<Limit>> {
+    public fetchLimits(pageNo: number =0, pageSize: number = 10): Promise<ResponseList<EnhancedLimit>> {
         return new Promise((resolve, reject) => {
             Api.get(`${this.baseUrl}limit`,{
                 headers:{

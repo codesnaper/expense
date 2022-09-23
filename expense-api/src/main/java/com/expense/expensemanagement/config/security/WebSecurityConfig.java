@@ -1,14 +1,11 @@
 package com.expense.expensemanagement.config.security;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.expense.expensemanagement.config.security.auth.TokenExtractor;
 import com.expense.expensemanagement.config.security.filter.*;
 import com.expense.expensemanagement.model.Constants;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,13 +20,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.security.web.session.SessionManagementFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -98,7 +90,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		List<String> permitAllEndpointList = Arrays.asList(Constants.AUTHENTICATION_URL, Constants.REFRESH_TOKEN_URL,
 				Constants.FORGOT_PASSWORD, Constants.RESET_PASSWORD, Constants.SWAGGER_URL, Constants.CREATE_USER);
 
-		http.cors().disable().csrf().disable().exceptionHandling().authenticationEntryPoint(this.authenticationEntryPoint)
+		http.csrf().disable().exceptionHandling().authenticationEntryPoint(this.authenticationEntryPoint)
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and().authorizeRequests()
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()

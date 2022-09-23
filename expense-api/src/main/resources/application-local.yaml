@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8090
 aws:
   cognito:
     clientId: ${CLIENT_ID}
@@ -38,10 +38,24 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
 logging:
   level:
     com:
-      expense: INFO
+      expense: DEBUG
+    org:
+      springframework:
+        web: DEBUG
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql: trace
 react:
   router: /em/bank,/em/limit,/em/expense,/em/category,/em/account,/em/notification,/em/profile
 expense:

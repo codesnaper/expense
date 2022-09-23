@@ -8,6 +8,7 @@ import { AlertContextProvider } from './provider/AlertProvider';
 import CategoryComponent from './component/Category';
 import LimitComponent from './component/Limit';
 import NotificationComponent from './component/Notification';
+import Profile from './component/User/Profile';
 const Home = React.lazy(() => import('./component/Home/Home'));
 const BankComponent = React.lazy(() => import('./component/Bank'));
 const AccountComponent = React.lazy(() => import('./component/Accounts'));
@@ -18,13 +19,14 @@ function App() {
         <AlertContextProvider>
           <UserContextProvider>
             <Routes>
-              <Route path="/*" element={<Home />} />
-              <Route path="/bank" element={<BankComponent />} />
-              <Route path="/account" element={<AccountComponent></AccountComponent>}/>
-              <Route path="/account/:bankId" element={<AccountComponent></AccountComponent>}/>
-              <Route path="/category" element={<CategoryComponent />} />
-              <Route path="/limit" element={<LimitComponent/>} />
-              <Route path="/notification" element={<NotificationComponent/>} />
+              <Route path="/em/*" element={<Home />} />
+              <Route path="/em/bank" element={<BankComponent />} />
+              <Route path="/em/account" element={<AccountComponent></AccountComponent>}/>
+              <Route path="/em/account/:bankId" element={<AccountComponent></AccountComponent>}/>
+              <Route path="/em/category" element={<CategoryComponent />} />
+              <Route path="/em/limit" element={<LimitComponent/>} />
+              <Route path="/em/notification" element={<NotificationComponent/>} />
+              <Route path="/em/profile" element={<Profile/>} />
             </Routes>
           </UserContextProvider>
         </AlertContextProvider>

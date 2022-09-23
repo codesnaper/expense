@@ -1,3 +1,5 @@
+import { Account } from "./Account";
+import { Category } from "./Category";
 
 export interface Limit {
     id: number
@@ -11,6 +13,11 @@ export interface Limit {
     usedAmount: number;
     accountId: number;
     categoryId: number
+}
+
+export interface EnhancedLimit extends Limit {
+    category: Category,
+    account: Account
 }
 
 export enum Recursively {
