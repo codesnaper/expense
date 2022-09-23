@@ -3,9 +3,8 @@ import Backdrop from '@mui/material/Backdrop';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import { Auth } from 'aws-amplify';
-import configure from '../../service/CognitoService';
 import { CircularProgress } from '@mui/material';
-import { AlertContext, LocalizationContext } from '../../context';
+import { AlertContext, LocalizationContext, ServiceContext } from '../../context';
 import { AlertType } from '../../modal/ExpenseAlert';
 import { UserLogin } from '../../modal/UserLogin';
 import useQuery from '../../hooks/Query';
@@ -14,31 +13,37 @@ import LoginForm from './LoginForm';
 import SignUpForm from './SignupForm';
 import PasswordResetForm from './PasswordResetForm';
 import { PasswordReset } from '../../modal/PasswordReset';
+import { LoginCredential } from '../../modal/response/User';
+import { ApiError, ErrorCode } from '../../modal/response/Error';
 
 export default function UserComponent() {
     const query = useQuery();
     const formType: string | null = query.get('form');
+    const [isError, setIsError] = React.useState<boolean>(false);
+    const [errorHelperText, setErrorHelperText] = React.useState<string>('');
     const [loader, setLoader] = React.useState(false);
     const [isVerifyFail, setIsVerifyFail] = React.useState<boolean>(false);
     const [failedVerifyMessage, setFailedVerifyMessage] = React.useState(undefined);
     const localization = React.useContext(LocalizationContext);
     const expenseAlertModal = React.useContext(AlertContext);
+    const service = React.useContext(ServiceContext);
 
-    React.useEffect(() => {
-        configure();
-    }, [])
-
-    const loginCallback = async (userLogin: UserLogin) => {
+    const loginCallback =  (loginCredential: LoginCredential, rememberFlag: boolean) => {
         setLoader(true);
-        try {
-            const user = await Auth.signIn(userLogin.Username, userLogin.password);
-            window.sessionStorage.setItem('user', JSON.stringify(user));
-            setLoader(false);
+        service.userService?.loginUser(loginCredential, rememberFlag)
+        .then(() => {
             window.location.reload();
-        } catch (error: any) {
+        })
+        .catch((error: ApiError) => {
+            if(ErrorCode[error.errorCode] === ErrorCode.AUTHENTICATION){
+                setIsError(true);
+                setErrorHelperText(error.message);
+            }
             expenseAlertModal.setAlert?.(error.message, AlertType.ERROR);
+        })
+        .finally(() => {
             setLoader(false);
-        }
+        })
     }
 
     const signUpCallback = async (signUp: SignUp) => {
@@ -98,7 +103,7 @@ export default function UserComponent() {
                     sm={4}
                     md={7}
                     sx={{
-                        backgroundImage: 'url(/image/banner.jpg)',
+                        backgroundImage: 'url(%PUBLIC_URL%)/banner.jpg',
                         backgroundRepeat: 'no-repeat',
                         backgroundColor: (t) =>
                             t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
@@ -108,8 +113,10 @@ export default function UserComponent() {
                 />
                 {(formType === 'login' || !formType) &&
                     <LoginForm
+                        errorHelperText={errorHelperText}
+                        isError={isError}
                         loginLoader={loader}
-                        loginCallback={(userlogin: UserLogin) => loginCallback(userlogin)}
+                        loginCallback={(credential: LoginCredential, rememberFlag: boolean) => loginCallback(credential, rememberFlag)}
                     ></LoginForm>
                 }
                 {(formType === 'signup') &&

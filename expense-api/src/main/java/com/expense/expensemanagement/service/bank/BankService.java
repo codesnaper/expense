@@ -6,6 +6,7 @@ import com.expense.expensemanagement.dao.TagMappingDAO;
 import com.expense.expensemanagement.entity.Bank;
 import com.expense.expensemanagement.model.BankModel;
 import com.expense.expensemanagement.model.ResponseList;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,6 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class BankService implements IBankService {
 
     private final BankDAO bankDAO;
@@ -49,6 +51,7 @@ public class BankService implements IBankService {
             this.tagMappingService.addTagMapping(bankModel);
             return bankModel;
         } catch (DataIntegrityViolationException ex){
+            log.error(ex.getMessage(),ex);
             throw new DuplicateKeyException("name: Bank Name already exits. It should be unique");
         }
     }
@@ -81,6 +84,12 @@ public class BankService implements IBankService {
         this.tagMappingService.addTagMapping(bankModel);
         Bank bankEntity = this.bankDAO.save(bankEntityModalConversion.getEntity(bankModel));
         return bankEntityModalConversion.getModel(bankEntity);
+    }
+
+    @Override
+    public BankModel findById(long id, String userId) {
+        Bank bank = this.bankDAO.findByUserIdAndId(userId, id).orElseThrow(() -> new NoSuchElementException("Bank Id is not found."));
+        return bankEntityModalConversion.getModel(bank);
     }
 
     @Override

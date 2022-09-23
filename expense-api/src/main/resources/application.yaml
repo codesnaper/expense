@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 80
 aws:
   cognito:
     clientId: ${CLIENT_ID}
@@ -31,25 +31,38 @@ cors:
       - Authorization
       - refreshToken
 spring:
+  config:
+    location: path.yaml
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
-  jpa:
-    show-sql: true
-    generate-ddl: true
-    properties:
-      hibernate:
-        format_sql: true
 logging:
   level:
     com:
-      expense: DEBUG
-
-    org:
-      hibernate:
-        SQL: debug
-        type:
-          descriptor:
-            sql: trace
+      expense: INFO
+react:
+  router: /em/bank,/em/limit,/em/expense,/em/category,/em/account,/em/notification,/em/profile
+expense:
+  base: /expense/api
+  version: /v1
+  bank:
+    variable:
+      bankId: bank-id
+    base: /bank
+    post: /
+    get: /
+    update: /
+    delete: /{${expense.bank.variable.bankId}}
+  account:
+    bank:
+      variable:
+        accountId: account-id
+        accountType: account-type
+      base: /bank/{${expense.bank.variable.bankId}}/account
+      add: /type={${expense.account.bank.variable.accountType}}
+      update: /type={${expense.account.bank.variable.accountType}}
+      delete: /{${expense.account.bank.variable.accountId}}
+      get: /{${expense.account.bank.variable.accountId}}
+      getAll: /type={${expense.account.bank.variable.accountType}}

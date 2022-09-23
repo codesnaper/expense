@@ -9,4 +9,6 @@ public interface IProfileService {
     ProfileModel getProfile(String userId);
 
     ProfileModel updateProfile(ProfileModel profileModel);
+
+    ProfileModel updateTheme(String userId, String theme);
 }

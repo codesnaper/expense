@@ -1,18 +1,22 @@
 package com.expense.expensemanagement.service.limit;
 
+import com.expense.expensemanagement.entity.Limit;
 import com.expense.expensemanagement.model.LimitModel;
+import com.expense.expensemanagement.model.Recursive;
 import com.expense.expensemanagement.model.ResponseList;
-
-import java.security.Principal;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 public interface ILimitService {
+
+    Page<Limit> fetchAllLimit(Recursive reset_recursively, PageRequest pageRequest);
     /**
      *
      * @param pageNo
      * @param pageSize
      * @return
      */
-    ResponseList<LimitModel> getLimits(int pageNo,int pageSize);
+    ResponseList<LimitModel> getLimits(int pageNo,int pageSize, String userId);
 
     /**
      *
@@ -34,6 +38,5 @@ public interface ILimitService {
      * @param id
      */
     void deleteLimit(long id, String userId);
-
 
 }

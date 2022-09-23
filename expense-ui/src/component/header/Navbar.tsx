@@ -15,11 +15,20 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import AdbIcon from '@mui/icons-material/Adb';
-import { UserContext } from '../../context';
-import { Auth } from 'aws-amplify';
+import { AlertContext, NotificationContext, ServiceContext, UserContext } from '../../context';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import { Avatar, Collapse, Divider, List, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
-import { ExpandLess, ExpandMore, LightMode, Logout } from '@mui/icons-material';
+import { Avatar, Button, Collapse, Divider, List, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
+import { ExpandLess, ExpandMore, LightMode, Logout, MoneyOutlined } from '@mui/icons-material';
+import { User } from '../../modal/response/User';
+import { Profile } from '../../modal/response/Profile';
+import { ApiError } from '../../modal/response/Error';
+import { AlertType } from '../../modal/ExpenseAlert';
+import ContentLoader from '../ContentLoader';
+import { Stack } from '@mui/system';
+import { Service } from '../../modal/Service';
+import { IMessage } from '@stomp/stompjs';
+import { Notification } from '../../modal/response/Notification';
+import { NotificationOperation, NotificationSocketMessage } from '../../modal/response/NotificationSocketMessage';
 
 function stringToColor(string: string) {
     let hash = 0;
@@ -50,64 +59,26 @@ function stringAvatar(name: string) {
     };
 }
 
-const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
-        width: 'auto',
-    },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-        padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '20ch',
-        },
-    },
-}));
-
 interface NavbarProps {
     openDrawer?: (open: boolean) => void;
-    setTheme?: (theme: string) => void;
+    updateUserProfile?: (profile: Profile) => void;
 }
 
 export default function Navbar(props: NavbarProps) {
     const [open, setOpen] = React.useState(false);
     const [darkMode, setDarkMode] = React.useState<boolean>(false);
-
+    const [loader, setLoader] = React.useState<boolean>(false);
+    const service = React.useContext(ServiceContext);
+    const expenseAlert = React.useContext(AlertContext);
+    const [notificationCount, setNotificationCount] = React.useState<number>(0);
+    const notificationContext = React.useContext(NotificationContext);
     const handleClick = () => {
         setOpen(!open);
     };
-
-    const user = React.useContext(UserContext);
+    const user:User = React.useContext(UserContext);
     const signOut = async () => {
         try {
-            await Auth.signOut();
-            sessionStorage.removeItem('user');
+            localStorage.clear();
             window.location.href = '/';
         } catch (error) {
             console.log('error signing out: ', error);
@@ -138,9 +109,30 @@ export default function Navbar(props: NavbarProps) {
     };
 
     const setTheme = (theme: string, darkMode: boolean) => {
-        props.setTheme?.(theme);
-        setDarkMode(darkMode);
+        setLoader(true);
+        service.profileService?.updateTheme(theme)
+        .then((profile: Profile) => {
+            props.updateUserProfile?.(profile);
+            setDarkMode(darkMode);
+        })
+        .catch((err: ApiError) => {
+            expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+        })
+        .finally(() => {
+            setLoader(false);
+        })
     }
+
+    React.useEffect(() => {
+        setDarkMode(user.profile?.theme === 'dark');
+    },[user])
+
+    React.useEffect(() => {
+        notificationContext.subscribeToCount?.((message: IMessage) => {
+            const notificaiton: NotificationSocketMessage  = JSON.parse(message.body);
+            setNotificationCount(notificaiton.notification.count);
+        })
+    }, [notificationContext]);
 
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -165,9 +157,9 @@ export default function Navbar(props: NavbarProps) {
                     aria-label="account name"
                     color="inherit"
                 >
-                    {<Avatar {...stringAvatar(`${user.name}`)} />}
+                    {<Avatar {...stringAvatar(`${user.user.name}`)} />}
                 </IconButton>
-                <p>{user.name}</p>
+                <p>{user.user.name}</p>
             </MenuItem>
             <Divider></Divider>
             {!darkMode &&
@@ -245,7 +237,7 @@ export default function Navbar(props: NavbarProps) {
                     aria-label="show 17 new notifications"
                     color="inherit"
                 >
-                    <Badge badgeContent={17} color="error">
+                    <Badge badgeContent={notificationCount} color="error">
                         <NotificationsIcon />
                     </Badge>
                 </IconButton>
@@ -258,9 +250,9 @@ export default function Navbar(props: NavbarProps) {
                     aria-label="account name"
                     color="inherit"
                 >
-                    {<Avatar {...stringAvatar(`${user.name}`)} />}
+                    {<Avatar {...stringAvatar(`${user.user.name}`)} />}
                 </IconButton>
-                <p>{user.name}</p>
+                <p>{user.user.name}</p>
                 {open ? <ExpandLess /> : <ExpandMore />}
             </MenuItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
@@ -310,6 +302,8 @@ export default function Navbar(props: NavbarProps) {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
+            {loader &&<ContentLoader heading={`Applying theme !!!`}>
+                        </ContentLoader>}
             <AppBar position="static">
                 <Toolbar>
                     <IconButton
@@ -342,17 +336,14 @@ export default function Navbar(props: NavbarProps) {
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="error">
-                                <MailIcon />
-                            </Badge>
-                        </IconButton>
+                        <Stack direction={"row"} spacing={1}>
+                        <Button variant='text' startIcon={<MoneyOutlined></MoneyOutlined>}>Add Expense</Button>
                         <IconButton
                             size="large"
                             aria-label="show 17 new notifications"
                             color="inherit"
                         >
-                            <Badge badgeContent={17} color="error">
+                            <Badge badgeContent={notificationCount} color="error">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>
@@ -366,9 +357,10 @@ export default function Navbar(props: NavbarProps) {
                                 onClick={handleProfileMenuOpen}
                                 color="inherit"
                             >
-                                {<Avatar {...stringAvatar(`${user.name}`)} />}
+                                {<Avatar {...stringAvatar(`${user.user.name}`)} />}
                             </IconButton>
                         </Tooltip>
+                        </Stack>
                     </Box>
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                         <IconButton

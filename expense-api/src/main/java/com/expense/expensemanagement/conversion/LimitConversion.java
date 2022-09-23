@@ -2,7 +2,6 @@ package com.expense.expensemanagement.conversion;
 
 import com.expense.expensemanagement.dao.AccountDAO;
 import com.expense.expensemanagement.dao.CategoryDao;
-import com.expense.expensemanagement.dao.LimitDao;
 import com.expense.expensemanagement.entity.Account;
 import com.expense.expensemanagement.entity.Category;
 import com.expense.expensemanagement.entity.Limit;
@@ -10,10 +9,9 @@ import com.expense.expensemanagement.model.AccountModel;
 import com.expense.expensemanagement.model.LimitModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import java.math.BigDecimal;
 
 @Component("limitConversion")
 public class LimitConversion implements EntityModalConversion<Limit, LimitModel> {
@@ -37,18 +35,19 @@ public class LimitConversion implements EntityModalConversion<Limit, LimitModel>
     public LimitModel getModel(Limit limit) {
         LimitModel limitModel=new LimitModel();
         limitModel.setId(limit.getId());
-        limitModel.setAccount_id(accountConversion.getModel(limit.getAccount()).getId());
+        limitModel.setAccountId(accountConversion.getModel(limit.getAccount()).getId());
         limitModel.setName(limit.getName());
         limitModel.setDescription(limit.getDescription());
-        limitModel.setCategory_id(categoryConversion.getModel(limit.getCategory()).getId());
-        limitModel.setMax_amount(limit.getMax_amount());
-        limitModel.setMin_amount(limit.getMin_amount());
+        limitModel.setCategoryId(categoryConversion.getModel(limit.getCategory()).getId());
+        limitModel.setMaxAmount(limit.getMaxAmount().longValue());
+        limitModel.setMinAmount(limit.getMinAmount().longValue());
         limitModel.setPriority(limit.getPriority());
-        limitModel.setReset_recursively(limit.getReset_recursively());
+        limitModel.setResetRecursively(limit.getResetRecursively());
         limitModel.setUserid(limit.getUserid());
-        limitModel.setUsed_amount(limit.getUsed_amount());
-        limitModel.setThresold_warning_amount(limit.getThresold_warning_amount());
-
+        limitModel.setUsedAmount(limit.getUsedAmount().longValue());
+        limitModel.setThresoldWarningAmount(limit.getThresoldWarningAmount());
+        limitModel.setCategory(categoryConversion.getModel(limit.getCategory()));
+        limitModel.setAccount(accountConversion.getModel(limit.getAccount()));
         return limitModel;
     }
 
@@ -56,19 +55,19 @@ public class LimitConversion implements EntityModalConversion<Limit, LimitModel>
     public Limit getEntity(LimitModel limitModel) {
         Limit limit=new Limit();
         limit.setId(limitModel.getId());
-         Account account=accountDAO.findById(limitModel.getAccount_id()).orElse(new Account());
+         Account account=accountDAO.findById(limitModel.getAccountId()).orElse(new Account());
         limit.setAccount(account);
         limit.setName(limitModel.getName());
         limit.setDescription(limitModel.getDescription());
-//        Category category=
-//        limit.setCategory();
-        limit.setMax_amount(limitModel.getMax_amount());
-        limit.setMin_amount(limitModel.getMin_amount());
+        limit.setMaxAmount(new BigDecimal(limitModel.getMaxAmount()));
+        limit.setMinAmount(new BigDecimal(limitModel.getMinAmount()));
         limit.setPriority(limitModel.getPriority());
-        limit.setReset_recursively(limitModel.getReset_recursively());
+        limit.setResetRecursively(limitModel.getResetRecursively());
         limit.setUserid(limitModel.getUserid());
-        limit.setUsed_amount(limitModel.getUsed_amount());
-        limit.setThresold_warning_amount(limitModel.getThresold_warning_amount());
+        limit.setUsedAmount(new BigDecimal(limitModel.getUsedAmount()));
+        limit.setThresoldWarningAmount(limitModel.getThresoldWarningAmount());
+        Category category = categoryDao.findById(limitModel.getCategoryId()).orElse(new Category());
+        limit.setCategory(category);
         return limit;
     }
 }

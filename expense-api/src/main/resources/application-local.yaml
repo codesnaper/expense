@@ -1,0 +1,82 @@
+server:
+  port: 8090
+aws:
+  cognito:
+    clientId: ${CLIENT_ID}
+    userPoolId: ${USER_POOL_ID}
+    identityPoolId: ${IDENTITY_POOL_ID}
+    region: ${REGION}
+    secretKey: ${SECRET_KEY}
+    accessKey: ${ACCESS_KEY}
+    authFlow: ADMIN_NO_SRP_AUTH
+    userNameField: username
+    groupsField:
+    connectionTimeout: 2000
+    readTimeout: 2000
+cors:
+  origin: http://localhost:8090
+  allowCredentials: true
+  maxAge: 36000L
+  allow:
+    methods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      - PATCH
+    header:
+      - Authorization
+      - refreshToken
+    exposedHeader:
+      - Authorization
+      - refreshToken
+spring:
+  config:
+    location: path.yaml
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
+logging:
+  level:
+    com:
+      expense: DEBUG
+    org:
+      springframework:
+        web: DEBUG
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql: trace
+react:
+  router: /em/bank,/em/limit,/em/expense,/em/category,/em/account,/em/notification,/em/profile
+expense:
+  base: /expense/api
+  version: /v1
+  bank:
+    variable:
+      bankId: bank-id
+    base: /bank
+    post: /
+    get: /
+    update: /
+    delete: /{${expense.bank.variable.bankId}}
+  account:
+    bank:
+      variable:
+        accountId: account-id
+        accountType: account-type
+      base: /bank/{${expense.bank.variable.bankId}}/account
+      add: /type={${expense.account.bank.variable.accountType}}
+      update: /type={${expense.account.bank.variable.accountType}}
+      delete: /{${expense.account.bank.variable.accountId}}
+      get: /{${expense.account.bank.variable.accountId}}
+      getAll: /type={${expense.account.bank.variable.accountType}}

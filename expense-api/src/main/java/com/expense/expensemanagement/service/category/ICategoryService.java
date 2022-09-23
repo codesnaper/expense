@@ -4,6 +4,7 @@ import com.expense.expensemanagement.entity.Category;
 import com.expense.expensemanagement.model.ResponseList;
 
 import java.security.Principal;
+import java.util.List;
 
 public interface ICategoryService {
 
@@ -32,7 +33,9 @@ public interface ICategoryService {
     /**
      *
      * @param id
-     * @param principal
+     * @param userId
      */
     public void deleteCategory(long id, String userId);
+
+    public List<com.expense.expensemanagement.model.Category> fetchAllCategory(String userId);
 }

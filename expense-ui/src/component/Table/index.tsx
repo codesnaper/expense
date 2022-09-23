@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Checkbox, Chip, FormControl, Input, InputAdornment, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Toolbar, Tooltip, Typography } from "@mui/material";
+import { Button, ButtonGroup, Checkbox, Chip, FormControl, Input, InputAdornment, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TextField, Toolbar, Tooltip, Typography } from "@mui/material";
 import React from "react";
 import { Header, HeaderType } from "../../modal/Header";
 import { Operator, TableDataSet } from "../../modal/TableDataSet";
@@ -9,6 +9,10 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import moment from "moment";
+import { AddBox, AddOutlined } from "@mui/icons-material";
 interface ExpenseTableProps {
     dataset?: TableDataSet<Object>,
     showActionCallback?: (row: any) => void,
@@ -18,9 +22,6 @@ interface ExpenseTableProps {
 }
 
 export default function ExpenseTable(props: ExpenseTableProps) {
-
-    const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
-    const [page, setPage] = React.useState<number>(0);
     const [refresh, setRefresh] = React.useState<boolean>(false);
 
     const toggleHiddenColumn = (header: Header) => {
@@ -43,6 +44,10 @@ export default function ExpenseTable(props: ExpenseTableProps) {
 
     const deleteButton = (index: number) => {
         props.deleteActionCallback?.(props.dataset?.getIndexedData(index));
+    }
+
+    const formatData = (data: string): string => {
+        return data.replaceAll(',', ' , ')
     }
 
     const renderSearch = () => {
@@ -95,7 +100,7 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                         id="tableTitle"
                         component="div"
                     >
-                        {(props.dataset?.action && props.dataset?.action.add) && <Button sx={{ marginLeft: '24px' }} onClick={() => props.addActionCallback?.()} variant="contained">Add</Button>}
+                        {(props.dataset?.action && props.dataset?.action.add) && <Button startIcon={<AddOutlined></AddOutlined>} sx={{ marginLeft: '24px' }} onClick={() => props.addActionCallback?.()} variant="contained">Add</Button>}
                     </Typography>
                 </Toolbar>
                 <TableContainer component={Paper}>
@@ -114,8 +119,8 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                         <TableBody>
                             {
                                 props.dataset?.getRows().
-                                    map((rows: Array<string>, index: number) =>
-                                        <TableRow key={`row-${index}`} hover={true}>
+                                    map((rows: Array<string>, indexRow: number) =>
+                                        <TableRow key={`row-${indexRow}`} hover={true} sx={props.dataset?.getRowStyle(props.dataset?.rows[indexRow])}>
                                             {
                                                 rows.map((data: string, index: number) =>
                                                     <TableCell align="center" key={`cell-${index}`}>
@@ -123,14 +128,40 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                                                             <Checkbox checked={data === 'true' ? true : false} />
                                                         </>}
                                                         {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.tag) && <>
-                                                            {data !== '' && data.split(',').map((tag: string, index:number) => <div style={{paddingBottom: '10px'}}><Chip color="secondary" key={`chip-${index}`} icon={<BookmarkBorderIcon />} label={tag} /></div>)}
+                                                            {data !== '' &&
+                                                                <>
+                                                                    <div style={{ paddingBottom: '10px' }}>
+                                                                        <Tooltip title={data}>
+                                                                            <Chip color="secondary" key={`chip`} label={formatData(data)} icon={<BookmarkBorderIcon />} />
+                                                                        </Tooltip>
+                                                                    </div>
+                                                                </>
+                                                            }
                                                         </>}
                                                         {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.string) && <>
                                                             {data}
                                                         </>}
                                                         {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.number) && <>
-                                                            {Number.isNaN(Number(data)) ? 0: Number(data)}
+                                                            {Number.isNaN(Number(data)) ? 0 : Number(data)}
                                                         </>}
+                                                        {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.custom) && <>
+                                                            {props.dataset?.getColumns()[index].customDisplay?.(props.dataset?.rows[indexRow])}
+                                                        </>}
+                                                        {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.date) &&
+                                                            <>
+                                                                <LocalizationProvider dateAdapter={AdapterMoment}>
+                                                                    <DatePicker
+                                                                        label="Date"
+                                                                        disabled={true}
+                                                                        value={new Date(parseInt(data))}
+                                                                        onChange={(newValue) => {
+                                                                            
+                                                                        }}
+                                                                        renderInput={(params) => <TextField fullWidth={false} disabled={true} variant="standard" {...params} />}
+                                                                    />
+                                                                </LocalizationProvider>
+                                                            </>
+                                                        }
                                                     </TableCell>
                                                 )
                                             }
@@ -140,7 +171,7 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                                                         {props.dataset?.action.show &&
                                                             <ButtonGroup orientation="vertical" variant="contained" aria-label="outlined primary button group">
                                                                 <Tooltip title={`View Details`}>
-                                                                    <Button variant="text" onClick={() => showButton(index)}>
+                                                                    <Button variant="text" onClick={() => showButton(indexRow)}>
                                                                         <VisibilityIcon />
                                                                     </Button>
                                                                 </Tooltip>
@@ -151,7 +182,7 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                                                             props.dataset?.action.edit &&
                                                             <ButtonGroup orientation="vertical" variant="contained" aria-label="outlined primary button group">
                                                                 <Tooltip title={`Edit Details`}>
-                                                                    <Button variant="text" onClick={() => editButton(index)}><EditIcon /></Button>
+                                                                    <Button variant="text" onClick={() => editButton(indexRow)}><EditIcon /></Button>
                                                                 </Tooltip>
                                                             </ButtonGroup>
                                                         }
@@ -160,7 +191,7 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                                                             props.dataset?.action.delete &&
                                                             <ButtonGroup orientation="vertical" variant="contained" aria-label="outlined primary button group">
                                                                 <Tooltip title={`Delete Details`}>
-                                                                    <Button variant="text" onClick={() => deleteButton(index)}><DeleteForeverIcon /></Button>
+                                                                    <Button variant="text" onClick={() => deleteButton(indexRow)}><DeleteForeverIcon /></Button>
                                                                 </Tooltip>
                                                             </ButtonGroup>
                                                         }

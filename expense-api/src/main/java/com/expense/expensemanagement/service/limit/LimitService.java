@@ -3,20 +3,18 @@ package com.expense.expensemanagement.service.limit;
 import com.expense.expensemanagement.conversion.EntityModalConversion;
 import com.expense.expensemanagement.dao.AccountDAO;
 import com.expense.expensemanagement.dao.LimitDao;
-import com.expense.expensemanagement.entity.Account;
 import com.expense.expensemanagement.entity.Limit;
 import com.expense.expensemanagement.model.LimitModel;
+import com.expense.expensemanagement.model.Recursive;
 import com.expense.expensemanagement.model.ResponseList;
-import com.expense.expensemanagement.util.ExpenseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LimitService implements ILimitService {
@@ -32,10 +30,12 @@ public class LimitService implements ILimitService {
 
 
     @Override
-    public ResponseList<LimitModel> getLimits(int pageNo, int pageSize) {
-        Page page=limitDao.findAll(PageRequest.of(pageNo,pageSize));
+    public ResponseList<LimitModel> getLimits(int pageNo, int pageSize, String userId) {
+        Page<Limit> page=limitDao.findByUserid(userId,PageRequest.of(pageNo,pageSize));
         ResponseList<LimitModel> responseList=new ResponseList<>();
-        responseList.setData(page.getContent());
+        responseList.setData(
+                page.getContent().stream().map(limitConversion::getModel).collect(Collectors.toList())
+        );
         responseList.setTotalPage(page.getTotalPages());
         responseList.setTotalCount(page.getTotalElements());
         responseList.setPageNo(page.getNumber());
@@ -44,9 +44,6 @@ public class LimitService implements ILimitService {
 
     @Override
     public LimitModel addLimit(LimitModel limitModel) {
-        Account account = accountDAO.findById(limitModel.getId()).orElse(new Account());
-        limitModel.setAccount_id(account.getId());
-
         Limit limit= limitDao.saveAndFlush(limitConversion.getEntity(limitModel));
         return limitConversion.getModel(limit);
     }
@@ -63,9 +60,12 @@ public class LimitService implements ILimitService {
 
     @Override
     public void deleteLimit(long id, String userId) {
-        Limit limit=limitDao.findById(id).orElseThrow(NoSuchElementException::new);
-        if(limit.getUserid() == userId) {
-            limitDao.deleteById(id);
-        }
+        Limit limit=limitDao.findByIdAndUserid(id,userId).orElseThrow(NoSuchElementException::new);
+        limitDao.deleteById(limit.getId());
+    }
+
+    @Override
+    public Page<Limit> fetchAllLimit(Recursive recursive, PageRequest pageRequest) {
+        return this.limitDao.findByResetRecursively(recursive, pageRequest);
     }
 }

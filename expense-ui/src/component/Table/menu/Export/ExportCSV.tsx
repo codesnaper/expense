@@ -14,7 +14,7 @@ export default function ExportCSVMenuItem(props: ExportCSVMenuItemProps) {
         const builder = new CsvBuilder(`${props.heading}.csv`);
         builder
             .setDelimeter(',')
-            .setColumns(props.columns.map((header: Header) => header.alias))
+            .setColumns(props.columns?.map((header: Header) => header.alias? header.alias: ''))
             .addRows(props.rows)
             .exportFile();
     }

@@ -1,12 +1,10 @@
 package com.expense.expensemanagement.entity;
 
-import com.expense.expensemanagement.model.AccountType;
 import com.expense.expensemanagement.model.AccountTypeValue;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Where;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -18,6 +16,9 @@ import java.util.List;
         indexes = {
                 @Index(name = "account_bank_em_idx", columnList = "bank_id"),
                 @Index(name = "account_bank_type_idx", columnList = "bank_id,account_type")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "accountNumberAndBankId", columnNames = {"number", "bank_id"})
         }
 )
 @DiscriminatorColumn(name = "account_type",
@@ -36,7 +37,7 @@ public class Account {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "number", nullable = false, unique = true)
+    @Column(name = "number", nullable = false)
     private String accountNumber;
 
     @Column(name = "amount")

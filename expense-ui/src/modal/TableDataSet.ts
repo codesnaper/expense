@@ -1,3 +1,5 @@
+import { SxProps } from "@mui/material";
+import { Theme } from "@mui/system";
 import { Header, HeaderDisplay, Headers } from "./Header";
 
 export enum Operator {
@@ -14,16 +16,20 @@ export interface TableAction {
     add: boolean
 }
 
-export class TableDataSet<T>{
+export class TableDataSet<T extends object>{
     headers: Headers<T>;
     rows: Array<T>;
     filterRow: Array<T>;
     action!: TableAction;
+    rowBGColor?: (value: object) => string;
+    rowTextColor?: (value: object) => string;
 
-    constructor(headers: Headers<T>, rows: Array<T>) {
+    constructor(headers: Headers<T>, rows: Array<T>, rowBgColor?: (value: object) => string, rowTextColor?: (value: object) => string) {
         this.headers = headers;
         this.rows = rows;
         this.filterRow = rows;
+        this.rowBGColor = rowBgColor;
+        this.rowTextColor = rowTextColor;
     }
 
     getColumns(): Array<Header> {
@@ -118,5 +124,15 @@ export class TableDataSet<T>{
             }
         })
 
+    }
+
+    getRowStyle = (row: object): SxProps<Theme> => {
+        const style:SxProps<Theme> = {"color": "inherit", backgroundColor: "inherit"};
+        if(this.rowBGColor){
+            style.backgroundColor = this.rowBGColor(row);
+        } else if (this.rowTextColor) {
+            style.color = this.rowTextColor(row);
+        }
+        return style;
     }
 }

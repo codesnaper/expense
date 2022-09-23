@@ -79,17 +79,11 @@ public class CognitoServiceImpl implements CognitoService {
 		try {
 			authResult = cognitoIdentityProvider.adminInitiateAuth(authRequest);
 		} catch (NotAuthorizedException notAuthorizedException) {
-			String message = "Error in User Authentication. ".concat(notAuthorizedException.getErrorMessage());
-			logger.log(Level.INFO, message);
-			throw new AuthenticationFailedException(message);
+			throw new AuthenticationFailedException(notAuthorizedException.getErrorMessage());
 		} catch (UserNotFoundException userNotFoundException) {
-			String message = "Error in User Authentication. ".concat(userNotFoundException.getErrorMessage());
-			logger.log(Level.INFO, message);
-			throw new AuthenticationFailedException(message);
+			throw new AuthenticationFailedException(userNotFoundException.getErrorMessage());
 		} catch (PasswordResetRequiredException passwordResetRequiredException) {
-			String message = "Error in User Authentication. ".concat(passwordResetRequiredException.getErrorMessage());
-			logger.log(Level.INFO, message);
-			throw new AuthenticationFailedException(message);
+			throw new AuthenticationFailedException(passwordResetRequiredException.getErrorMessage());
 		}
 		return authResult;
 	}

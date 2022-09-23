@@ -5,16 +5,16 @@ import com.expense.expensemanagement.model.BankModel;
 import com.expense.expensemanagement.model.ResponseList;
 import com.expense.expensemanagement.model.UserContext;
 import com.expense.expensemanagement.service.bank.IBankService;
+import com.expense.expensemanagement.service.notification.INotificationService;
 import com.expense.expensemanagement.util.ExpenseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/expense/api/v1/bank")
+@RequestMapping("${expense.base}${expense.version}${expense.bank.base}")
 public class BankController {
 
     private final IBankService bankService;
@@ -22,20 +22,26 @@ public class BankController {
     private final AccountController accountController;
 
     @Autowired
+    private INotificationService notificationService;
+
+    @Autowired
+    private NotificationSocketController socketController;
+
+    @Autowired
     public BankController(IBankService bankService, AccountController accountController) {
         this.bankService = bankService;
         this.accountController = accountController;
     }
 
-    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)    public BankModel addBank(
+    @PostMapping(value = "${expense.bank.post}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)    public BankModel addBank(
             @RequestBody BankModel bankModel,
             Principal principal
     ){
-        bankModel.setUserId(((UserContext)((JwtAuthenticationToken) principal).getPrincipal()).getUsername());
+        bankModel.setUserId(ExpenseUtil.getUserId(principal));
         return this.bankService.addBank(bankModel);
     }
 
-    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "${expense.bank.get}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseList<BankModel> getBanks(
             @RequestHeader(name = "pageNo",defaultValue = "0", required = false) int pageNo,
             @RequestHeader(name = "size",defaultValue = "10", required = false) int pageSize,
@@ -44,15 +50,23 @@ public class BankController {
         return this.bankService.getAllBanks(((UserContext)((JwtAuthenticationToken) principal).getPrincipal()).getUsername(), pageNo,pageSize);
     }
 
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{bank-id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BankModel getBank(
+           @PathVariable("bank-id") long id,
+            Principal principal
+    ){
+        return this.bankService.findById(id, ExpenseUtil.getUserId(principal));
+    }
+
+    @DeleteMapping(value = "${expense.bank.delete}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteBank(
-            @PathVariable long id,
+            @PathVariable("bank-id") long id,
             Principal principal
     ){
         this.bankService.deleteBank(ExpenseUtil.getUserId(principal), id);
     }
 
-    @PutMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "${expense.bank.update}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public BankModel updateBank(
             Principal principal,
             @RequestBody(required = true) BankModel bankModel

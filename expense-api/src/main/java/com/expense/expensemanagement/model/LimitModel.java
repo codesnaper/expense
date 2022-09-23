@@ -2,9 +2,6 @@ package com.expense.expensemanagement.model;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
-
 @Data
 public class LimitModel {
     private long id;
@@ -15,19 +12,23 @@ public class LimitModel {
 
     private String description;
 
-    private Long account_id;
+    private Long accountId;
 
-    private Long min_amount;
+    private Long minAmount;
 
-    private Long max_amount;
+    private Long maxAmount;
 
-    private Long thresold_warning_amount;
+    private Long thresoldWarningAmount;
 
-    private String reset_recursively;
+    private Recursive resetRecursively;
 
-    private Long category_id;
+    private Long categoryId;
 
     private String priority;
 
-    private String used_amount;
+    private long usedAmount;
+
+    private Category category;
+
+    private AccountModel account;
 }

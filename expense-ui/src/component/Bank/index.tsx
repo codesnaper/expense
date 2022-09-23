@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ContentLoader from "./../ContentLoader";
 import PlaceholderCard from "./../PlaceholderCard";
 import { UserContext, ServiceContext, LocalizationContext, AlertContext } from './../../context';
-import { BankModal, BankModalsResponse, ResponseDelete } from "../../modal/bank";
+import { BankModal, BankModalsResponse, ResponseDelete } from "../../modal/response/Bank";
 import { AlertType } from "../../modal/ExpenseAlert";
 import ModalBank from "./modal";
 import { TableAction, TableDataSet } from "../../modal/TableDataSet";
@@ -15,7 +15,7 @@ import ExpenseTable from "../Table";
 import { OperationType } from "../../modal/OperationType";
 import InfoCardComponent from "../Card/InfoCard";
 import { green, red } from "@mui/material/colors";
-import { Tag } from "../../modal/Tag";
+import { Tag } from "../../modal/response/Tag";
 
 export default function BankComponent() {
     const [openModal, setOpenModal] = useState<boolean>(false);
@@ -32,6 +32,9 @@ export default function BankComponent() {
     const service = useContext(ServiceContext);
     const localization = useContext(LocalizationContext);
     const expenseAlert = useContext(AlertContext);
+    const [page, setPage] = useState<number>(0);
+    const [size, setSize] = useState<number>(10);
+    const [totalElement, setTotalElement] = useState<number>(0);
 
     const createBankDataSet = (banks: Array<BankModal>) => {
         const dataSet: TableDataSet<BankModal> = new TableDataSet<BankModal>(
@@ -112,6 +115,13 @@ export default function BankComponent() {
                     isVisible: true,
                     alias: 'Hold Amount',
                     type: HeaderType.number
+                },
+                totalAccounts: {
+                    display: HeaderDisplay.NONE,
+                    isPrimaryKey: false,
+                    isVisible: true,
+                    alias: 'Total Account',
+                    type: HeaderType.number
                 }
             }
             , banks);
@@ -126,7 +136,7 @@ export default function BankComponent() {
     }
 
     useEffect(() => {
-        service.bankService?.fetchBanks(user.id)
+        service.bankService?.fetchBanks(page, size)
             .then((response: BankModalsResponse) => {
                 let banks: BankModal[] = [];
                 let sumCreditAmount: number = 0;
@@ -147,13 +157,13 @@ export default function BankComponent() {
                 createBankDataSet(banks);
                 setLoader(false);
             }).catch(err => {
-                expenseAlert.setAlert?.(`${localization.getString?.('Bank.error.404', localization.getLanguage?.())}`, AlertType.SUCCESS);
-                console.error(err);
+                expenseAlert.setAlert?.(`${localization.getString?.('Bank.error.404', localization.getLanguage?.())}`, AlertType.ERROR);
                 setLoader(false);
             });
     }, [service])
 
     const addModalCallback = (bank: BankModal) => {
+        bank.tagNames = bank.tags.map((tag:Tag) => tag.name ).join(',');
         if (bankDataSet) {
             createBankDataSet([...bankDataSet.rows, bank]);
         } else {
@@ -165,6 +175,7 @@ export default function BankComponent() {
     }
 
     const editModalCallback = (id: string, editedBank: BankModal) => {
+        editedBank.tagNames = editedBank.tags.map((tag:Tag) => tag.name ).join(',');
         if (bankDataSet) {
             const banks: Array<BankModal> = bankDataSet.rows
                 .map((bank: BankModal) => {
@@ -206,7 +217,7 @@ export default function BankComponent() {
     }
 
     const deleteBank = (bank: BankModal) => {
-        service.bankService?.deleteBank(bank.ID, user.id)
+        service.bankService?.deleteBank(bank.ID)
             .then((res: ResponseDelete) => {
                 if (bankDataSet) {
                     let bankModals: Array<BankModal> = bankDataSet.rows;
@@ -218,18 +229,17 @@ export default function BankComponent() {
                     setTotalBank(totalBank - 1);
                     setTotalCreditAmount(totalCreditAmount - Number(bank.creditAmount));
                     setTotalDebitAmount(totalDebitAmount - Number(bank.debitAmount));
-                    expenseAlert.setAlert?.(res.message, AlertType.SUCCESS);
+                    expenseAlert.setAlert?.('Bank has been deleted successfully', AlertType.SUCCESS);
                 }
             }).
             catch(err => {
-                console.error(err);
-                expenseAlert.setAlert?.(`${localization.getString?.('Bank.error.delete', localization.getLanguage?.())}`, AlertType.SUCCESS);
+                expenseAlert.setAlert?.(`${localization.getString?.('Bank.error.delete', localization.getLanguage?.())}`, AlertType.ERROR);
             })
     }
 
     return (
         <>
-            <Box component={Container} maxWidth={'lg'} height={'100vh'} sx={{padding: '40px'}} >
+            <Box component={Container} maxWidth={'false'} height={'100vh'} sx={{paddingTop: '40px'}} >
                     {loader ? <>
                         <ContentLoader heading={`${localization.getString?.('Bank.appLoading', localization.getLanguage?.(), true)}`}>
                         </ContentLoader>

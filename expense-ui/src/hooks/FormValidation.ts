@@ -1,9 +1,21 @@
 import { SelectChangeEvent } from "@mui/material";
+import { type } from "os";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { Tag } from "../modal/Tag";
+import { Tag } from "../modal/response/Tag";
 import { Validations } from "../modal/validation";
 
-type ErrorRecord<T> = Partial<Record<keyof T, string>>;
+export type ErrorRecord<T> = Partial<Record<keyof T, string>>;
+
+export interface FormValidation<T>{
+  data: T;
+  errors: ErrorRecord<T>;
+  handleChange: <S extends unknown>(key: keyof T, sanitizeFn?: ((value: string) => S) | undefined) => (e: ChangeEvent<HTMLInputElement & HTMLSelectElement>) => void;
+  handleSubmit: (e: FormEvent<HTMLFormElement>) => Promise<void>;
+  handleSelectChange: <S extends unknown>(key: keyof T, sanitizeFn?: ((value: string) => S) | undefined) => (e: SelectChangeEvent<any>) => void;
+  setValue: (key: keyof T, value: any) => void;
+  handleTagValue: <S extends unknown>(key: keyof T) => (tags: Array<Tag>) => void;
+  refreshError: () => void
+}
 
 export const useFormValidation = <T extends Record<keyof T, any> = {}>(options?: {
   // We will soon see how to create this interface
@@ -11,7 +23,7 @@ export const useFormValidation = <T extends Record<keyof T, any> = {}>(options?:
   // Allows a subset of T
   initialValues?: Partial<T>;
   onSubmit?: () => void;
-}) => {
+}): FormValidation<T> => {
   const [data, setData] = useState<T>((options?.initialValues || {}) as T);
   const [errors, setErrors] = useState<ErrorRecord<T>>({});
 
@@ -101,10 +113,13 @@ export const useFormValidation = <T extends Record<keyof T, any> = {}>(options?:
     setErrors({});
 
     if (options?.onSubmit) {
-      alert('submitting')
       options.onSubmit();
     }
   };
+
+  const refreshError = () => {
+    setErrors({})
+  }
 
   return {
     data,
@@ -113,6 +128,7 @@ export const useFormValidation = <T extends Record<keyof T, any> = {}>(options?:
     handleSelectChange,
     setValue,
     errors,
-    handleTagValue
+    handleTagValue,
+    refreshError,
   };
 };

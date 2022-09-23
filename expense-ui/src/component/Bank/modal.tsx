@@ -1,14 +1,14 @@
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Paper, PaperProps, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import { blue, red } from "@mui/material/colors";
 import React, { useContext, useEffect, useState } from "react";
-import { AlertContext, LocalizationContext, ServiceContext, UserContext } from '../../context'
+import { AlertContext, LocalizationContext, ServiceContext } from '../../context'
 import { useFormValidation } from "../../hooks/FormValidation";
-import { BankModal } from "../../modal/bank";
+import { BankModal } from "../../modal/response/Bank";
 import { AlertType } from "../../modal/ExpenseAlert";
 import Draggable from 'react-draggable';
 import { OperationType } from "../../modal/OperationType";
-import TagSelect from "../Tag/TagForm";
-import { Tag } from "../../modal/Tag";
+import TagSelect from "../Tag/TagSelect";
+import { ApiError, ErrorCode } from "../../modal/response/Error";
 
 interface ModalBankProps {
     operationType: OperationType;
@@ -32,16 +32,16 @@ function PaperComponent(props: PaperProps) {
 
 
 export default function ModalBank(props: ModalBankProps) {
+    const [isNameError, setIsNameError] = useState<boolean>(false);
+    const [nameErrorText, setNameErrorText] = useState<string>("");
     const expenseAlert = useContext(AlertContext);
     const service = useContext(ServiceContext);
-    const user = useContext(UserContext);
     const localization = useContext(LocalizationContext)
     const [addLoader, setAddLoader] = React.useState(true);
     const handleClose = () => { props.closeModalCallback() }
     useEffect(() => {
         setAddLoader(false);
     }, [service]);
-    const [errorTag, setErrorTags] = useState<boolean>(false);
 
     useEffect(() => {
         if (props.bank) {
@@ -59,7 +59,7 @@ export default function ModalBank(props: ModalBankProps) {
         { name: 'PLN', value: 'PLN' }
     ];
 
-    const { handleSubmit, handleChange, handleSelectChange, handleTagValue, data, errors } = useFormValidation<BankModal>({
+    const { handleSubmit, handleChange, handleSelectChange, handleTagValue, data, errors, refreshError } = useFormValidation<BankModal>({
         validations: {
             name: {
                 custom: {
@@ -80,6 +80,12 @@ export default function ModalBank(props: ModalBankProps) {
                     value: true,
                     message: `${localization.getString?.('Bank.error.form.currency', localization.getLanguage?.())}`,
                 }
+            },
+            tags: {
+                required:{
+                    value: true,
+                    message: 'Select at least one tag'
+                }
             }
         },
         initialValues: {
@@ -87,35 +93,53 @@ export default function ModalBank(props: ModalBankProps) {
         onSubmit: () => { addBank() }
     });
 
+    useEffect(() => {
+        refreshError();
+        setIsNameError(false);
+        setNameErrorText("");
+    }, [props.openModal])
+
     const addBank = () => {
         if (props.operationType === OperationType.ADD) {
             setAddLoader(true);
-            data.USERID = user.id ? user.id : '';
             service.bankService?.addBank(data)
                 .then(res => {
-                    setAddLoader(false);
                     handleClose();
                     props.addCallback(res);
                     expenseAlert.setAlert?.(`${localization.formatString?.(localization.getString ? localization.getString('Bank.success.200', localization.getLanguage?.()) : "", res.name, 'added')}`, AlertType.SUCCESS);
                 })
-                .catch(err => {
-                    expenseAlert.setAlert?.(`${localization.formatString?.(localization.getString ? localization.getString('Bank.error.500', localization.getLanguage?.()) : "", 'adding', data.name)}`, AlertType.SUCCESS);
-                    console.error(err);
+                .catch((err: ApiError) => {
+                    if (ErrorCode[err.errorCode] === ErrorCode.DUPLICATE_FIELD) {
+                        setIsNameError(true);
+                        setNameErrorText(err.message);
+                    } else {
+                        expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+                    }
+                    })
+                .finally(() => {
+                    setAddLoader(false);
                 })
         } else {
             setAddLoader(true);
             if (props.bank) {
                 const id = props.bank.ID;
-                service.bankService?.updateBank(data, id, user.id)
+                data.ID = id;
+                service.bankService?.updateBank(data)
                     .then(res => {
-                        setAddLoader(false);
                         handleClose();
                         props.editCallback(id, res);
                         expenseAlert.setAlert?.(`${localization.formatString?.(localization.getString ? localization.getString('Bank.success.200', localization.getLanguage?.()) : "", props.bank ? props.bank.name : '', 'updated')}`, AlertType.SUCCESS);
                     })
-                    .catch(err => {
-                        expenseAlert.setAlert?.(`${localization.formatString?.(localization.getString ? localization.getString('Bank.error.500', localization.getLanguage?.()) : "", 'updating', props.bank ? props.bank.name : '')}`, AlertType.SUCCESS);
-                        console.error(err);
+                    .catch((err: ApiError) => {
+                        if (ErrorCode[err.errorCode] === ErrorCode.DUPLICATE_FIELD) {
+                            setIsNameError(true);
+                            setNameErrorText(err.message);
+                        } else {
+                            expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+                        }
+                    })
+                    .finally(() => {
+                        setAddLoader(false);
                     })
             }
         }
@@ -128,17 +152,14 @@ export default function ModalBank(props: ModalBankProps) {
                     <DialogTitle className="grabbable"
                         id="draggable-dialog-title">
                         {props.operationType === OperationType.ADD ? localization.getString?.('Bank.modal.addTitle', localization.getLanguage?.()) : localization.getString?.('Bank.modal.editTitle', localization.getLanguage?.())}
-                        {errors && <>
-                            <br></br><Typography variant="caption" color={red[600]}>There are some error in form</Typography>
-                        </>}
                     </DialogTitle>
                     <DialogContent sx={{ maxHeight: '50vh' }}>
                         <FormControl fullWidth margin="normal">
                             <TextField
                                 required
                                 id="bankName"
-                                error={errors.name ? true : false}
-                                helperText={errors.name}
+                                error={errors.name || isNameError ? true : false}
+                                helperText={nameErrorText+".".concat(errors.name? errors.name:"")}
                                 defaultValue={props.bank?.name}
                                 label={localization.getString?.('Bank.modal.form.label.name', localization.getLanguage?.())}
                                 variant="standard"
@@ -176,8 +197,7 @@ export default function ModalBank(props: ModalBankProps) {
                         </FormControl>
                         <TagSelect
                             onChange={handleTagValue('tags')}
-                            error={errorTag}
-                            helperText='Max Tag selected can be 5'
+                            error={errors.tags}
                         ></TagSelect>
                     </DialogContent>
                     <DialogActions>

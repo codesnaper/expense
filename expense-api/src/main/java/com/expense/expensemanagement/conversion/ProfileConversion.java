@@ -10,7 +10,7 @@ public class ProfileConversion implements EntityModalConversion<Profile, Profile
     @Override
     public ProfileModel getModel(Profile profile) {
         ProfileModel profileModel = new ProfileModel();
-        profileModel.setTheme(profileModel.getTheme());
+        profileModel.setTheme(profile.getTheme());
         profileModel.setUserId(profile.getId());
         profileModel.setSelectedCurrency(profile.getSelectedCurrency());
         return profileModel;

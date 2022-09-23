@@ -11,14 +11,16 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import DrawerHeaderLogo from './DrawerHeader';
+import { MenuLinks } from '../../../modal/MenuLink';
 
-interface ExpenseDrawerProps{
+interface ExpenseDrawerProps {
     open: boolean;
     openDrawer?: (open: boolean) => void;
 }
 export default function ExpenseDrawer(props: ExpenseDrawerProps) {
 
-    const[refresh, setRefresh] = React.useState<boolean>(true);
+    const [refresh, setRefresh] = React.useState<boolean>(true);
+
 
     const toggleDrawer =
         (open: boolean) =>
@@ -32,7 +34,6 @@ export default function ExpenseDrawer(props: ExpenseDrawerProps) {
                 }
                 props.open = open;
                 setRefresh(!refresh);
-                alert(open)
                 props.openDrawer?.(open);
             };
 
@@ -44,19 +45,20 @@ export default function ExpenseDrawer(props: ExpenseDrawerProps) {
         >
             <DrawerHeaderLogo></DrawerHeaderLogo>
             <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+                {MenuLinks.map(menuLink => <>
+                    <ListItem key={'1'} disablePadding selected={menuLink.isActive()} onClick={() => {menuLink.navigateLink()}}>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <menuLink.icon />
+                        </ListItemIcon>
+                        <ListItemText primary={menuLink.title} />
+                    </ListItemButton>
+                </ListItem>
+                </>)}
             </List>
+
             <Divider />
-            <List>
+            {/* <List>
                 {['All mail', 'Trash', 'Spam'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton>
@@ -67,7 +69,7 @@ export default function ExpenseDrawer(props: ExpenseDrawerProps) {
                         </ListItemButton>
                     </ListItem>
                 ))}
-            </List>
+            </List> */}
         </Box>
     );
 

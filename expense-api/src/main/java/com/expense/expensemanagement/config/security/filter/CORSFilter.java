@@ -1,30 +1,41 @@
 package com.expense.expensemanagement.config.security.filter;
 
 
-import com.expense.expensemanagement.model.Constants;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-import java.util.Arrays;
+@Component
+@Profile("dev")
+@Order(value = Ordered.HIGHEST_PRECEDENCE)
+public class CORSFilter implements Filter {
 
-//TODO: need to take value from application yaml
-public class CORSFilter extends CorsFilter {
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
 
-    public CORSFilter() {
-        super(configurationSource());
     }
 
-    private static UrlBasedCorsConfigurationSource configurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("*");
-        config.setMaxAge(36000L);
-        config.setAllowedMethods(Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration(Constants.API_ROOT_URL, config);
-        return source;
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws ServletException, IOException {
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+        HttpServletRequest request= (HttpServletRequest) servletRequest;
+
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "*");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Expose-Headers", "Authorization,expire,refreshtoken");
+        response.setHeader("Access-Control-Request-Headers","*");
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    @Override
+    public void destroy() {
+
     }
 }
