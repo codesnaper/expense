@@ -40,13 +40,13 @@ jobs:
         ACCESSKEY: ${{ secrets.ACCESS_KEY }}
       run: |
         touch script.sh
-        chmod 600 script.sh
+        chmod 777 script.sh
         tee -a script.sh <<EOF
           ssh staging server.sh $ACCESSKEY
           EOF
     - name: CodeDeploy
       run: |
-        sudo ./script.sh
+       ./script.sh
     - name: Cheking out
       uses: actions/checkout@v3
     - name: Setting Node.js Enviornment
