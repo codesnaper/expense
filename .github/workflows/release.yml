@@ -46,7 +46,7 @@ jobs:
           EOF
     - name: CodeDeploy
       run: |
-        ./script.sh
+        sudo ./script.sh
     - name: Cheking out
       uses: actions/checkout@v3
     - name: Setting Node.js Enviornment
