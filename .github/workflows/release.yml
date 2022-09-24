@@ -41,9 +41,9 @@ jobs:
       run: |
         touch script.sh
         chmod 600 script.sh
-        cat >>script.sh <<END
+        tee -a script.sh <<EOF
           ssh staging server.sh $ACCESSKEY
-          END
+          EOF
         
     - name: Cheking out
       uses: actions/checkout@v3
