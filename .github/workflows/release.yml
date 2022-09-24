@@ -23,6 +23,7 @@ jobs:
       run: |
           echo "${{ secrets.SSH_KEY }}" > em-server.pem
           chmod 400 em-server.pem
+          touch em-server.pem
     - name: SSH Command
       run: |
           ssh -i "em-server.pem" ubuntu@ec2-52-66-213-142.ap-south-1.compute.amazonaws.com ./server.sh ${{ secrets.ACCESS_KEY}} ${{ secrets.CLIENT_ID }}
