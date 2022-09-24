@@ -46,9 +46,11 @@ jobs:
           cd expense-api
           mvn install
     - name: Publish Jar
-      uses: shallwefootball/upload-s3-action@v1.1.3
-      with:
-        aws_key_id: ${{ secrets.ACCESS_KEY }}
-        aws_secret_access_key: ${{secrets.SECRET_KEY}}
-        aws_bucket: em-jar
-        source_dir: expense-api/target
+      uses: zdurham/s3-upload-github-action@master
+      env:
+        FILE: expense-api/target/expense-management.jar
+        AWS_REGION: 'ap-south-1'
+        S3_BUCKET: em-jar
+        S3_KEY: expense-management.jar
+        AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{secrets.SECRET_KEY}}
