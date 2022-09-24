@@ -42,7 +42,7 @@ jobs:
       with:
         host: ${{ github.event.inputs.serverHostName }}
         username: ${{ secrets.USER }}
-        key_path: ~/.ssh/staging.key
+        key: ${{ secrets.SSH_KEY }}
         envs: ACCESS_KEY
         script: |
           export ACCESS_KEY=$ACCESS_KEY
