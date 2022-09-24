@@ -35,13 +35,15 @@ jobs:
           SSH_USER: ${{ secrets.USER }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_HOST: ${{ github.event.inputs.serverHostName }} 
-    - name: CodeDeploy
+    - name: CodeDeploy Script
       env:
-        ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+        ACCESSKEY: ${{ secrets.ACCESS_KEY }}
       run: |
-        echo "ssh staging ./server.sh $ACCESS_KEY" > script.sh
-        cat script.sh
-        ./script.sh
+        touch script.sh
+        chmod 600 script.sh
+        cat >>script.sh <<END
+          ssh staging server.sh $ACCESSKEY
+          END
         
     - name: Cheking out
       uses: actions/checkout@v3
