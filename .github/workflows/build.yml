@@ -54,3 +54,16 @@ jobs:
         S3_KEY: expense-management.jar
         AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{secrets.SECRET_KEY}}
+    - name: Release
+      uses: google-github-actions/release-please-action@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        release-type: java
+        package-name: expense-management
+        bump-minor-pre-major: true
+        monorepo-tags: release
+        changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
+        component: em
+        include-v-in-tag: true
+        
+
