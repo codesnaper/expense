@@ -63,7 +63,6 @@ jobs:
         changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
         component: em
         include-v-in-tag: true
-        command: github-release
     - name: Creating Tags
       if: ${{ steps.release.outputs.release_created }}
       run: |
