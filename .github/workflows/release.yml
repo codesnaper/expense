@@ -19,7 +19,7 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - name: Configure SSH
+    - name: Configure Staging Server
       run: |
           mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/staging.key
@@ -35,9 +35,12 @@ jobs:
           SSH_USER: ${{ secrets.USER }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_HOST: ${{ github.event.inputs.serverHostName }} 
-    - name: Deploying
+    - name: CodeDeploy
       run: |
-          ssh staging './server.sh ${{ secrets.ACCESS_KEY}} ${{ secrets.CLIENT_ID }}'
+          ssh staging './server.sh $ACCESS_KEY $CLIENT_ID'
+      env:
+          ACCESS_KEY: ${{ secrets.ACCESS_KEY}}
+          CLIENT_ID: ${{ secrets.CLIENT_ID}}
     - name: Cheking out
       uses: actions/checkout@v3
     - name: Setting Node.js Enviornment
