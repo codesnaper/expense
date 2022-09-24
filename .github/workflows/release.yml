@@ -36,11 +36,13 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_HOST: ${{ github.event.inputs.serverHostName }} 
     - name: CodeDeploy
-      shell: bash
       env:
         ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
       run: |
-        ssh staging ./server.sh "$ACCESS_KEY"
+        echo "ssh staging ./server.sh $ACCESS_KEY" > script.sh
+        cat script.sh
+        ./script.sh
+        
     - name: Cheking out
       uses: actions/checkout@v3
     - name: Setting Node.js Enviornment
