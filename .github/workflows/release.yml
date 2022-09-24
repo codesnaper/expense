@@ -19,28 +19,6 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - name: Configure Staging Server
-      run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/staging.key
-          chmod 600 ~/.ssh/staging.key
-          cat >>~/.ssh/config <<END
-          Host staging
-            HostName $SSH_HOST
-            User $SSH_USER
-            IdentityFile ~/.ssh/staging.key
-            StrictHostKeyChecking no
-          END
-      env:
-          SSH_USER: ${{ secrets.USER }}
-          SSH_KEY: ${{ secrets.SSH_KEY }}
-          SSH_HOST: ${{ github.event.inputs.serverHostName }} 
-    - name: CodeDeploy
-      shell: bash
-      run: |
-        ssh staging ./server.sh "$ACCESS_KEY" ${{ secrets.CLIENT_ID }} ${{ secrets.DB_PASSWORD }} ${{ secrets.DB_URL }} ${{ secrets.DB_USER }} ${{ secrets.IDENTITY_POOL_ID }} ${{ secrets.REGION }} ${{ secrets.SECRET_KEY }} ${{ secrets.USER_POOL_ID }}
-      env:
-        ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
     - name: Cheking out
       uses: actions/checkout@v3
     - name: Setting Node.js Enviornment
@@ -103,6 +81,25 @@ jobs:
           git tag -a v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} -m "Release v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}"
           git push origin v${{ steps.release.outputs.major }}
           git push origin v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}
-
+    - name: Configure Staging Server
+      run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+      env:
+          SSH_USER: ${{ secrets.USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ github.event.inputs.serverHostName }} 
+    - name: CodeDeploy
+      shell: bash
+      run: |
+        ssh staging './server.sh'
 
       
