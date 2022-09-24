@@ -19,6 +19,16 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
+    - name: Creating Key
+      run: |
+          echo "${{ secrets.SSH_KEY }}" > server.pem
+          chmod 400 server.pem
+    - name: SSH Command
+      uses: D3rHase/ssh-command-action@v0.2.1
+      with:
+        HOST: ${{ github.event.inputs.serverHostName }}
+        USER: ${{ secrets.USER }}
+        PRIVATE_SSH_KEY: server.pem
     - name: Cheking out
       uses: actions/checkout@v3
     - name: Setting Node.js Enviornment
@@ -81,11 +91,6 @@ jobs:
           git tag -a v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} -m "Release v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}"
           git push origin v${{ steps.release.outputs.major }}
           git push origin v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}
-    - name: SSH Command
-      uses: D3rHase/ssh-command-action@v0.2.1
-      with:
-        HOST: ${{ github.event.inputs.serverHostName }}
-        USER: ${{ secrets.USER }}
-        PRIVATE_SSH_KEY: ${{ secrets.SSH_KEY }}
+
 
       
