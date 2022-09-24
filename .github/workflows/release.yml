@@ -37,7 +37,13 @@ jobs:
           SSH_HOST: ${{ github.event.inputs.serverHostName }} 
     - name: CodeDeploy
       run: |
+          touch script.sh
+          cat script.sh <<END
+          #!/bin/bash
           ssh staging './server.sh $ACCESS_KEY $CLIENT_ID'
+          END
+          chmod 777 script.sh
+          ./script.sh
       env:
           ACCESS_KEY: ${{ secrets.ACCESS_KEY}}
           CLIENT_ID: ${{ secrets.CLIENT_ID}}
