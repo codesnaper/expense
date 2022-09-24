@@ -36,19 +36,10 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_HOST: ${{ github.event.inputs.serverHostName }} 
     - name: CodeDeploy
-      uses: appleboy/ssh-action@master
       env:
         ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
-      with:
-        host: ${{ github.event.inputs.serverHostName }}
-        username: ${{ secrets.USER }}
-        key: ${{ secrets.SSH_KEY }}
-        envs: ACCESS_KEY
-        script: |
-          export ACCESS_KEY=$ACCESS_KEY
-          pkill -f 'java -jar'
-          aws s3 cp s3://em-jar/expense-management.jar em.jar
-          nohup java -jar em.jar &
+      run: |
+        run: ssh staging './server.sh ${{ secrets.ACCESS_KEY }} ${{ secrets.CLIENT_ID }} ${{ secrets.DB_PASSWORD }} ${{ secrets.DB_URL }} ${{ secrets.DB_USER }} ${{ secrets.IDENTITY_POOL_ID }} ${{ secrets.REGION }} ${{ secrets.SECRET_KEY }} ${{ secrets.USER_POOL_ID }}' 
     - name: Cheking out
       uses: actions/checkout@v3
     - name: Setting Node.js Enviornment
