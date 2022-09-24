@@ -21,7 +21,7 @@ jobs:
     steps:
     - name: Creating Key
       run: |
-          echo "${{ secrets.SSH_KEY }}" > .pemem-server.pem
+          echo "${{ secrets.SSH_KEY }}" > em-server.pem
           chmod 400 em-server.pem
     - name: SSH Command
       run: |
