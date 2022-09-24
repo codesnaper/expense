@@ -35,18 +35,20 @@ jobs:
           SSH_USER: ${{ secrets.USER }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_HOST: ${{ github.event.inputs.serverHostName }} 
-    - name: CodeDeploy Script
-      env:
-        ACCESSKEY: ${{ secrets.ACCESS_KEY }}
-      run: |
-        touch script.sh
-        chmod 777 script.sh
-        tee -a script.sh <<EOF
-          ssh staging server.sh $ACCESSKEY
-          EOF
     - name: CodeDeploy
-      run: |
-       ./script.sh
+      uses: appleboy/ssh-action@master
+      env:
+        ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+      with:
+        host: ${{ github.event.inputs.serverHostName }}
+        username: ${{ secrets.USER }}
+        key: ~/.ssh/staging.key
+        envs: ACCESS_KEY
+        script: |
+          export ACCESS_KEY=$ACCESS_KEY
+          pkill -f 'java -jar'
+          aws s3 cp s3://em-jar/expense-management.jar em.jar
+          nohup java -jar em.jar &
     - name: Cheking out
       uses: actions/checkout@v3
     - name: Setting Node.js Enviornment
