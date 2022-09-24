@@ -44,7 +44,9 @@ jobs:
         tee -a script.sh <<EOF
           ssh staging server.sh $ACCESSKEY
           EOF
-        
+    - name: CodeDeploy
+      run: |
+        ./script.sh
     - name: Cheking out
       uses: actions/checkout@v3
     - name: Setting Node.js Enviornment
