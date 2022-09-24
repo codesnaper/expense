@@ -19,16 +19,25 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - name: Creating Key
+    - name: Configure SSH
       run: |
-          echo "$SSH_KEY" > em-server.pem
-          chmod 400 em-server.pem
-          cat em-server.pem
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
       env:
+          SSH_USER: ${{ secrets.USER }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
-    - name: SSH Command
+          SSH_HOST: ${{ github.event.inputs.serverHostName }} 
+    - name: Deploying
       run: |
-          ssh -i "em-server.pem" ubuntu@ec2-52-66-213-142.ap-south-1.compute.amazonaws.com ./server.sh ${{ secrets.ACCESS_KEY}} ${{ secrets.CLIENT_ID }}
+          ssh staging './server.sh ${{ secrets.ACCESS_KEY}} ${{ secrets.CLIENT_ID }}'
     - name: Cheking out
       uses: actions/checkout@v3
     - name: Setting Node.js Enviornment
