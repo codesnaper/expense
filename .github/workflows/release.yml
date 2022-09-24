@@ -61,8 +61,8 @@ jobs:
         bump-patch-for-minor-pre-major: true
         monorepo-tags: true
         changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
-        component: em
         include-v-in-tag: true
+        pull-request-header: New Release for Expense-Management.
     - name: Creating Tags
       if: ${{ steps.release.outputs.release_created }}
       run: |
