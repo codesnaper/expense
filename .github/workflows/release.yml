@@ -86,6 +86,6 @@ jobs:
       with:
         HOST: ${{ github.event.inputs.serverHostName }}
         USER: ${{ secrets.USER }}
-        PRIVATE_SSH_KEY: ${{ secret.SSH_KEY }}
+        PRIVATE_SSH_KEY: ${{ secrets.SSH_KEY }}
 
       
