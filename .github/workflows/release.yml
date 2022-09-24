@@ -37,7 +37,7 @@ jobs:
           SSH_HOST: ${{ github.event.inputs.serverHostName }} 
     - name: CodeDeploy
       run: |
-          ssh staging './server.sh $ACCESS_KEY $CLIENT_ID'
+          ssh staging './server.sh "$ACCESS_KEY" "$CLIENT_ID"'
       env:
           ACCESS_KEY: ${{ secrets.ACCESS_KEY}}
           CLIENT_ID: ${{ secrets.CLIENT_ID}}
