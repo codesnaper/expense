@@ -9,6 +9,7 @@ import CategoryComponent from './component/Category';
 import LimitComponent from './component/Limit';
 import NotificationComponent from './component/Notification';
 import Profile from './component/User/Profile';
+import Expenditure from './component/Expenditure';
 const Home = React.lazy(() => import('./component/Home/Home'));
 const BankComponent = React.lazy(() => import('./component/Bank'));
 const AccountComponent = React.lazy(() => import('./component/Accounts'));
@@ -27,6 +28,7 @@ function App() {
               <Route path="/em/limit" element={<LimitComponent/>} />
               <Route path="/em/notification" element={<NotificationComponent/>} />
               <Route path="/em/profile" element={<Profile/>} />
+              <Route path="/em/expense" element={<Expenditure/>} />
             </Routes>
           </UserContextProvider>
         </AlertContextProvider>
