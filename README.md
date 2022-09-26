@@ -17,6 +17,7 @@ expense
 ### Front End Project Structure
 
 ### Architecture Diagram
+![Architecture Diagram](diag/Arch.png?raw=true "Arch Diagram")
 
 ### ER Diagram
 
