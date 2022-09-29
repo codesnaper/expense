@@ -1,18 +1,22 @@
 import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined } from "@mui/icons-material";
-import { Box, Card, CardContent, Container, Divider, Typography, Stack, Button, Grid } from "@mui/material";
+import { Box, Card, CardContent, Container, Divider, Typography, Stack, Button, Grid, LinearProgress } from "@mui/material";
 import { blue } from "@mui/material/colors";
 import moment from "moment";
 import { useState } from "react";
+import { Expenditure } from "../../modal/response/Expenditure";
 import InfoCardComponent from "../Card/InfoCard";
+import ExpenditureCard from "./card";
 import TimeDialog from "./timeDialog";
 
-export default function Expenditure() {
+export default function ExpenditureComponent() {
 
     const [selectDate, setSelectDate] = useState<Date>(new Date());
 
     const [openYearDialog, setOpenYearDialog] = useState<boolean>(false);
 
     const [openMonthDialog, setOpenMonthDialog] = useState<boolean>(false);
+
+    const [expenditures, setExpenditures] = useState<Expenditure[]>([]);
 
     const handleOnSelect = (date: Date) => {
         setSelectDate(date);
@@ -24,8 +28,8 @@ export default function Expenditure() {
                 <Grid container spacing={2}>
                     <InfoCardComponent header="Total Expense" secondaryText={`Month : ${moment(selectDate).format('MMM')}`} value={'0'} ></InfoCardComponent>
                     <InfoCardComponent header="Total Revenue" secondaryText={`Month : ${moment(selectDate).format('MMM')}`} value={'0'} ></InfoCardComponent>
-                    <InfoCardComponent header="Total Expense " secondaryText={`Date : ${moment(selectDate).format('DD,MMM')} - ${moment(selectDate).add(6,'day').format('DD,MMM')}`} value={'0'} ></InfoCardComponent>
-                    <InfoCardComponent header="Total Revenue " secondaryText={`Date : ${moment(selectDate).format('DD,MMM')} - ${moment(selectDate).add(6,'day').format('DD,MMM')}`} value={'0'} ></InfoCardComponent>
+                    <InfoCardComponent header="Total Expense " secondaryText={`Date : ${moment(selectDate).format('DD,MMM')} - ${moment(selectDate).add(6, 'day').format('DD,MMM')}`} value={'0'} ></InfoCardComponent>
+                    <InfoCardComponent header="Total Revenue " secondaryText={`Date : ${moment(selectDate).format('DD,MMM')} - ${moment(selectDate).add(6, 'day').format('DD,MMM')}`} value={'0'} ></InfoCardComponent>
                 </Grid>
                 <Card raised sx={{ marginTop: '40px', marginBottom: '40px' }}>
                     <CardContent>
@@ -75,14 +79,32 @@ export default function Expenditure() {
                                 [0, 1, 2, 3, 4, 5].map((index: number) => <>
                                     <Grid item xs={2}>
                                         <Card elevation={4}>
+                                            {/* {moment(selectDate).add(index, 'day').isSame(moment(new Date())) && <>
+                                            <LinearProgress value={100} variant='determinate'></LinearProgress>
+                                            </>} */}
                                             <CardContent>
                                                 <Typography sx={{ fontSize: 14 }} color={blue['700']} gutterBottom>
                                                     {moment(selectDate).add(index, 'day').format('dddd, DD/MMM')}
                                                 </Typography>
-                                                <Divider />
-                                                <Typography variant="caption" letterSpacing={2}  >
-                                                    No transaction on this day
-                                                </Typography>
+                                                <Divider sx={{ marginBottom: '12px', marginTop: '12px' }} />
+                                                {expenditures?.
+                                                    filter((expenditure: Expenditure) => moment(selectDate).add(index, 'day').isSame(moment(expenditure.date)))
+                                                    .length === 0 && <>
+                                                        <Typography variant="caption" letterSpacing={2}  >
+                                                            {`No transaction log on ${moment(selectDate).add(index, 'day').format('DD MMMM')}`}
+                                                        </Typography>
+                                                    </>
+                                                }
+
+                                                {expenditures?.
+                                                    filter((expenditure: Expenditure) => moment(selectDate).add(index, 'day').isSame(moment(expenditure.date)))
+                                                    .map((expenditure: Expenditure) => <>
+                                                        <ExpenditureCard
+                                                            expenditure={expenditure}
+                                                        ></ExpenditureCard>
+                                                    </>)
+                                                }
+
                                             </CardContent>
                                         </Card>
                                     </Grid>
