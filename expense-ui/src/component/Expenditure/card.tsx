@@ -1,23 +1,55 @@
 import { DeleteForever, Edit, Preview } from "@mui/icons-material";
 import { Button, Card, CardActionArea, CardContent, Chip, Typography } from "@mui/material";
-import { green, red } from "@mui/material/colors";
+import { green, indigo, lime, red } from "@mui/material/colors";
 import { Stack } from "@mui/system";
-import { Expenditure } from "../../modal/response/Expenditure";
+import { Expenditure, ExpenditureType } from "../../modal/response/Expenditure";
 
 interface ExpenditureCardProps{
     expenditure: Expenditure
 }
 export default function ExpenditureCard(props: ExpenditureCardProps) {
 
+    const getColor = (expenditureType: ExpenditureType) => {
+        switch(expenditureType){
+            case ExpenditureType.expense: 
+                return red[800];
+
+            case ExpenditureType.revenue: 
+                return green[800];
+
+            case ExpenditureType.transfer:
+                return indigo[800];
+
+            default:
+                return lime[800];
+        }
+    }
+
+    const getBGColor = (expenditureType: ExpenditureType) => {
+        switch(expenditureType){
+            case ExpenditureType.expense: 
+                return red[200];
+
+            case ExpenditureType.revenue: 
+                return green[200];
+
+            case ExpenditureType.transfer:
+                return indigo[200];
+
+            default:
+                return lime[200];
+        }
+    }
+
     return (
         <>
-            <Card sx={{marginBottom: '12px', background: `${props.expenditure.type === 'expense'? red['100']: green['100']}`}}>
+            <Card sx={{marginBottom: '12px', background: `${getBGColor(props.expenditure.type)}`}}>
                 <CardContent>
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                         {props.expenditure.name}
                     </Typography>
-                    <Typography  sx={{color: `${props.expenditure.type === 'expense'? red[800]: green[800]}`, marginBottom: '8px'}}>
-                        {`${props.expenditure.type === 'expense'? '-':''}${props.expenditure.amount} INR`}
+                    <Typography  sx={{color: `${getColor(props.expenditure.type)}`, marginBottom: '8px'}}>
+                        {`${props.expenditure.type === ExpenditureType.expense? '-':''}${props.expenditure.amount} INR`}
                     </Typography>
                     <Chip sx={{ mb: 1.5 }} label={props.expenditure.category.name}></Chip>
                     <CardActionArea>

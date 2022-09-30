@@ -10,11 +10,11 @@ import java.util.Date;
 
 @Entity
 @Table(
-        name = "em_expenditure_t"
-//        indexes = {
-////                @Index(name = "get_expenditure_idx", columnList = "log_date,type,userId"),
-////                @Index(name = "user_id_idx", columnList = "id,user_id")
-//        }
+        name = "em_expenditure_t",
+        indexes = {
+                @Index(name = "get_expenditure_idx", columnList = "log_date,expenditure_type,user_id"),
+                @Index(name = "user_id_idx", columnList = "id,user_id")
+        }
 )
 @Data
 public class Expenditure {

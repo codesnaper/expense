@@ -7,9 +7,14 @@ export interface Expenditure{
     description: string;
     name: string;
     amount: number;
-    type: string;
+    type: ExpenditureType;
     limit: Limit;
     account: Account;
     category: Category;
     date: Date;
+    fromAccount: Account;
+}
+
+export enum ExpenditureType{
+    expense, revenue, transfer
 }

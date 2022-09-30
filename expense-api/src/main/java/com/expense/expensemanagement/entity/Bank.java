@@ -16,7 +16,7 @@ import java.util.List;
 @Table(
         name = "em_bank_t",
         uniqueConstraints = {
-                @UniqueConstraint(name = "nameAndUserId", columnNames = {"name", "user_id"})
+                @UniqueConstraint(name = "BanknameAndUserId", columnNames = {"name", "user_id"})
         },
         indexes = {
                 @Index(name = "bank_name_userid_idx", columnList = "name,user_id")

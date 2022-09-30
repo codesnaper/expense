@@ -3,9 +3,11 @@ import { Box, Card, CardContent, Container, Divider, Typography, Stack, Button, 
 import { blue } from "@mui/material/colors";
 import moment from "moment";
 import { useState } from "react";
+import { OperationType } from "../../modal/OperationType";
 import { Expenditure } from "../../modal/response/Expenditure";
 import InfoCardComponent from "../Card/InfoCard";
 import ExpenditureCard from "./card";
+import ExpenditureForm from "./expenditureForm";
 import TimeDialog from "./timeDialog";
 
 export default function ExpenditureComponent() {
@@ -117,6 +119,7 @@ export default function ExpenditureComponent() {
                 </Card>
 
             </Box>
+            {/* <ExpenditureForm operation={OperationType.ADD} close={true} show={true}></ExpenditureForm> */}
         </>
     );
 
