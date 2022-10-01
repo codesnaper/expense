@@ -30,6 +30,12 @@ public class ExpenditureServiceImpl implements ExpenditureService{
     EntityModalConversion<Expenditure, ExpenditureModel> expenditureConversion;
 
     public ExpenditureModel addExpenditure(ExpenditureModel expenditureModel) throws MaxLimitException {
+        if(expenditureModel.getLimit() != null && expenditureModel.getCategory() == null){
+            expenditureModel.setCategory(expenditureModel.getLimit().getCategory());
+        }
+        if(expenditureModel.getLimit() != null && expenditureModel.getAccount() == null){
+            expenditureModel.setAccount(expenditureModel.getLimit().getAccount());
+        }
         if(expenditureModel.getLimit() != null && expenditureModel.getLimit().getUsedAmount() + expenditureModel.getAmount() > expenditureModel.getLimit().getMaxAmount()){
             notificationService.sendNewNotification(
                     expenditureModel.getUserId(),
@@ -43,7 +49,7 @@ public class ExpenditureServiceImpl implements ExpenditureService{
             notificationService.sendNewNotification(
                     expenditureModel.getUserId(),
                     String.format("Limit %s is reached its thresold limit amount.", expenditureModel.getLimit().getName()),
-                    String.format("Limit: %s </br> Thresold amount: %d. <br/> Used Amount: %d ", expenditureModel.getLimit().getName(), expenditureModel.getLimit().getThresoldWarningAmount(), expenditureModel.getLimit().getUsedAmount() + expenditureModel.getAmount()),
+                    String.format("Limit: %s </br> Thresold amount: %s. <br/> Used Amount: %s ", expenditureModel.getLimit().getName(), expenditureModel.getLimit().getThresoldWarningAmount().toString(), expenditureModel.getLimit().getUsedAmount() + expenditureModel.getAmount()),
                     NotificationType.LIMIT_WARNING
             );
         }

@@ -1,5 +1,5 @@
-import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined } from "@mui/icons-material";
-import { Box, Card, CardContent, Container, Divider, Typography, Stack, Button, Grid, LinearProgress } from "@mui/material";
+import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined, ReceiptLong } from "@mui/icons-material";
+import { Box, Card, CardContent, Container, Divider, Typography, Stack, Button, Grid, LinearProgress, Fab } from "@mui/material";
 import { blue } from "@mui/material/colors";
 import moment from "moment";
 import { useState } from "react";
@@ -18,10 +18,23 @@ export default function ExpenditureComponent() {
 
     const [openMonthDialog, setOpenMonthDialog] = useState<boolean>(false);
 
+    const [openExpenditureDialog, setOpenExpenditureDialog] = useState<boolean>(false);
+
+    const [operationType, setOperationType] = useState<OperationType>(OperationType.ADD);
+
     const [expenditures, setExpenditures] = useState<Expenditure[]>([]);
 
     const handleOnSelect = (date: Date) => {
         setSelectDate(date);
+    }
+
+    const handleExpenditure = (expenditure: Expenditure) => {
+        if(operationType === OperationType.ADD){
+            const newExpenditures = [...expenditures, expenditure];
+            setExpenditures(newExpenditures);
+        } else {
+
+        }
     }
 
     return (
@@ -119,7 +132,22 @@ export default function ExpenditureComponent() {
                 </Card>
 
             </Box>
-            {/* <ExpenditureForm operation={OperationType.ADD} close={true} show={true}></ExpenditureForm> */}
+            <ExpenditureForm
+                operation={operationType}
+                onClose={() => setOpenExpenditureDialog(false)}
+                show={openExpenditureDialog}
+                onChange={handleExpenditure}
+            ></ExpenditureForm>
+            {
+                !openExpenditureDialog &&
+                <>
+                    <Fab variant="extended" color="secondary" aria-label="add" onClick={() => setOpenExpenditureDialog(true)} sx={{ position: 'fixed', bottom: '40px', right: '24px' }}>
+                        <ReceiptLong sx={{ mr: 1 }} />
+                        Add Expenditure
+                    </Fab>
+                </>
+            }
+
         </>
     );
 

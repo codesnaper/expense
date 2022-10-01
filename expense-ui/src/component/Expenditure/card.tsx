@@ -1,4 +1,4 @@
-import { DeleteForever, Edit, Preview } from "@mui/icons-material";
+import { DeleteForever, Preview } from "@mui/icons-material";
 import { Button, Card, CardActionArea, CardContent, Chip, Typography } from "@mui/material";
 import { green, indigo, lime, red } from "@mui/material/colors";
 import { Stack } from "@mui/system";
@@ -11,13 +11,13 @@ export default function ExpenditureCard(props: ExpenditureCardProps) {
 
     const getColor = (expenditureType: ExpenditureType) => {
         switch(expenditureType){
-            case ExpenditureType.expense: 
+            case ExpenditureType.EXPENSE: 
                 return red[800];
 
-            case ExpenditureType.revenue: 
+            case ExpenditureType.REVENUE: 
                 return green[800];
 
-            case ExpenditureType.transfer:
+            case ExpenditureType.TRANSFER:
                 return indigo[800];
 
             default:
@@ -27,13 +27,13 @@ export default function ExpenditureCard(props: ExpenditureCardProps) {
 
     const getBGColor = (expenditureType: ExpenditureType) => {
         switch(expenditureType){
-            case ExpenditureType.expense: 
+            case ExpenditureType.EXPENSE: 
                 return red[200];
 
-            case ExpenditureType.revenue: 
+            case ExpenditureType.REVENUE: 
                 return green[200];
 
-            case ExpenditureType.transfer:
+            case ExpenditureType.TRANSFER:
                 return indigo[200];
 
             default:
@@ -49,7 +49,7 @@ export default function ExpenditureCard(props: ExpenditureCardProps) {
                         {props.expenditure.name}
                     </Typography>
                     <Typography  sx={{color: `${getColor(props.expenditure.type)}`, marginBottom: '8px'}}>
-                        {`${props.expenditure.type === ExpenditureType.expense? '-':''}${props.expenditure.amount} INR`}
+                        {`${props.expenditure.type === ExpenditureType.EXPENSE? '-':''}${props.expenditure.amount} INR`}
                     </Typography>
                     <Chip sx={{ mb: 1.5 }} label={props.expenditure.category.name}></Chip>
                     <CardActionArea>

@@ -16,5 +16,5 @@ export interface Expenditure{
 }
 
 export enum ExpenditureType{
-    expense, revenue, transfer
+    EXPENSE, REVENUE, TRANSFER
 }

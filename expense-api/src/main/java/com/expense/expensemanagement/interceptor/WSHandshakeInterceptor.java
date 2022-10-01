@@ -13,7 +13,7 @@ public class WSHandshakeInterceptor implements HandshakeInterceptor {
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        System.out.println(request.getLocalAddress());
+//        System.out.println(request.getLocalAddress());
         return true;
     }
 

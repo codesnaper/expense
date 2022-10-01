@@ -51,6 +51,10 @@ public class Expenditure {
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "from_account_id",referencedColumnName = "id")
+    private Account fromAccount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id",referencedColumnName = "id")
     private Category category;
 

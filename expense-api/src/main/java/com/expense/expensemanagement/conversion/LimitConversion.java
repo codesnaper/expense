@@ -35,10 +35,10 @@ public class LimitConversion implements EntityModalConversion<Limit, LimitModel>
     public LimitModel getModel(Limit limit) {
         LimitModel limitModel=new LimitModel();
         limitModel.setId(limit.getId());
-        limitModel.setAccountId(accountConversion.getModel(limit.getAccount()).getId());
+        limitModel.setAccountId(limit.getAccountId());
         limitModel.setName(limit.getName());
         limitModel.setDescription(limit.getDescription());
-        limitModel.setCategoryId(categoryConversion.getModel(limit.getCategory()).getId());
+        limitModel.setCategoryId(limit.getCategoryId());
         limitModel.setMaxAmount(limit.getMaxAmount().longValue());
         limitModel.setMinAmount(limit.getMinAmount().longValue());
         limitModel.setPriority(limit.getPriority());

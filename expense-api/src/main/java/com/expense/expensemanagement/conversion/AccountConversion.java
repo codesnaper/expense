@@ -53,6 +53,8 @@ public class AccountConversion implements EntityModalConversion<Account, Account
         accountModel.setName(account.getName());
         accountModel.setOpenDate(account.getOpenDate());
         accountModel.setUserId(account.getUserId());
+        accountModel.setBankId(account.getBankId());
+        accountModel.setBank(bankEntityModelConversion.getModel(account.getBank()));
         accountModel.setEndDate(account.getEndDate());
         accountModel.setTags(
                 Optional.ofNullable(account.getTagMappings())

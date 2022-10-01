@@ -36,8 +36,12 @@ public class ExpenditureController {
         return null;
     }
 
-    @GetMapping(value = "/summary/{month}/{year}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Object getExpenditureSummary(){
+    @GetMapping(value = "/summary/{month}-{year}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Object getExpenditureSummary(
+            Principal principal,
+            @PathVariable("month") String month,
+            @PathVariable("year") String year
+    ){
         return null;
     }
 }

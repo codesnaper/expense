@@ -45,6 +45,9 @@ public class Limit {
     @JsonBackReference
     private Account account;
 
+    @Column(name = "account_id", insertable = false, updatable = false)
+    protected long accountId;
+
     @Column(name = "min_amount")
     private BigDecimal minAmount;
 
@@ -61,6 +64,9 @@ public class Limit {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id",referencedColumnName = "id")
     private Category category;
+
+    @Column(name = "category_id", insertable = false, updatable = false)
+    protected long categoryId;
 
     @Column
     private String priority;

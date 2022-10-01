@@ -1,7 +1,6 @@
 import { Configuration } from "../config/Configuration";
 import { Client, IFrame, IMessage, StompHeaders, StompSubscription } from "@stomp/stompjs"
 import { ApiError } from "../modal/response/Error";
-import { rejects } from "assert";
 export class NotificationService {
 
     private wsUrl: string = Configuration.wsUrl;
