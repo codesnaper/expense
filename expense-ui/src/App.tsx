@@ -21,7 +21,7 @@ function App() {
         <AlertContextProvider>
           <UserContextProvider>
             <Routes>
-              <Route path="/em/*" element={<Home />} />
+              <Route path="/em/*" element={<ExpenditureComponent />} />
               <Route path="/em/bank" element={<BankComponent />} />
               <Route path="/em/account" element={<AccountComponent></AccountComponent>}/>
               <Route path="/em/account/:bankId" element={<AccountComponent></AccountComponent>}/>
