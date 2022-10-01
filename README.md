@@ -16,10 +16,10 @@ expense
 │───expense-ui (Front End Source Code)
 ```
 ### Back End
-![API Read Me](expense-api/README.md)
+[API Read Me](expense-api/README.md)
 
 ### Front End
-![UI Read Me](expense-ui/README.md)
+[UI Read Me](expense-ui/README.md)
 
 ### Architecture Diagram
 ![Architecture Diagram](diag/Arch.png?raw=true "Arch Diagram")
