@@ -3,6 +3,9 @@
 # expense-management
 Expense Management application help you to track and manage all of your expenditure and accounts. You can add multiple banks and account like (Saving account, loan account) which calculate total interest and accumulate the total credit and debit and give short summary. You can define rule to limit out the expenditure for particular  category.
 
+## Live Application
+![expense Management URL](expense-api/README.md)
+
 ## Getting Started
 ### Project Structure
 ```text
@@ -12,14 +15,14 @@ expense
 └───expense-api (Back End Source Code)
 │───expense-ui (Front End Source Code)
 ```
-### Back End Project Structure
+### Back End
+![API Read Me](expense-api/README.md)
 
-### Front End Project Structure
+### Front End
+![UI Read Me](expense-ui/README.md)
 
 ### Architecture Diagram
 ![Architecture Diagram](diag/Arch.png?raw=true "Arch Diagram")
-
-### ER Diagram
 
 ### Technologies Used:
 - Srping Boot
