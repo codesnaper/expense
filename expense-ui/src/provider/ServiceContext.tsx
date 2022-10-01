@@ -10,6 +10,7 @@ import { CategoryService } from "../service/CategoryService";
 import { LimitService } from "../service/LimitService";
 import { NotificationService } from "../service/NotificationService";
 import { Service } from "../modal/Service";
+import { ExpenditureService } from "../service/ExpenditureService";
 
 interface ServiceContextProps  { 
     children: React.ReactNode
@@ -25,7 +26,8 @@ const ServiceContextProvider = (props: ServiceContextProps) => {
         profileService: new ProfileService(),
         categoryService: new CategoryService(),
         limitService: new LimitService(),
-        notificationService: new NotificationService()
+        notificationService: new NotificationService(),
+        expenditureService: new ExpenditureService(),
     });
 
     return (

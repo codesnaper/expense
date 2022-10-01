@@ -88,7 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		logger.debug("Configuring security endpoints");
 		List<String> permitAllEndpointList = Arrays.asList(Constants.AUTHENTICATION_URL, Constants.REFRESH_TOKEN_URL,
-				Constants.FORGOT_PASSWORD, Constants.RESET_PASSWORD, Constants.SWAGGER_URL, Constants.CREATE_USER);
+				Constants.FORGOT_PASSWORD, Constants.RESET_PASSWORD, Constants.SWAGGER_URL, Constants.CREATE_USER, Constants.H2_URL);
 
 		http.csrf().disable().exceptionHandling().authenticationEntryPoint(this.authenticationEntryPoint)
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

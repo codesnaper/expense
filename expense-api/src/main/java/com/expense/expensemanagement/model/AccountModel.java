@@ -1,6 +1,5 @@
 package com.expense.expensemanagement.model;
 
-import com.expense.expensemanagement.entity.Tag;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -28,6 +27,8 @@ public class AccountModel {
     private Date updatedDate = new Date();
 
     private String userId;
+
+    private long bankId;
 
     private List<TagModel> tags;
 

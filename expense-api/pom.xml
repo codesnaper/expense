@@ -12,7 +12,7 @@
 	<artifactId>expense-management</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>expense-management</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Expense Management Backend Services</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -153,8 +153,31 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>local</id>
+			<properties>
+				<spring.profiles.active>local</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>prod</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>

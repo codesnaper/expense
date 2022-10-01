@@ -44,6 +44,7 @@ export default function AccountSelect(props: AccountSelectProps) {
     const [loader, setLoader] = useState<boolean>(false);
     const [bankId, setBankId] = useState(props.bankId);
     const [bankModal, setBankModal] = useState(false);
+    const [selectedBank, setSelectedBank] = useState<BankModal>(new BankModal());
     const [accounts, setAccounts] = useState<Array<Account>>();
     const service = useContext(ServiceContext);
     const expenseAlert = useContext(AlertContext);
@@ -94,6 +95,7 @@ export default function AccountSelect(props: AccountSelectProps) {
     const selectBank = (bank: BankModal) => {
         setBankId(parseInt(bank.ID));
         setBankModal(false);
+        setSelectedBank(bank);
     }
 
     const goToBankModal = () => {
@@ -120,7 +122,7 @@ export default function AccountSelect(props: AccountSelectProps) {
                             }
                         >
                             {accounts?.map((account: Account) => <>
-                                <ListItemButton key={account.id} onClick={() => { props.onChange?.(account) }}>
+                                <ListItemButton key={account.id} onClick={() => { account.bank = selectedBank;props.onChange?.(account) }}>
                                     <ListItemText
                                         primary={account.name}
                                         secondary={

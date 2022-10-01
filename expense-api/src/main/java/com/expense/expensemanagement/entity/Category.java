@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "em_category_t" ,uniqueConstraints = {
-        @UniqueConstraint(name = "nameAndUserId", columnNames = {"name", "user_id"})
+        @UniqueConstraint(name = "CategoryNameAndUserId", columnNames = {"name", "user_id"})
 }
 )
 @Data

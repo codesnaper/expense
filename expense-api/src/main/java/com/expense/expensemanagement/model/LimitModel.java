@@ -14,9 +14,9 @@ public class LimitModel {
 
     private Long accountId;
 
-    private Long minAmount;
+    private double minAmount;
 
-    private Long maxAmount;
+    private double maxAmount;
 
     private Long thresoldWarningAmount;
 
@@ -26,7 +26,7 @@ public class LimitModel {
 
     private String priority;
 
-    private long usedAmount;
+    private double usedAmount;
 
     private Category category;
 

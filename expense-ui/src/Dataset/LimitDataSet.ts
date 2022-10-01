@@ -90,7 +90,7 @@ export default function limitDataSet(limits: EnhancedLimit[]){
             const limit: Limit = row as Limit;
             if(limit.usedAmount < limit.thresoldWarningAmount){
                 return green['100'];
-            } else if (limit.usedAmount > limit.thresoldWarningAmount && limit.usedAmount < limit.maxAmount){
+            } else if (limit.usedAmount >= limit.thresoldWarningAmount && limit.usedAmount < limit.maxAmount){
                 return yellow['100'];
             } else {
                 return red['100'];
