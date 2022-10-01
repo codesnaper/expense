@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ExpenditureServiceImpl implements ExpenditureService{
 
@@ -70,5 +74,12 @@ public class ExpenditureServiceImpl implements ExpenditureService{
                 throw new IllegalArgumentException("Invalid expenditure type");
         }
         return expenditureConversion.getModel(expenditureDAO.save(expenditureConversion.getEntity(expenditureModel)));
+    }
+
+    @Override
+    public List<ExpenditureModel> fetchExpenditureBetweenDate(Date toDate, Date fromDate) {
+        return expenditureDAO.findByLoggedDateBetween(toDate,fromDate)
+                .stream().map(expenditureConversion::getModel)
+                .collect(Collectors.toList());
     }
 }

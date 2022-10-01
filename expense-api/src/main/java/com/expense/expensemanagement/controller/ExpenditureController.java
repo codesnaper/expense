@@ -2,14 +2,15 @@ package com.expense.expensemanagement.controller;
 
 import com.expense.expensemanagement.exception.MaxLimitException;
 import com.expense.expensemanagement.model.ExpenditureModel;
-import com.expense.expensemanagement.model.ResponseList;
 import com.expense.expensemanagement.service.expenditure.ExpenditureService;
 import com.expense.expensemanagement.util.ExpenseUtil;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 @RestController
 @RequestMapping("/expense/api/v1/expenditure")
@@ -27,13 +28,18 @@ public class ExpenditureController {
         return this.expenditureService.addExpenditure(expenditureModel);
     }
 
-    @GetMapping(value = "/date={toDate}-{fromDate}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseList<ExpenditureModel> getExpenditureFromRange(
+    @GetMapping(value = "/'{toDate}'-'{fromDate}'", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ExpenditureModel> getExpenditureFromRange(
             Principal principal,
-            @PathVariable("toDate") Date toDate,
-            @PathVariable("toDate") Date fromDate
+            @PathVariable("toDate") String toDate,
+            @PathVariable("fromDate") String fromDate
             ){
-        return null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            return this.expenditureService.fetchExpenditureBetweenDate(simpleDateFormat.parse(toDate), simpleDateFormat.parse(fromDate));
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Date should be in format of dd-MM-yyyy");
+        }
     }
 
     @GetMapping(value = "/summary/{month}-{year}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -23,4 +23,18 @@ export class ExpenditureService {
         });
     }
 
+    public fetchExpenditureByDateRange(toDate: string, fromDate: string): Promise<Expenditure[]>{
+        return new Promise((resolve, reject) => {
+            api.get(`${this.baseUrl}expenditure/'${toDate}'-'${fromDate}'`)
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
+        });
+    }
+
 }

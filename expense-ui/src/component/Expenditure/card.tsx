@@ -1,6 +1,6 @@
 import { DeleteForever, Preview } from "@mui/icons-material";
-import { Button, Card, CardActionArea, CardContent, Chip, Typography } from "@mui/material";
-import { green, indigo, lime, red } from "@mui/material/colors";
+import { Button, Card, CardActionArea, CardContent, Chip, Divider, Typography } from "@mui/material";
+import { green, grey, indigo, lime, red } from "@mui/material/colors";
 import { Stack } from "@mui/system";
 import { Expenditure, ExpenditureType } from "../../modal/response/Expenditure";
 
@@ -21,7 +21,7 @@ export default function ExpenditureCard(props: ExpenditureCardProps) {
                 return indigo[800];
 
             default:
-                return lime[800];
+                return grey[800];
         }
     }
 
@@ -43,11 +43,12 @@ export default function ExpenditureCard(props: ExpenditureCardProps) {
 
     return (
         <>
-            <Card sx={{marginBottom: '12px', background: `${getBGColor(props.expenditure.type)}`}}>
-                <CardContent>
+            <Card sx={{marginBottom: '12px',  background: `${getBGColor(props.expenditure.type)}`}}>
+                <CardContent sx={{paddingBottom: '0px !important' ,}}>
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                         {props.expenditure.name}
                     </Typography>
+                    <Divider/>
                     <Typography  sx={{color: `${getColor(props.expenditure.type)}`, marginBottom: '8px'}}>
                         {`${props.expenditure.type === ExpenditureType.EXPENSE? '-':''}${props.expenditure.amount} INR`}
                     </Typography>
