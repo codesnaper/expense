@@ -1,6 +1,6 @@
 export const Configuration = {
     profile: 'dev',
-    baseUrl: 'http://localhost:8090/',
+    baseUrl: '/',
     resourceVersion: 'expense/api/v1/',
     group: 'group/',
     version: '0.0.1',

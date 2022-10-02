@@ -52,7 +52,9 @@ export default function ExpenditureCard(props: ExpenditureCardProps) {
                     <Typography  sx={{color: `${getColor(props.expenditure.type)}`, marginBottom: '8px'}}>
                         {`${props.expenditure.type === ExpenditureType.EXPENSE? '-':''}${props.expenditure.amount} INR`}
                     </Typography>
-                    <Chip sx={{ mb: 1.5 }} label={props.expenditure.category.name}></Chip>
+                    {props.expenditure.category && <>
+                        <Chip sx={{ mb: 1.5 }} label={props.expenditure.category.name}></Chip>
+                    </>}
                     <CardActionArea>
                         <Stack direction='row'>
                         <Button variant="text" startIcon={<Preview/>} size="small"></Button>

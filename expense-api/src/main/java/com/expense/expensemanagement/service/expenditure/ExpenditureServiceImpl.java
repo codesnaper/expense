@@ -5,6 +5,8 @@ import com.expense.expensemanagement.dao.ExpenditureDAO;
 import com.expense.expensemanagement.entity.Expenditure;
 import com.expense.expensemanagement.exception.MaxLimitException;
 import com.expense.expensemanagement.model.ExpenditureModel;
+import com.expense.expensemanagement.model.ExpenditureSummary;
+import com.expense.expensemanagement.model.ExpenditureType;
 import com.expense.expensemanagement.model.NotificationType;
 import com.expense.expensemanagement.service.expenditure.transaction.Transaction;
 import com.expense.expensemanagement.service.notification.NotificationService;
@@ -12,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import javax.transaction.Transactional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,5 +83,22 @@ public class ExpenditureServiceImpl implements ExpenditureService{
         return expenditureDAO.findByLoggedDateBetween(toDate,fromDate)
                 .stream().map(expenditureConversion::getModel)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<ExpenditureSummary> getExpenditureSummary(int month, String year){
+        List<ExpenditureSummary>  expenditureSummaries = new ArrayList<>();
+        ExpenditureSummary expenditureSummary = new ExpenditureSummary();
+//        expenditureSummary.setAmount(expenditureDAO.groupByMonthAndYear(month, year, ExpenditureType.EXPENSE));
+        expenditureSummary.setMonth(month);
+        expenditureSummary.setYear(year);
+        expenditureSummary.setType(ExpenditureType.EXPENSE);
+        expenditureSummaries.add(expenditureSummary);
+//        expenditureSummary.setAmount(expenditureDAO.groupByMonthAndYear(month, year, ExpenditureType.REVENUE));
+        expenditureSummary.setMonth(month);
+        expenditureSummary.setYear(year);
+        expenditureSummary.setType(ExpenditureType.REVENUE);
+        expenditureSummaries.add(expenditureSummary);
+        return expenditureSummaries;
     }
 }
