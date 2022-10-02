@@ -2,12 +2,13 @@ import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined, ReceiptLong } fr
 import { Box, Card, CardContent, Container, Divider, Typography, Stack, Button, Grid, LinearProgress, Fab } from "@mui/material";
 import { blue } from "@mui/material/colors";
 import moment from "moment";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { AlertContext, ServiceContext } from "../../context";
 import { AlertType } from "../../modal/ExpenseAlert";
 import { OperationType } from "../../modal/OperationType";
 import { ApiError } from "../../modal/response/Error";
 import { Expenditure, ExpenditureType } from "../../modal/response/Expenditure";
+import { ExpenditureSummary } from "../../modal/response/ExpenditureSummary";
 import InfoCardComponent from "../Card/InfoCard";
 import ContentLoader from "../ContentLoader";
 import ExpenditureCard from "./card";
@@ -38,6 +39,8 @@ export default function ExpenditureComponent() {
 
     const [totalRevenueRangeDate, setTotalRevenueRangeDate] = useState<number>(0);
 
+    const [expenditureSummaries, setExpenditureSummaries] = useState<ExpenditureSummary[]>([]);
+
     const handleOnSelect = (date: Date) => {
         setSelectDate(date);
     }
@@ -49,20 +52,30 @@ export default function ExpenditureComponent() {
         service.expenditureService?.fetchExpenditureByDateRange(moment(selectDate).format('DD-MM-yyyy'), moment(selectDate).add(5, 'days').format('DD-MM-yyyy'))
             .then((res: Expenditure[]) => {
                 setExpenditures(res);
-                res.filter((expenditure : Expenditure) => expenditure.type === ExpenditureType.EXPENSE).
-                forEach((expenditure: Expenditure) => {
-                    setTotalExpenseRangeDate(totalExpenseRangeDate + expenditure.amount);
-                });
-                res.filter((expenditure : Expenditure) => expenditure.type === ExpenditureType.REVENUE).
-                forEach((expenditure: Expenditure) => {
-                    setTotalRevenueRangeDate(totalRevenueRangeDate + expenditure.amount);
-                })
+                res.filter((expenditure: Expenditure) => expenditure.type === ExpenditureType.EXPENSE).
+                    forEach((expenditure: Expenditure) => {
+                        setTotalExpenseRangeDate(totalExpenseRangeDate + expenditure.amount);
+                    });
+                res.filter((expenditure: Expenditure) => expenditure.type === ExpenditureType.REVENUE).
+                    forEach((expenditure: Expenditure) => {
+                        setTotalRevenueRangeDate(totalRevenueRangeDate + expenditure.amount);
+                    })
             }).catch((err: ApiError) => {
                 expenseAlert.setAlert?.(err.message, AlertType.ERROR);
             }).finally(() => {
                 setLoader(false);
             });
     }, [service, selectDate])
+
+    useMemo(() => {
+        service.expenditureService?.fetchExpenditureSummary(moment(selectDate).format("MM"), moment(selectDate).format("YYYY"))
+            .then((res: ExpenditureSummary[]) => {
+                setExpenditureSummaries(res);
+            })
+            .catch((err: ApiError) => {
+                expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+            })
+    }, [moment(selectDate).format("MM"), moment(selectDate).format("YYYY")]);
 
     const handleExpenditure = (expenditure: Expenditure) => {
         if (operationType === OperationType.ADD) {
@@ -81,7 +94,7 @@ export default function ExpenditureComponent() {
                 <Grid container spacing={2}>
                     <InfoCardComponent header="Total Expense" secondaryText={`Month : ${moment(selectDate).format('MMMM')}`} value={'0'} ></InfoCardComponent>
                     <InfoCardComponent header="Total Revenue" secondaryText={`Month : ${moment(selectDate).format('MMMM')}`} value={'0'} ></InfoCardComponent>
-                    <InfoCardComponent header="Total Expense " secondaryText={`Date : ${moment(selectDate).format('DD,MMMM')} - ${moment(selectDate).add(5, 'day').format('DD,MMMM')}`} value={`- ${totalExpenseRangeDate} INR` } ></InfoCardComponent>
+                    <InfoCardComponent header="Total Expense " secondaryText={`Date : ${moment(selectDate).format('DD,MMMM')} - ${moment(selectDate).add(5, 'day').format('DD,MMMM')}`} value={`- ${totalExpenseRangeDate} INR`} ></InfoCardComponent>
                     <InfoCardComponent header="Total Revenue " secondaryText={`Date : ${moment(selectDate).format('DD,MMMM')} - ${moment(selectDate).add(5, 'day').format('DD,MMMM')}`} value={`${totalRevenueRangeDate}`} ></InfoCardComponent>
                 </Grid>
                 <Card raised sx={{ marginTop: '40px', marginBottom: '40px' }}>

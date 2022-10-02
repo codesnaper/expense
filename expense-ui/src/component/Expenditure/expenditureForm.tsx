@@ -45,18 +45,18 @@ export default function ExpenditureForm(props: ExpenditureFormProps) {
         onSubmit() {
             setLoader(true);
             service.expenditureService?.addExpenditureService(expenditureFormValidation.data)
-            .then((expenditure: Expenditure) => {
-                expenseAlert.setAlert?.('Expenditure added succesfully', AlertType.SUCCESS);
-                props.onChange?.(expenditure);
-                expenditureFormValidation.refreshError();
-                props.onClose?.();
-            })
-            .catch((err: ApiError) => {
-                expenseAlert.setAlert?.(err.message, AlertType.ERROR);
-            })
-            .finally(() => {
-                setLoader(false);
-            })
+                .then((expenditure: Expenditure) => {
+                    expenseAlert.setAlert?.('Expenditure added succesfully', AlertType.SUCCESS);
+                    props.onChange?.(expenditure);
+                    expenditureFormValidation.refreshError();
+                    props.onClose?.();
+                })
+                .catch((err: ApiError) => {
+                    expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+                })
+                .finally(() => {
+                    setLoader(false);
+                })
         },
     });
 
@@ -154,34 +154,40 @@ export default function ExpenditureForm(props: ExpenditureFormProps) {
                     </FormControl>
                     <FormControl margin="normal" fullWidth>
                         <Stack direction={'row'} spacing={2}>
-                            <FormControl fullWidth>
-                                <InputLabel htmlFor="outlined-adornment-password">
-                                    {expenditureFormValidation.data.limit ? '' : 'Limit'}
-                                </InputLabel>
-                                <OutlinedInput
-                                    id="limit"
-                                    error={expenditureFormValidation.data.limit ? true : false}
-                                    onChange={expenditureFormValidation.handleChange('limit')}
-                                    disabled={true}
-                                    value={expenditureFormValidation.data.limit ? expenditureFormValidation.data.limit.name: ''}
-                                    endAdornment={
-                                        <>
-                                            <InputAdornment position="end">
-                                                <Button variant="text" onClick={() => { setOpenLimit(true) }}>
-                                                    {expenditureFormValidation.data.limit ? "Change" : "Select"} Limit
-                                                </Button>
-                                            </InputAdornment>
-                                        </>
-                                    }
-                                    startAdornment={
-                                            expenditureFormValidation.data.limit && <> 
-                                                <Button startIcon={<Close/>} onClick ={() => {expenditureFormValidation.setValue('limit',null)}} variant="text"></Button>
-                                            </> 
-                                    }
-                                />
-                                {expenditureFormValidation.errors.limit && <><FormHelperText sx={{ color: red[700] }}>{expenditureFormValidation.errors.limit}</FormHelperText></>}
-                            </FormControl>
-                            {!expenditureFormValidation.data.limit &&
+                            {
+                                expenditureFormValidation.data.type !== ExpenditureType.TRANSFER &&
+                                <>
+                                    <FormControl fullWidth>
+                                        <InputLabel htmlFor="outlined-adornment-password">
+                                            {expenditureFormValidation.data.limit ? '' : 'Limit'}
+                                        </InputLabel>
+                                        <OutlinedInput
+                                            id="limit"
+                                            error={expenditureFormValidation.data.limit ? true : false}
+                                            onChange={expenditureFormValidation.handleChange('limit')}
+                                            disabled={true}
+                                            value={expenditureFormValidation.data.limit ? expenditureFormValidation.data.limit.name : ''}
+                                            endAdornment={
+                                                <>
+                                                    <InputAdornment position="end">
+                                                        <Button variant="text" onClick={() => { setOpenLimit(true) }}>
+                                                            {expenditureFormValidation.data.limit ? "Change" : "Select"} Limit
+                                                        </Button>
+                                                    </InputAdornment>
+                                                </>
+                                            }
+                                            startAdornment={
+                                                expenditureFormValidation.data.limit && <>
+                                                    <Button startIcon={<Close />} onClick={() => { expenditureFormValidation.setValue('limit', null) }} variant="text"></Button>
+                                                </>
+                                            }
+                                        />
+                                        {expenditureFormValidation.errors.limit && <><FormHelperText sx={{ color: red[700] }}>{expenditureFormValidation.errors.limit}</FormHelperText></>}
+                                    </FormControl>
+                                </>
+                            }
+
+                            {(!expenditureFormValidation.data.limit && expenditureFormValidation.data.type !== ExpenditureType.TRANSFER) &&
                                 <>
                                     <FormControl fullWidth>
                                         <InputLabel htmlFor="outlined-adornment-password">
@@ -192,7 +198,7 @@ export default function ExpenditureForm(props: ExpenditureFormProps) {
                                             error={expenditureFormValidation.data.category ? true : false}
                                             onChange={expenditureFormValidation.handleChange('category')}
                                             disabled={true}
-                                            value={expenditureFormValidation.data.category ? expenditureFormValidation.data.category.name: ''}
+                                            value={expenditureFormValidation.data.category ? expenditureFormValidation.data.category.name : ''}
                                             endAdornment={
                                                 <>
                                                     <InputAdornment position="end">
@@ -212,7 +218,7 @@ export default function ExpenditureForm(props: ExpenditureFormProps) {
                     </FormControl>
                     <FormControl fullWidth >
                         <Stack direction={'row'} spacing={2}>
-                            {!expenditureFormValidation.data.limit &&
+                            {(!expenditureFormValidation.data.limit) &&
                                 <>
                                     <FormControl fullWidth>
                                         <InputLabel htmlFor="outlined-adornment-password">
@@ -223,7 +229,7 @@ export default function ExpenditureForm(props: ExpenditureFormProps) {
                                             error={expenditureFormValidation.data.account ? true : false}
                                             onChange={expenditureFormValidation.handleChange('account')}
                                             disabled={true}
-                                            value={expenditureFormValidation.data.account ? expenditureFormValidation.data.account.accountNumber: ''}
+                                            value={expenditureFormValidation.data.account ? expenditureFormValidation.data.account.accountNumber : ''}
                                             endAdornment={
                                                 <>
                                                     <InputAdornment position="end">
@@ -248,7 +254,7 @@ export default function ExpenditureForm(props: ExpenditureFormProps) {
                                             error={expenditureFormValidation.data.fromAccount ? true : false}
                                             onChange={expenditureFormValidation.handleChange('fromAccount')}
                                             disabled={true}
-                                            value={expenditureFormValidation.data.fromAccount ? expenditureFormValidation.data.fromAccount.accountNumber: ''}
+                                            value={expenditureFormValidation.data.fromAccount ? expenditureFormValidation.data.fromAccount.accountNumber : ''}
                                             endAdornment={
                                                 <>
                                                     <InputAdornment position="end">

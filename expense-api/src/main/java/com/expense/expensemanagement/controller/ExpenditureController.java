@@ -2,6 +2,7 @@ package com.expense.expensemanagement.controller;
 
 import com.expense.expensemanagement.exception.MaxLimitException;
 import com.expense.expensemanagement.model.ExpenditureModel;
+import com.expense.expensemanagement.model.ExpenditureSummary;
 import com.expense.expensemanagement.service.expenditure.ExpenditureService;
 import com.expense.expensemanagement.util.ExpenseUtil;
 import org.springframework.http.MediaType;
@@ -43,11 +44,11 @@ public class ExpenditureController {
     }
 
     @GetMapping(value = "/summary/{month}-{year}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Object getExpenditureSummary(
+    public List<ExpenditureSummary> getExpenditureSummary(
             Principal principal,
-            @PathVariable("month") String month,
+            @PathVariable("month") int month,
             @PathVariable("year") String year
     ){
-        return null;
+        return expenditureService.getExpenditureSummary(month, year);
     }
 }

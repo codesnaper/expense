@@ -34,7 +34,9 @@ public class ExpenditureConversion implements EntityModalConversion<Expenditure,
         expenditureModel.setAccount(accountConversion.getModel(expenditure.getAccount()));
         expenditureModel.setUserId(expenditure.getUserId());
         expenditureModel.setAmount(expenditure.getAmount().doubleValue());
-        expenditureModel.setCategory(categoryConversion.getModel(expenditure.getCategory()));
+        if(expenditure.getCategory() != null){
+            expenditureModel.setCategory(categoryConversion.getModel(expenditure.getCategory()));
+        }
         expenditureModel.setDescription(expenditure.getDescription());
         expenditureModel.setDate(expenditure.getLoggedDate());
         expenditureModel.setId(expenditure.getId());
@@ -61,7 +63,9 @@ public class ExpenditureConversion implements EntityModalConversion<Expenditure,
             expenditure.setLimit(limitConversion.getEntity(expenditureModel.getLimit()));
         }
         expenditure.setDescription(expenditureModel.getDescription());
-        expenditure.setCategory(categoryConversion.getEntity(expenditureModel.getCategory()));
+        if(expenditureModel.getCategory() != null){
+            expenditure.setCategory(categoryConversion.getEntity(expenditureModel.getCategory()));
+        }
         expenditure.setId(expenditureModel.getId());
         expenditure.setType(expenditureModel.getType());
         expenditure.setName(expenditureModel.getName());
