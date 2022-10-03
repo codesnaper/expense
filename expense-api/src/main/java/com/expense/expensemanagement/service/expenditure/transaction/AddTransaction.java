@@ -9,7 +9,7 @@ import com.expense.expensemanagement.entity.Limit;
 import com.expense.expensemanagement.exception.AmountInsufficientException;
 import com.expense.expensemanagement.model.AccountType;
 import com.expense.expensemanagement.model.ExpenditureModel;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,15 +17,13 @@ import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 
 @Service("addTransaction")
+@AllArgsConstructor
 public class AddTransaction implements Transaction{
 
-    @Autowired
     AccountDAO accountDAO;
 
-    @Autowired
     BankDAO bankDAO;
 
-    @Autowired
     LimitDao limitDao;
 
     @Transactional
@@ -40,7 +38,7 @@ public class AddTransaction implements Transaction{
             limit.setUsedAmount(new BigDecimal(amount));
             limitDao.save(limit);
         }
-        Account account = accountDAO.findById(expenditureModel.getId()).orElseThrow(() -> {throw new NoSuchElementException("Transfer from Account is not found");});
+        Account account = accountDAO.findById(expenditureModel.getAccount().getId()).orElseThrow(() -> {throw new NoSuchElementException("Transfer from Account is not found");});
         amount = account.getAmount().doubleValue() - expenditureModel.getAmount();
         account.setAmount(new BigDecimal(amount));
         accountDAO.save(account);
@@ -53,7 +51,7 @@ public class AddTransaction implements Transaction{
     @Transactional
     public void revenueTransaction(ExpenditureModel expenditureModel){
         double amount = 0;
-        Account account = accountDAO.findById(expenditureModel.getId()).orElseThrow(() -> {throw new NoSuchElementException("Transfer from Account is not found");});
+        Account account = accountDAO.findById(expenditureModel.getAccount().getId()).orElseThrow(() -> {throw new NoSuchElementException("Transfer from Account is not found");});
         amount = account.getAmount().doubleValue() + expenditureModel.getAmount();
         account.setAmount(new BigDecimal(amount));
         accountDAO.save(account);
