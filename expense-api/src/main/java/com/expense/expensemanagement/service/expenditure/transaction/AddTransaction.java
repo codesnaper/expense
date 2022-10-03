@@ -1,11 +1,14 @@
 package com.expense.expensemanagement.service.expenditure.transaction;
 
 import com.expense.expensemanagement.dao.AccountDAO;
+import com.expense.expensemanagement.dao.BankDAO;
+import com.expense.expensemanagement.dao.LimitDao;
 import com.expense.expensemanagement.entity.Account;
-import com.expense.expensemanagement.model.*;
-import com.expense.expensemanagement.service.account.AccountService;
-import com.expense.expensemanagement.service.bank.BankService;
-import com.expense.expensemanagement.service.limit.LimitService;
+import com.expense.expensemanagement.entity.Bank;
+import com.expense.expensemanagement.entity.Limit;
+import com.expense.expensemanagement.exception.AmountInsufficientException;
+import com.expense.expensemanagement.model.AccountType;
+import com.expense.expensemanagement.model.ExpenditureModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,76 +20,77 @@ import java.util.NoSuchElementException;
 public class AddTransaction implements Transaction{
 
     @Autowired
-    BankService bankService;
-
-    @Autowired
-    AccountService accountService;
-
-    @Autowired
-    LimitService limitService;
-
-    @Autowired
     AccountDAO accountDAO;
 
+    @Autowired
+    BankDAO bankDAO;
+
+    @Autowired
+    LimitDao limitDao;
+
     @Transactional
-    public void expenseTransaction(ExpenditureModel expenditureModel){
+    public void expenseTransaction(ExpenditureModel expenditureModel) throws AmountInsufficientException {
         double amount = 0;
-        if(expenditureModel.getLimit() != null){
-            LimitModel limitModel = expenditureModel.getLimit();
-            amount = limitModel.getUsedAmount() + expenditureModel.getAmount();
-            limitModel.setUsedAmount((long) amount);
-            limitService.updateLimit(limitModel);
+        if(expenditureModel.getAccount().getAmount() < expenditureModel.getAmount()){
+            throw new AmountInsufficientException("Insufficient amount in account");
         }
-        AccountModel accountModel = expenditureModel.getAccount();
-        amount = accountModel.getAmount() - expenditureModel.getAmount();
-        accountModel.setAmount(amount);
-        accountService.updateAccount(accountModel, expenditureModel.getUserId());
-        BankModel bank = accountModel.getBank();
+        if(expenditureModel.getLimit() != null){
+            Limit limit = limitDao.findById(expenditureModel.getLimit().getId()).orElseThrow(() -> {throw new NoSuchElementException("Limit not found");});
+            amount = limit.getUsedAmount().doubleValue() + expenditureModel.getAmount();
+            limit.setUsedAmount(new BigDecimal(amount));
+            limitDao.save(limit);
+        }
+        Account account = accountDAO.findById(expenditureModel.getId()).orElseThrow(() -> {throw new NoSuchElementException("Transfer from Account is not found");});
+        amount = account.getAmount().doubleValue() - expenditureModel.getAmount();
+        account.setAmount(new BigDecimal(amount));
+        accountDAO.save(account);
+        Bank bank = bankDAO.findById(account.getBankId()).orElseThrow(()-> {throw new NoSuchElementException("Bank Not found");});
         amount = bank.getCreditAmount().doubleValue() - expenditureModel.getAmount();
         bank.setCreditAmount(new BigDecimal(amount));
-        bankService.updateBank(bank);
+        bankDAO.save(bank);
     }
 
     @Transactional
     public void revenueTransaction(ExpenditureModel expenditureModel){
         double amount = 0;
-        if(expenditureModel.getLimit() != null){
-            LimitModel limitModel = expenditureModel.getLimit();
-            amount = limitModel.getUsedAmount() - expenditureModel.getAmount();
-            limitModel.setUsedAmount((long) amount);
-            limitService.updateLimit(limitModel);
-        }
-        AccountModel accountModel = expenditureModel.getAccount();
-        amount = accountModel.getAmount() + expenditureModel.getAmount();
-        accountModel.setAmount(amount);
-        accountService.updateAccount(accountModel, expenditureModel.getUserId());
-        BankModel bank = accountModel.getBank();
+        Account account = accountDAO.findById(expenditureModel.getId()).orElseThrow(() -> {throw new NoSuchElementException("Transfer from Account is not found");});
+        amount = account.getAmount().doubleValue() + expenditureModel.getAmount();
+        account.setAmount(new BigDecimal(amount));
+        accountDAO.save(account);
+        Bank bank = bankDAO.findById(account.getBankId()).orElseThrow(()-> {throw new NoSuchElementException("Bank Not found");});
         amount = bank.getCreditAmount().doubleValue() + expenditureModel.getAmount();
         bank.setCreditAmount(new BigDecimal(amount));
-        bankService.updateBank(bank);
+        bankDAO.save(bank);
     }
 
     @Transactional
-    public void transferTransaction(ExpenditureModel expenditureModel){
+    public void transferTransaction(ExpenditureModel expenditureModel) throws AmountInsufficientException {
         double amount = 0;
-        Account account = accountDAO.findById(expenditureModel.getFromAccount().getId()).orElseThrow(NoSuchElementException::new);
+        double fromAmount = 0;
+        if(expenditureModel.getAccount().getAmount() < expenditureModel.getAmount()){
+            throw new AmountInsufficientException("Account don't have much amount to transfer");
+        }
+        double toAmount = expenditureModel.getAccount().getAmount() - expenditureModel.getAmount();
+        Account account = accountDAO.findById(expenditureModel.getAccount().getId()).orElseThrow(() -> {throw new NoSuchElementException("Transfer from Account is not found");});
+        account.setAmount(new BigDecimal(toAmount));
+        accountDAO.save(account);
+        account = accountDAO.findById(expenditureModel.getFromAccount().getId()).orElseThrow(() -> {throw new NoSuchElementException("Transfer to Account is not found");});
         if(account.getAccountType().equalsIgnoreCase(AccountType.LOAN.getAccountType())){
-            BankModel bank = expenditureModel.getAccount().getBank();
+            fromAmount = expenditureModel.getFromAccount().getAmount() - expenditureModel.getAmount();
+            Bank bank = bankDAO.findById(expenditureModel.getFromAccount().getBankId()).orElseThrow(()-> {throw new NoSuchElementException("Bank Not found");});
             amount = bank.getDebitAmount().doubleValue() - expenditureModel.getAmount();
             bank.setDebitAmount(new BigDecimal(amount));
-            bankService.updateBank(bank);
-        }
-        AccountModel accountModel = expenditureModel.getAccount();
-        amount = accountModel.getAmount() - expenditureModel.getAmount();
-        accountModel.setAmount(amount);
-        accountService.updateAccount(accountModel, expenditureModel.getUserId());
-        accountModel = expenditureModel.getFromAccount();
-        if(account.getAccountType().equalsIgnoreCase(AccountType.LOAN.getAccountType())){
-            amount = accountModel.getAmount() - expenditureModel.getAmount();
+            if(expenditureModel.getAccount().getBankId() == expenditureModel.getFromAccount().getBankId()){
+                bankDAO.save(bank);
+                bank = bankDAO.findById(expenditureModel.getAccount().getBankId()).orElseThrow(()-> {throw new NoSuchElementException("Bank Not found");});
+            }
+            amount = bank.getCreditAmount().doubleValue() - expenditureModel.getAmount();
+            bank.setCreditAmount(new BigDecimal(amount));
+            bankDAO.save(bank);
         } else {
-            amount = accountModel.getAmount() + expenditureModel.getAmount();
+            fromAmount = expenditureModel.getFromAccount().getAmount() + expenditureModel.getAmount();
         }
-        accountModel.setAmount(amount);
-        accountService.updateAccount(accountModel, expenditureModel.getUserId());
+        account.setAmount(new BigDecimal(fromAmount));
+        accountDAO.save(account);
     }
 }

@@ -3,6 +3,7 @@ package com.expense.expensemanagement.service.expenditure;
 import com.expense.expensemanagement.conversion.EntityModalConversion;
 import com.expense.expensemanagement.dao.ExpenditureDAO;
 import com.expense.expensemanagement.entity.Expenditure;
+import com.expense.expensemanagement.exception.AmountInsufficientException;
 import com.expense.expensemanagement.exception.MaxLimitException;
 import com.expense.expensemanagement.model.ExpenditureModel;
 import com.expense.expensemanagement.model.ExpenditureSummary;
@@ -35,7 +36,7 @@ public class ExpenditureServiceImpl implements ExpenditureService{
     @Qualifier("ExpenditureConversion")
     EntityModalConversion<Expenditure, ExpenditureModel> expenditureConversion;
 
-    public ExpenditureModel addExpenditure(ExpenditureModel expenditureModel) throws MaxLimitException {
+    public ExpenditureModel addExpenditure(ExpenditureModel expenditureModel) throws MaxLimitException, AmountInsufficientException {
         if(expenditureModel.getLimit() != null && expenditureModel.getCategory() == null){
             expenditureModel.setCategory(expenditureModel.getLimit().getCategory());
         }

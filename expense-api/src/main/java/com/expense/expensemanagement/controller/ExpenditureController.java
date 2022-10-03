@@ -1,5 +1,6 @@
 package com.expense.expensemanagement.controller;
 
+import com.expense.expensemanagement.exception.AmountInsufficientException;
 import com.expense.expensemanagement.exception.MaxLimitException;
 import com.expense.expensemanagement.model.ExpenditureModel;
 import com.expense.expensemanagement.model.ExpenditureSummary;
@@ -24,7 +25,7 @@ public class ExpenditureController {
     }
 
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ExpenditureModel addExpenditure(Principal principal, @RequestBody ExpenditureModel expenditureModel) throws MaxLimitException {
+    public ExpenditureModel addExpenditure(Principal principal, @RequestBody ExpenditureModel expenditureModel) throws MaxLimitException, AmountInsufficientException {
         expenditureModel.setUserId(ExpenseUtil.getUserId(principal));
         return this.expenditureService.addExpenditure(expenditureModel);
     }

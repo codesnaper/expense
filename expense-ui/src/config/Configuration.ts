@@ -1,13 +1,13 @@
 export const Configuration = {
     profile: 'dev',
-    baseUrl: '/',
-    resourceVersion: 'expense/api/v1/',
+    baseUrl: process.env.REACT_APP_BASE_URL,
+    resourceVersion: `expense/api/${process.env.REACT_APP_RESOURCE_VERSION}/`,
     group: 'group/',
-    version: '0.0.1',
+    version: process.env.REACT_APP_VERSION,
     github: 'https://github.com/codesnaper/expense',
-    wsUrl: 'ws://localhost:8090/expense/ws/connect',
-    debug: true,
-    connectionTimeout: 3000
+    wsUrl: `${process.env.REACT_APP_WS_BASE_URL}`,
+    debug: process.env.REACT_APP_LOG_DEBUG ? new Boolean(process.env.REACT_APP_LOG_DEBUG).valueOf(): false,
+    connectionTimeout: Number(process.env.REACT_APP_CONNECTION_TIMEOUT)
 }
 
 export const NavigationLink = [
