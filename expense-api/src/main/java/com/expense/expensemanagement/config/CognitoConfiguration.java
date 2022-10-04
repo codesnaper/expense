@@ -1,20 +1,14 @@
 package com.expense.expensemanagement.config;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
+import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
 import com.expense.expensemanagement.service.cognito.CognitoService;
 import com.expense.expensemanagement.service.cognito.CognitoServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-
-import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
-import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
 
 @Component
 public class CognitoConfiguration {
@@ -63,11 +57,10 @@ public class CognitoConfiguration {
 	@Bean("CognitoIdentityProvider")
 	public AWSCognitoIdentityProvider cognitoIdentityProvider() throws Exception {
 		logger.debug("Configuring Cognito");
-		AWSCredentials cred = new BasicAWSCredentials(this.accessKey, this.secretKey);
-		AWSCredentialsProvider credProvider = new AWSStaticCredentialsProvider(cred);
-		AWSCognitoIdentityProvider cognitoIdentityProvider = AWSCognitoIdentityProviderClientBuilder.standard()
-				.withRegion(this.region)
-				.withCredentials(credProvider).build();
+//		AWSCredentials cred = new Defa
+//		AWSCredentialsProvider credProvider = new AWSStaticCredentialsProvider(cred);
+//
+		AWSCognitoIdentityProvider cognitoIdentityProvider = AWSCognitoIdentityProviderClientBuilder.defaultClient();
 		logger.debug("Cognito initialized successfully");
 		return cognitoIdentityProvider;
 	}
