@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 80
 aws:
   cognito:
     clientId: ${CLIENT_ID}
