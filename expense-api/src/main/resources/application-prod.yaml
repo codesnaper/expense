@@ -44,7 +44,8 @@ logging:
   level:
     com:
       expense: INFO
-react:
+      amazonaws: DEBUG
+
   router: /em/bank,/em/limit,/em/expense,/em/category,/em/account,/em/notification,/em/profile
 expense:
   base: /expense/api
