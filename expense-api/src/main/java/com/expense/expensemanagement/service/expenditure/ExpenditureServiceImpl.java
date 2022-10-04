@@ -16,7 +16,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +40,28 @@ public class ExpenditureServiceImpl implements ExpenditureService{
     @Qualifier("ExpenditureConversion")
     EntityModalConversion<Expenditure, ExpenditureModel> expenditureConversion;
 
-    public ExpenditureModel addExpenditure(ExpenditureModel expenditureModel) throws MaxLimitException, AmountInsufficientException {
+    private void rollbackTransaction(Expenditure expenditure) throws AmountInsufficientException {
+        expenditure.setAmount(expenditure.getAmount().multiply(new BigDecimal((-1))));
+        ExpenditureModel expenditureModel = expenditureConversion.getModel(expenditure);
+        switch (expenditureModel.getType()){
+            case EXPENSE:
+                addTransaction.expenseTransaction(expenditureModel);
+                break;
+
+            case REVENUE:
+                addTransaction.revenueTransaction(expenditureModel);
+                break;
+
+            case TRANSFER:
+                addTransaction.transferTransaction(expenditureModel);
+                break;
+
+            default:
+                throw new IllegalArgumentException("Invalid expenditure type");
+        }
+    }
+
+    private void preInitializeExpenditureModel(ExpenditureModel expenditureModel) throws MaxLimitException {
         if(expenditureModel.getLimit() != null && expenditureModel.getCategory() == null){
             expenditureModel.setCategory(expenditureModel.getLimit().getCategory());
         }
@@ -60,6 +85,9 @@ public class ExpenditureServiceImpl implements ExpenditureService{
                     NotificationType.LIMIT_WARNING
             );
         }
+    }
+
+    private void transaction(ExpenditureModel expenditureModel) throws AmountInsufficientException {
         switch (expenditureModel.getType()){
             case EXPENSE:
                 addTransaction.expenseTransaction(expenditureModel);
@@ -76,6 +104,32 @@ public class ExpenditureServiceImpl implements ExpenditureService{
             default:
                 throw new IllegalArgumentException("Invalid expenditure type");
         }
+    }
+
+    @Override
+    public ExpenditureModel updateExpenditure(ExpenditureModel expenditureModel) throws Exception {
+        Expenditure expenditure = expenditureDAO.findByUserIdAndId(expenditureModel.getUserId(), expenditureModel.getId()).orElseThrow(
+                () -> {throw new NoSuchElementException("Expenditure not found.");});
+        if(expenditure.getAmount().doubleValue() != expenditureModel.getAmount()){
+            double originalAmount = expenditureModel.getAmount();
+            double diffAmount = expenditureModel.getAmount() - expenditure.getAmount().doubleValue();
+            expenditureModel.setAmount(diffAmount);
+            transaction(expenditureModel);
+            expenditureModel.setAmount(originalAmount);
+        }
+        return expenditureConversion.getModel(expenditureDAO.save(expenditureConversion.getEntity(expenditureModel)));
+    }
+
+    public void deleteExpenditure(long id, String userId) throws Exception{
+        Expenditure expenditure = expenditureDAO.findByUserIdAndId(userId, id).orElseThrow(
+                () -> {throw new NoSuchElementException("Expenditure not found.");});
+        rollbackTransaction(expenditure);
+        expenditureDAO.delete(expenditure);
+    }
+
+    public ExpenditureModel addExpenditure(ExpenditureModel expenditureModel) throws MaxLimitException, AmountInsufficientException {
+        preInitializeExpenditureModel(expenditureModel);
+        transaction(expenditureModel);
         return expenditureConversion.getModel(expenditureDAO.save(expenditureConversion.getEntity(expenditureModel)));
     }
 

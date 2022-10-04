@@ -6,7 +6,8 @@ info:
     name: @project.artifactId@
     description: @project.description@
     version: @project.version@
-
+server:
+  shutdown: graceful
 management:
   endpoint:
     loggers:
@@ -14,4 +15,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: loggers
+        include: health, info
