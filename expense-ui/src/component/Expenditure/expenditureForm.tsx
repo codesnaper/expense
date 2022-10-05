@@ -23,6 +23,7 @@ export interface ExpenditureFormProps {
     show: boolean,
     onClose?: () => void,
     onChange?: (expenditure: Expenditure) => void;
+    defaultValue?: Expenditure
 }
 
 export default function ExpenditureForm(props: ExpenditureFormProps) {

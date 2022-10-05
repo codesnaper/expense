@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-@Profile("dev")
+@Profile("local")
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
 public class CORSFilter implements Filter {
 

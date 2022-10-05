@@ -24,6 +24,34 @@ export class ExpenditureService {
         });
     }
 
+    public updateExpenditureService(expenditure: Expenditure): Promise<Expenditure>{
+        return new Promise((resolve, reject) => {
+            api.put(`${this.baseUrl}expenditure/`,JSON.stringify(expenditure))
+            .then(res => resolve(res.data))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
+        });
+    }
+
+    public deleteExpenditureService(id: number): Promise<any>{
+        return new Promise((resolve, reject) => {
+            api.delete(`${this.baseUrl}expenditure/${id}`)
+            .then(() => resolve({}))
+            .catch(err => reject({
+                status: err.response.data?.status,
+                errorCode: err.response.data?.errorCode,
+                message: err.response.data? err.response.data.message: err.message,
+                field: err.response.data?.field,
+                timestamp: err.response.data?.timestamp
+            }));
+        });
+    }
+
     public fetchExpenditureByDateRange(toDate: string, fromDate: string): Promise<Expenditure[]>{
         return new Promise((resolve, reject) => {
             api.get(`${this.baseUrl}expenditure/'${toDate}'-'${fromDate}'`)

@@ -27,9 +27,6 @@ spring:
 
 logging:
   file: log/em.log
-  pattern:
-    console: %d{yyyy-MM-dd HH:mm:ss} - %msg%n
-    file: %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%
   level:
     com:
       expense: INFO

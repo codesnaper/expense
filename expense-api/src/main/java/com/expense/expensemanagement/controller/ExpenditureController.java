@@ -39,7 +39,7 @@ public class ExpenditureController {
         return this.expenditureService.updateExpenditure(expenditureModel);
     }
 
-    @DeleteMapping(value = "/{id}", consumes=MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
     public void deleteExpenditure(Principal principal, @PathVariable long id) throws Exception{
         expenditureService.deleteExpenditure(id, ExpenseUtil.getUserId(principal));
     }
