@@ -6,7 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum CurrencyType {
-    INR("₹"), USD("$"), EUR("€"), ZLOTTY("zl");
+
+    INR("inr"), USD("usd"), EUR("eur"), ZLOTTY("pln");
     private String symbol;
 
 }

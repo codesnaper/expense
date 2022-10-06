@@ -8,6 +8,8 @@ info:
     version: @project.version@
 server:
   shutdown: graceful
+fx:
+  api: http://www.floatrates.com/daily/
 management:
   endpoint:
     loggers:
