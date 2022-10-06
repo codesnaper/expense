@@ -11,12 +11,14 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
 
 @Component
+@Profile("prod")
 public class CognitoConfiguration {
 
 	private Logger logger = LoggerFactory.getLogger(CognitoConfiguration.class);
@@ -70,11 +72,6 @@ public class CognitoConfiguration {
 				.withCredentials(credProvider).build();
 		logger.debug("Cognito initialized successfully");
 		return cognitoIdentityProvider;
-	}
-
-	@Bean
-	public CognitoService cognitoService() {
-		return new CognitoServiceImpl();
 	}
 
 	public String getJwkUrl() {

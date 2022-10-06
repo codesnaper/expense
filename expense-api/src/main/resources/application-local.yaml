@@ -1,20 +1,11 @@
 server:
   port: 8090
-aws:
-  cognito:
-    clientId: ${CLIENT_ID}
-    userPoolId: ${USER_POOL_ID}
-    identityPoolId: ${IDENTITY_POOL_ID}
-    region: ${REGION}
-    secretKey: ${SECRET_KEY}
-    accessKey: ${ACCESS_KEY}
-    authFlow: ADMIN_NO_SRP_AUTH
-    userNameField: username
-    groupsField:
-    connectionTimeout: 2000
-    readTimeout: 2000
 app:
   secret: expense
+  user:
+    email: test@gmail.com
+    password: test
+    name: test user
 cors:
   origin: http://localhost:8090
   allowCredentials: true
@@ -36,7 +27,7 @@ spring:
   config:
     location: path.yaml
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL;NON_KEYWORDS=USER
+    url: jdbc:h2:mem:em;DB_CLOSE_DELAY=-1;MODE=MySQL;NON_KEYWORDS=USER
     username: sa
     password: password
     driver-class-name: org.h2.Driver

@@ -6,6 +6,8 @@ import { Expenditure, ExpenditureType } from "../../modal/response/Expenditure";
 
 interface ExpenditureCardProps{
     expenditure: Expenditure
+    onDelete?: (expenditure: Expenditure) => void;
+    onView?: (expenditure: Expenditure) => void;
 }
 export default function ExpenditureCard(props: ExpenditureCardProps) {
 
@@ -57,8 +59,8 @@ export default function ExpenditureCard(props: ExpenditureCardProps) {
                     </>}
                     <CardActionArea>
                         <Stack direction='row'>
-                        <Button variant="text" startIcon={<Preview/>} size="small"></Button>
-                        <Button variant="text" startIcon={<DeleteForever/>} size="small"></Button>
+                        <Button variant="text" startIcon={<Preview/>} size="small" onClick={() => {props.onView?.(props.expenditure)}}></Button>
+                        <Button variant="text" startIcon={<DeleteForever/>} size="small" onClick={() => {props.onDelete?.(props.expenditure)}}></Button>
                         </Stack>
                     </CardActionArea>
                 </CardContent>

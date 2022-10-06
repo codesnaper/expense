@@ -1,10 +1,12 @@
 package com.expense.expensemanagement.controller;
 
+import com.expense.expensemanagement.exception.AmountInsufficientException;
 import com.expense.expensemanagement.exception.MaxLimitException;
 import com.expense.expensemanagement.model.ExpenditureModel;
 import com.expense.expensemanagement.model.ExpenditureSummary;
 import com.expense.expensemanagement.service.expenditure.ExpenditureService;
 import com.expense.expensemanagement.util.ExpenseUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +26,22 @@ public class ExpenditureController {
     }
 
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ExpenditureModel addExpenditure(Principal principal, @RequestBody ExpenditureModel expenditureModel) throws MaxLimitException {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ExpenditureModel addExpenditure(Principal principal, @RequestBody ExpenditureModel expenditureModel) throws MaxLimitException, AmountInsufficientException {
         expenditureModel.setUserId(ExpenseUtil.getUserId(principal));
         return this.expenditureService.addExpenditure(expenditureModel);
+    }
+
+
+    @PutMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ExpenditureModel updateExpenditure(Principal principal, @RequestBody ExpenditureModel expenditureModel) throws Exception{
+        expenditureModel.setUserId(ExpenseUtil.getUserId(principal));
+        return this.expenditureService.updateExpenditure(expenditureModel);
+    }
+
+    @DeleteMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
+    public void deleteExpenditure(Principal principal, @PathVariable long id) throws Exception{
+        expenditureService.deleteExpenditure(id, ExpenseUtil.getUserId(principal));
     }
 
     @GetMapping(value = "/'{toDate}'-'{fromDate}'", produces = MediaType.APPLICATION_JSON_VALUE)

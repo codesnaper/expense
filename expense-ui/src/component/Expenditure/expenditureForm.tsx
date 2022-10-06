@@ -1,5 +1,5 @@
 import { Close } from "@mui/icons-material";
-import { Button, FormControl, FormHelperText, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, Stack, TextField, Typography } from "@mui/material";
+import { Button, FormControl, FormHelperText, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, Stack, TextField, Typography } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -23,6 +23,7 @@ export interface ExpenditureFormProps {
     show: boolean,
     onClose?: () => void,
     onChange?: (expenditure: Expenditure) => void;
+    defaultValue?: Expenditure
 }
 
 export default function ExpenditureForm(props: ExpenditureFormProps) {
@@ -41,7 +42,35 @@ export default function ExpenditureForm(props: ExpenditureFormProps) {
 
     const [loader, setLoader] = useState<boolean>(false);
 
+    const [title, setTitle] = useState<string>('Expenditure');
+
     const expenditureFormValidation = useFormValidation<Expenditure>({
+        validations: {
+            name: {
+                required: {
+                    message: 'Name is required',
+                    value: true
+                },
+            },
+            type: {
+                required:{
+                    message: 'Select Any one from the drop down to identify the expenditure.',
+                    value: true
+                }
+            },
+            date: {
+                required:{
+                    message: 'Select Date',
+                    value: true
+                }
+            },
+            amount: {
+                required:{
+                    message: 'Amount is required.',
+                    value: true
+                }
+            }
+        },
         onSubmit() {
             setLoader(true);
             service.expenditureService?.addExpenditureService(expenditureFormValidation.data)
@@ -80,6 +109,11 @@ export default function ExpenditureForm(props: ExpenditureFormProps) {
         setFromAccount(false);
     }
 
+    const handleExpenditureType = (e: SelectChangeEvent<any>) => {
+        setTitle(e.target.value);
+        expenditureFormValidation.setValue('type', e.target.value);
+    }
+
     return (
         <>
             <LimitSelect
@@ -104,7 +138,7 @@ export default function ExpenditureForm(props: ExpenditureFormProps) {
             ></AccountSelect>
             <Modal
                 loader={loader}
-                title={`Expenditure`}
+                title={title}
                 onSubmit={expenditureFormValidation.handleSubmit}
                 operationType={props.operation}
                 show={props.show}
@@ -142,7 +176,7 @@ export default function ExpenditureForm(props: ExpenditureFormProps) {
                             id="expenditure-select"
                             label='expenditureType'
                             error={expenditureFormValidation.errors.type ? true : false}
-                            onChange={expenditureFormValidation.handleSelectChange('type')}
+                            onChange={handleExpenditureType}
                         >
                             <MenuItem key={0} value={ExpenditureType.EXPENSE}>Expense</MenuItem>
                             <MenuItem key={1} value={ExpenditureType.REVENUE}>Revenue</MenuItem>

@@ -6,7 +6,9 @@ import com.expense.expensemanagement.model.Constants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -41,10 +43,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private AuthenticationFailureHandler failureHandler;
 
 	@Autowired
+	@Qualifier("authenticationProvider")
 	private AuthenticationProvider authenticationProvider;
 
 	@Autowired
-	private JwtAuthenticationProvider jwtAuthenticationProvider;
+	@Qualifier("jwtAuthenticationProvider")
+	private AuthenticationProvider jwtAuthenticationProvider;
 
 	@Autowired
 	private TokenExtractor tokenExtractor;
@@ -87,7 +91,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		logger.debug("Configuring security endpoints");
-		List<String> permitAllEndpointList = Arrays.asList(Constants.AUTHENTICATION_URL, Constants.REFRESH_TOKEN_URL,
+		List<String> permitAllEndpointList = Arrays.asList(Constants.AUTHENTICATION_URL, Constants.REFRESH_TOKEN_URL, Constants.ACTUATOR,
 				Constants.FORGOT_PASSWORD, Constants.RESET_PASSWORD, Constants.SWAGGER_URL, Constants.CREATE_USER, Constants.H2_URL);
 
 		http.csrf().disable().exceptionHandling().authenticationEntryPoint(this.authenticationEntryPoint)

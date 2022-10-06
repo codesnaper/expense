@@ -19,6 +19,8 @@ export default function ExpenditureComponent() {
 
     const [loader, setLoader] = useState<boolean>(false);
 
+    const [deleteLoader, setDeleteLoader] = useState<boolean>(false);
+
     const [selectDate, setSelectDate] = useState<Date>(new Date());
 
     const [openYearDialog, setOpenYearDialog] = useState<boolean>(false);
@@ -30,6 +32,8 @@ export default function ExpenditureComponent() {
     const [operationType, setOperationType] = useState<OperationType>(OperationType.ADD);
 
     const [expenditures, setExpenditures] = useState<Expenditure[]>([]);
+
+    const [viewExpenditure, setViewExpenditure] = useState<Expenditure>();
 
     const service = useContext(ServiceContext);
 
@@ -86,9 +90,36 @@ export default function ExpenditureComponent() {
         }
     }
 
+    const habdleOnDelete = (expenditure: Expenditure) => {
+        setDeleteLoader(true);
+        service.expenditureService?.deleteExpenditureService(expenditure.id)
+        .then(() => {
+            const fetchIndex: number = expenditures.findIndex((loopExpenditure: Expenditure) => loopExpenditure.id === expenditure.id);
+            if (fetchIndex !== -1) {
+                expenditures.splice(fetchIndex, 1);
+            }
+            setExpenditures(expenditures);
+            expenseAlert.setAlert?.('Expenditure deleted successfully', AlertType.SUCCESS);
+        })
+        .catch((err: ApiError) => {
+            expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+        })
+        .finally(() => {
+            setDeleteLoader(false);
+        })
+    }
+
+    const handleOnView = (expenditure: Expenditure) => {
+        setViewExpenditure(expenditure);
+        setOperationType(OperationType.EDIT);
+        setOpenExpenditureDialog(true);
+    }
+
     return (
         <>
             {loader && <ContentLoader heading={`Loading Expenditure`}>
+            </ContentLoader>}
+            {deleteLoader && <ContentLoader heading={`Deleting Expenditure`}>
             </ContentLoader>}
             <Box component={Container} maxWidth={'false'} height={'100vh'} sx={{ paddingTop: '40px' }} >
                 <Grid container spacing={2}>
@@ -168,6 +199,8 @@ export default function ExpenditureComponent() {
                                                         .map((expenditure: Expenditure) => <>
                                                             <ExpenditureCard
                                                                 expenditure={expenditure}
+                                                                onDelete={habdleOnDelete}
+                                                                onView={handleOnView}
                                                             ></ExpenditureCard>
                                                         </>)
                                                     }
@@ -187,9 +220,10 @@ export default function ExpenditureComponent() {
             </Box>
             <ExpenditureForm
                 operation={operationType}
-                onClose={() => setOpenExpenditureDialog(false)}
+                onClose={() => {setOpenExpenditureDialog(false); setOperationType(OperationType.ADD)}}
                 show={openExpenditureDialog}
                 onChange={handleExpenditure}
+                defaultValue={viewExpenditure}
             ></ExpenditureForm>
             {
                 !openExpenditureDialog &&

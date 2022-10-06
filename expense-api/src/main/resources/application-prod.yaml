@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 80
 aws:
   cognito:
     clientId: ${CLIENT_ID}
@@ -13,23 +13,7 @@ aws:
     groupsField:
     connectionTimeout: 2000
     readTimeout: 2000
-cors:
-  origin: http://localhost:8090
-  allowCredentials: true
-  maxAge: 36000L
-  allow:
-    methods:
-      - GET
-      - PUT
-      - POST
-      - DELETE
-      - PATCH
-    header:
-      - Authorization
-      - refreshToken
-    exposedHeader:
-      - Authorization
-      - refreshToken
+
 spring:
   config:
     location: path.yaml
@@ -40,12 +24,16 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     generate-ddl: true
+
 logging:
+  file: log/em.log
   level:
     com:
       expense: INFO
+
 react:
   router: /em/bank,/em/limit,/em/expense,/em/category,/em/account,/em/notification,/em/profile
+
 expense:
   base: /expense/api
   version: /v1

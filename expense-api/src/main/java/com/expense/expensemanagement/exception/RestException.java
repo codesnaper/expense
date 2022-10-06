@@ -26,6 +26,14 @@ public class RestException extends ResponseEntityExceptionHandler {
                 ErrorResponse.of(ex.getMessage(), ErrorCode.MISSING_FIELD, HttpStatus.BAD_REQUEST ), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({ AmountInsufficientException.class })
+    public ResponseEntity<ErrorResponse> insufficeintAmount(
+            Exception ex, WebRequest request) {
+        log.error(ex.getMessage(),ex);
+        return new ResponseEntity<ErrorResponse>(
+                ErrorResponse.of(ex.getMessage(), ErrorCode.INSUFFICIENT_AMOUNT, HttpStatus.INTERNAL_SERVER_ERROR ), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({DuplicateKeyException.class})
     public ResponseEntity<ErrorResponse> handleFieldException(Exception ex){
         log.error(ex.getMessage(),ex);
