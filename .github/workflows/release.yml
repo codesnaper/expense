@@ -99,7 +99,7 @@ jobs:
           SSH_HOST: ${{ github.event.inputs.serverHostName }} 
     - name: Starting Application
       run: |
-         ssh staging './server.sh ${{ secrets.ACCESS_KEY }} ${{ secrets.CLIENT_ID }} ${{ secrets.DB_PASSWORD }} ${{ secrets.DB_URL }} ${{ secrets.DB_USER }} ${{ secrets.IDENTITY_POOL_ID }} ${{ secrets.REGION }} ${{ secrets.SECRET_KEY }} ${{ secrets.USER_POOL_ID }}' 
+         ssh staging 'sudo sh server.sh ${{ secrets.ACCESS_KEY }} ${{ secrets.CLIENT_ID }} ${{ secrets.DB_PASSWORD }} ${{ secrets.DB_URL }} ${{ secrets.DB_USER }} ${{ secrets.IDENTITY_POOL_ID }} ${{ secrets.REGION }} ${{ secrets.SECRET_KEY }} ${{ secrets.USER_POOL_ID }}' 
     
 
       

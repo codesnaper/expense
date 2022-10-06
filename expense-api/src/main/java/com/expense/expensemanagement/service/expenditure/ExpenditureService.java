@@ -16,4 +16,8 @@ public interface ExpenditureService {
 
     List<ExpenditureSummary> getExpenditureSummary(int month, String year);
 
+    ExpenditureModel updateExpenditure(ExpenditureModel expenditureModel) throws Exception;
+
+    void deleteExpenditure(long id, String userId) throws Exception;
+
 }
