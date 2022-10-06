@@ -1,20 +1,11 @@
 server:
   port: 8090
-aws:
-  cognito:
-    clientId: ${CLIENT_ID}
-    userPoolId: ${USER_POOL_ID}
-    identityPoolId: ${IDENTITY_POOL_ID}
-    region: ${REGION}
-    secretKey: ${SECRET_KEY}
-    accessKey: ${ACCESS_KEY}
-    authFlow: ADMIN_NO_SRP_AUTH
-    userNameField: username
-    groupsField:
-    connectionTimeout: 2000
-    readTimeout: 2000
 app:
   secret: expense
+  user:
+    email: test@gmail.com
+    password: test
+    name: test user
 cors:
   origin: http://localhost:8090
   allowCredentials: true

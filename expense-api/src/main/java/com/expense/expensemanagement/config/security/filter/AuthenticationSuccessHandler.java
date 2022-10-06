@@ -16,6 +16,7 @@ import com.expense.expensemanagement.service.cognito.CognitoService;
 import com.expense.expensemanagement.service.profile.IProfileService;
 import com.expense.expensemanagement.service.profile.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
+@Profile("prod")
 public class AuthenticationSuccessHandler implements org.springframework.security.web.authentication.AuthenticationSuccessHandler {
 
 	private ObjectMapper mapper;

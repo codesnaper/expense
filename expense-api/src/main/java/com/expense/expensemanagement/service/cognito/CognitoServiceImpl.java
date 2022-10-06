@@ -14,6 +14,7 @@ import com.expense.expensemanagement.model.User;
 import com.expense.expensemanagement.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.BadCredentialsException;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
@@ -58,7 +59,10 @@ import com.amazonaws.services.cognitoidp.model.ResourceNotFoundException;
 import com.amazonaws.services.cognitoidp.model.UserNotFoundException;
 import com.amazonaws.services.cognitoidp.model.UserType;
 import com.amazonaws.services.cognitoidp.model.UsernameExistsException;
+import org.springframework.stereotype.Service;
 
+@Service("cognitoService")
+@Profile("prod")
 public class CognitoServiceImpl implements CognitoService {
 
 	private static final Logger logger = Logger.getLogger(CognitoServiceImpl.class.getName());
