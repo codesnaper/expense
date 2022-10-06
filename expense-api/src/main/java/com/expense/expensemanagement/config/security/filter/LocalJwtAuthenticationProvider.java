@@ -1,14 +1,16 @@
 package com.expense.expensemanagement.config.security.filter;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import com.expense.expensemanagement.config.security.auth.JwtAuthenticationToken;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.RSAKeyProvider;
 import com.expense.expensemanagement.config.AwsCognitoRSAKeyProvider;
 import com.expense.expensemanagement.config.CognitoConfiguration;
+import com.expense.expensemanagement.config.TestUser;
+import com.expense.expensemanagement.config.security.auth.JwtAuthenticationToken;
 import com.expense.expensemanagement.exception.JwtExpiredTokenException;
 import com.expense.expensemanagement.exception.JwtInvalidTokenException;
 import com.expense.expensemanagement.model.User;
@@ -22,49 +24,36 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.Claim;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.RSAKeyProvider;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component("jwtAuthenticationProvider")
-@Profile("prod")
-public class JwtAuthenticationProvider implements AuthenticationProvider {
+@Profile("local")
+public class LocalJwtAuthenticationProvider implements AuthenticationProvider {
 
 	private static final String ROLE_PREFIX = "ROLE_";
 
 	@Autowired
-	private CognitoConfiguration cognitoConfiguration;
-
-	@Autowired
-	private CognitoService cognitoService;
+	TestUser user;
 
 	@Override
 	public Authentication authenticate(Authentication authentication) {
 		try {
 			String token = authentication.getCredentials().toString();
-
-			RSAKeyProvider keyProvider = new AwsCognitoRSAKeyProvider(cognitoConfiguration.getJwkUrl());
-			Algorithm algorithm = Algorithm.RSA256(keyProvider);
-			JWTVerifier jwtVerifier = JWT.require(algorithm).build();
-
+			JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getSecret())).build();
 			DecodedJWT decodedJWT = jwtVerifier.verify(token);
-
 			Map<String, Claim> claims = decodedJWT.getClaims();
-			String username = claims.get(cognitoConfiguration.getUserNameField()).asString();
-
-//			List<String> groups = claims.get(cognitoConfiguration.getGroupsField()).asList(String.class);
+			String username = claims.get("sub").asString();
 			List<String> groups = Arrays.asList(new String[]{"USER"});
 			List<GrantedAuthority> grantedAuthorities = convertList(groups,
 					group -> new SimpleGrantedAuthority(ROLE_PREFIX + group.toUpperCase()));
-
-			User user = cognitoService.getUser(username);
 			String name = user.getName();
 			UserContext context = UserContext.create(username, name, grantedAuthorities);
 			return new JwtAuthenticationToken(context, context.getAuthorities());
+//			return null;
 		} catch (JWTVerificationException exception) {
 			throw new JwtExpiredTokenException("Token has expired. ".concat(exception.getMessage()));
 		} catch (Exception exception) {

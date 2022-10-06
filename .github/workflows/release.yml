@@ -45,7 +45,7 @@ jobs:
     - name: Build JAR
       run: |
           cd expense-api
-          mvn install
+          mvn install -P prod
     - name: Publish Jar
       uses: zdurham/s3-upload-github-action@master
       env:
@@ -55,7 +55,7 @@ jobs:
         S3_KEY: expense-management.jar
         AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{secrets.SECRET_KEY}}
-    - name: Release
+    - name: Pre Release
       uses: google-github-actions/release-please-action@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}

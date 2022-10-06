@@ -2,7 +2,7 @@
 Expense API Project. Project consists of API to serve data to UI and perform operation.
 
 ## Project Status
-Currently in development mode.
+Currently, in development mode.
 
 ## Available Profile
 - local
@@ -20,6 +20,9 @@ mvn clean compile -Plocal
 
 ## Access h2 db 
 [DB](http://localhost:8090/h2-console)
+
+## User Detail for Local
+Configured in [application-local.yaml](src/main/resources/application-local.yaml) file 
 
 ## Build Application:
 ```shell

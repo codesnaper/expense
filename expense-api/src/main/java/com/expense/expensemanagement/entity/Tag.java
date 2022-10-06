@@ -13,9 +13,9 @@ import java.util.List;
 @Table(
         name = "em_tag_t",
         uniqueConstraints = {
-                @UniqueConstraint(name = "tagNameAndUserId", columnNames = {"name", "user_id"})
+                @UniqueConstraint(name = "tagNameAndUserId", columnNames = {"tag_name", "user_id"})
         },
-        indexes = @Index(name = "tag_name_idx", columnList = "name,user_id")
+        indexes = @Index(name = "tag_name_idx", columnList = "tag_name,user_id")
         )
 @Data
 @ToString
@@ -33,10 +33,10 @@ public class Tag {
     )
     private long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "tag_name", nullable = false)
     private String name;
 
-    @Column(name = "value", nullable = false)
+    @Column(name = "tag_value", nullable = false)
     private String value;
 
     @CreatedDate
