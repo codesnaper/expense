@@ -6,6 +6,7 @@ import { useDataSet } from "../hooks/TableDataSet";
 import { User } from "../modal/response/User";
 import { Notification } from "../modal/response/Notification";
 import { NotificationContextModel } from "../modal/NotificationContextModel";
+import { FxRate } from "../modal/response/FxRate";
 
 export const AlertContext = createContext<Partial<ExpenseAlertModal>>({});
 export const LocalizationContext = createContext<Partial<LocalizedStrings<string>>>({});
@@ -15,4 +16,5 @@ export const UserContext = createContext<User>({
     profile:{}
 });
 export const NotificationContext = createContext<Partial<NotificationContextModel>>({});
-export const TableContext = createContext(useDataSet)
+export const TableContext = createContext(useDataSet);
+export const FxRateContext = createContext<FxRate[]>([]);

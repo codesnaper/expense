@@ -22,6 +22,7 @@ interface BankSelectProps {
     onChange?: (bank: BankModal) => void;
     closeDisabled?: boolean;
     onClose?: () => void;
+    onNoData?: () => void;
 }
 
 const Transition = React.forwardRef(function Transition(
@@ -54,6 +55,9 @@ export default function BankSelect(props: BankSelectProps) {
         setLoader(true);
         service.bankService?.fetchBanks(page, size)
             .then((response: BankModalsResponse) => {
+                if(response.Count === 0){
+                    props.onNoData?.();
+                }
                 setTotalElement(response.Count);
                 setPage(response.pageNo);
                 setSize(response.pageSize);

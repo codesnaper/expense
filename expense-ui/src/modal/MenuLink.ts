@@ -26,13 +26,19 @@ class MenuLink {
     }
 }
 
+const bankMenuLink:MenuLink =  new MenuLink('Bank', '/em/bank', AccountBalanceIcon);
+
+const accountMenuLink: MenuLink = new MenuLink('Account','/em/account', MoneyIcon);
+
 export const MenuLinks: Array<MenuLink> = [
     new MenuLink('Expense','/em/expense', MoneyIcon),
     new MenuLink('Limit', '/em/limit', PermDataSettingIcon),
     new MenuLink('Category', '/em/category', CategoryIcon),
-    new MenuLink('Account','/em/account', MoneyIcon),
-    new MenuLink('Bank', '/em/bank', AccountBalanceIcon)
+    accountMenuLink,
+    bankMenuLink
 ];
 
 export const NotificationMenuLink:MenuLink =  new MenuLink('Notification', '/em/notification', NotificationAdd);
 export const ProfileMenuLink:MenuLink =  new MenuLink('Profile', '/em/profile', AccountBox);
+export const BankMenuLink = bankMenuLink; 
+export const AccountMenuLink = accountMenuLink;

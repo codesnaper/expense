@@ -1,9 +1,9 @@
 import { ExpandMoreOutlined, SummarizeOutlined } from "@mui/icons-material";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Container, Fab, Grid, Typography } from "@mui/material";
-import { blue, green, grey, red } from "@mui/material/colors";
+import { blue, green, red } from "@mui/material/colors";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
-import { AlertContext, LocalizationContext, ServiceContext } from "../../context";
+import { Navigate, useParams } from "react-router-dom";
+import { AlertContext, ServiceContext, UserContext } from "../../context";
 import { BankModal } from "../../modal/response/Bank";
 import InfoCardComponent from "../Card/InfoCard";
 import ContentLoader from "../ContentLoader";
@@ -14,18 +14,21 @@ import { Stack } from "@mui/system";
 import { AccountSummary } from "../../modal/response/AccountSummary";
 import { ApiError } from "../../modal/response/Error";
 import { AlertType } from "../../modal/ExpenseAlert";
+import { BankMenuLink } from "../../modal/MenuLink";
+import { getSymbol } from "../../modal/CurrencyType";
 
 export default function AccountComponent() {
-
     const { bankId } = useParams();
+    const [redirectToBank, setRedirectToBank] = useState<boolean>(false);
     const [openBankModal, setOpenBankModal] = useState<boolean>(false);
     const [bank, setBank] = useState<BankModal>();
     const [bankSelectCloseDisable, setBankSelectDisable] = useState<boolean>(true);
     const [loader, setLoader] = useState<boolean>(false);
     const [accountSummary, setAccountSummary] = useState<AccountSummary[]>([]);
     const service = useContext(ServiceContext);
-    const localization = useContext(LocalizationContext);
     const expenseAlert = useContext(AlertContext);
+    const user = useContext(UserContext);
+
     useEffect(() => {
         if (bankId) {
             setLoader(true);
@@ -56,7 +59,6 @@ export default function AccountComponent() {
             .then(() => {
                 setLoader(false);
             });
-
     }
 
     const selectBank = (bank: BankModal) => {
@@ -95,14 +97,15 @@ export default function AccountComponent() {
                 <ContentLoader heading={`Setting Account Page !!!`}>
                 </ContentLoader>
             </> : <>
-
                 <BankSelect
+                    onNoData={() => {setRedirectToBank(true)}}
                     closeDisabled={bankSelectCloseDisable}
                     show={openBankModal}
                     onChange={selectBank}
                     onClose={bankSelectOnClose}
                 ></BankSelect>
                 <Box component={Container} maxWidth={'false'} height={'100vh'} sx={{ paddingTop: '40px' }} >
+                    <Typography sx={{marginBottom: '24px'}} variant="h4" letterSpacing={2}>{`Account Summary (${bank?.name})`} </Typography>
                     <Accordion sx={{ marginBottom: '40px' }}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreOutlined />}
@@ -116,9 +119,9 @@ export default function AccountComponent() {
                         </AccordionSummary>
                         <AccordionDetails>
                             <Grid container spacing={2} marginBottom="40px">
-                                <InfoCardComponent header="Credit Amount" value={bank && bank.creditAmount ? new Number(bank.creditAmount).toPrecision() : '0'} suffixCurrency="₹" color={green[700]}></InfoCardComponent>
-                                <InfoCardComponent header="Debit Amount" value={bank && bank.debitAmount ? new Number(bank.debitAmount).toPrecision() : '0'} suffixCurrency="₹" color={red[700]}></InfoCardComponent>
-                                <InfoCardComponent header="Hold Amount" value={bank && bank.holdAmount ? new Number(bank.holdAmount).toPrecision() : '0'} suffixCurrency="₹" color={blue[700]}></InfoCardComponent>
+                                <InfoCardComponent header="Credit Amount" value={bank && bank.creditAmount ? new Number(bank.creditAmount).toPrecision() : '0'} suffixCurrency={getSymbol(bank?.currency)} color={green[700]}></InfoCardComponent>
+                                <InfoCardComponent header="Debit Amount" value={bank && bank.debitAmount ? new Number(bank.debitAmount).toPrecision() : '0'} suffixCurrency={getSymbol(bank?.currency)} color={red[700]}></InfoCardComponent>
+                                <InfoCardComponent header="Hold Amount" value={bank && bank.holdAmount ? new Number(bank.holdAmount).toPrecision() : '0'} suffixCurrency={getSymbol(bank?.currency)} color={blue[700]}></InfoCardComponent>
                                 <InfoCardComponent header="Total Account" value={bank && bank.totalAccounts ? new Number(bank.totalAccounts).toPrecision() : '0'} ></InfoCardComponent>
                                 {accountSummary.map((summary: AccountSummary) =>
                                     <>
@@ -136,8 +139,6 @@ export default function AccountComponent() {
                 </Box>
             </>
         }
-
+        {redirectToBank && <Navigate to={BankMenuLink.link} replace={true} />}
     </>);
-
-
 }

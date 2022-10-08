@@ -11,6 +11,7 @@ import { LimitService } from "../service/LimitService";
 import { NotificationService } from "../service/NotificationService";
 import { Service } from "../modal/Service";
 import { ExpenditureService } from "../service/ExpenditureService";
+import { FXRateService } from "../service/FXRateService";
 
 interface ServiceContextProps  { 
     children: React.ReactNode
@@ -28,6 +29,7 @@ const ServiceContextProvider = (props: ServiceContextProps) => {
         limitService: new LimitService(),
         notificationService: new NotificationService(),
         expenditureService: new ExpenditureService(),
+        fxRateService: new FXRateService(),
     });
 
     return (

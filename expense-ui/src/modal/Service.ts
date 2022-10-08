@@ -2,6 +2,7 @@ import { AccountService } from "../service/AccountService"
 import { BankService } from "../service/BankService"
 import { CategoryService } from "../service/CategoryService"
 import { ExpenditureService } from "../service/ExpenditureService"
+import { FXRateService } from "../service/FXRateService"
 import { LimitService } from "../service/LimitService"
 import { NotificationService } from "../service/NotificationService"
 import { ProfileService } from "../service/ProfileService"
@@ -18,5 +19,6 @@ export interface Service{
     categoryService: CategoryService,
     limitService: LimitService,
     notificationService: NotificationService,
-    expenditureService: ExpenditureService
+    expenditureService: ExpenditureService,
+    fxRateService: FXRateService,
 }

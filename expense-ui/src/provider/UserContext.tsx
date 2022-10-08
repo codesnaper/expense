@@ -45,6 +45,7 @@ const UserContextProvider = (props: UserContextProps) => {
                 body.style.backgroundColor = `${brown[50]}`
             }
             const user: User = JSON.parse(userStr);
+            setUser(user);
             user.profile = profile;
             localStorage.setItem('user', JSON.stringify(user));
         }
