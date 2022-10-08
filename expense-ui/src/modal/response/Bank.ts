@@ -1,9 +1,10 @@
+import { CurrencyType } from "../CurrencyType";
 import { Tag } from "./Tag";
 
 export class BankModal{
     name!: string;
     location!: string;
-    currency!: string;
+    currency!: CurrencyType;
     tagNames!: string;
     tags!: Array<Tag>;
     USERID!: string;

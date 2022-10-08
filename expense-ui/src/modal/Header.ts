@@ -4,7 +4,8 @@ export enum HeaderType{
     string = 'string',
     tag = 'tag',
     number = 'number',
-    custom = 'custom'
+    custom = 'custom',
+    currency = 'currency'
 }
 
 export enum HeaderDisplay{

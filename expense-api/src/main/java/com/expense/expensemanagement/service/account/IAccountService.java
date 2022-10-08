@@ -1,9 +1,6 @@
 package com.expense.expensemanagement.service.account;
 
-import com.expense.expensemanagement.model.AccountModel;
-import com.expense.expensemanagement.model.AccountSummary;
-import com.expense.expensemanagement.model.AccountType;
-import com.expense.expensemanagement.model.ResponseList;
+import com.expense.expensemanagement.model.*;
 
 import java.util.List;
 

@@ -17,7 +17,7 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import AdbIcon from '@mui/icons-material/Adb';
 import { AlertContext, NotificationContext, ServiceContext, UserContext } from '../../context';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import { Avatar, Button, Collapse, Divider, List, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
+import { Avatar, Button, Collapse, Divider, FormControl, InputLabel, List, ListItemButton, ListItemIcon, ListItemText, NativeSelect, Select, SelectChangeEvent, Tooltip } from '@mui/material';
 import { ExpandLess, ExpandMore, LightMode, Logout, MoneyOutlined } from '@mui/icons-material';
 import { User } from '../../modal/response/User';
 import { Profile } from '../../modal/response/Profile';
@@ -29,6 +29,7 @@ import { Service } from '../../modal/Service';
 import { IMessage } from '@stomp/stompjs';
 import { Notification } from '../../modal/response/Notification';
 import { NotificationOperation, NotificationSocketMessage } from '../../modal/response/NotificationSocketMessage';
+import { CurrencyType } from '../../modal/CurrencyType';
 
 function stringToColor(string: string) {
     let hash = 0;
@@ -68,6 +69,7 @@ export default function Navbar(props: NavbarProps) {
     const [open, setOpen] = React.useState(false);
     const [darkMode, setDarkMode] = React.useState<boolean>(false);
     const [loader, setLoader] = React.useState<boolean>(false);
+    const [currencyLoader, setCurrencyLoader] = React.useState<boolean>(false);
     const service = React.useContext(ServiceContext);
     const expenseAlert = React.useContext(AlertContext);
     const [notificationCount, setNotificationCount] = React.useState<number>(0);
@@ -75,7 +77,7 @@ export default function Navbar(props: NavbarProps) {
     const handleClick = () => {
         setOpen(!open);
     };
-    const user:User = React.useContext(UserContext);
+    const user: User = React.useContext(UserContext);
     const signOut = async () => {
         try {
             localStorage.clear();
@@ -111,25 +113,39 @@ export default function Navbar(props: NavbarProps) {
     const setTheme = (theme: string, darkMode: boolean) => {
         setLoader(true);
         service.profileService?.updateTheme(theme)
+            .then((profile: Profile) => {
+                props.updateUserProfile?.(profile);
+                setDarkMode(darkMode);
+            })
+            .catch((err: ApiError) => {
+                expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+            })
+            .finally(() => {
+                setLoader(false);
+            })
+    }
+
+    const handleChangeCurrency = (event: SelectChangeEvent<CurrencyType>) => {
+        setCurrencyLoader(true)
+        service.profileService?.updateCurrency(event.target.value as CurrencyType)
         .then((profile: Profile) => {
             props.updateUserProfile?.(profile);
-            setDarkMode(darkMode);
         })
         .catch((err: ApiError) => {
             expenseAlert.setAlert?.(err.message, AlertType.ERROR);
         })
         .finally(() => {
-            setLoader(false);
-        })
+            setCurrencyLoader(false);
+        });
     }
 
     React.useEffect(() => {
         setDarkMode(user.profile?.theme === 'dark');
-    },[user])
+    }, [user])
 
     React.useEffect(() => {
         notificationContext.subscribeToCount?.((message: IMessage) => {
-            const notificaiton: NotificationSocketMessage  = JSON.parse(message.body);
+            const notificaiton: NotificationSocketMessage = JSON.parse(message.body);
             setNotificationCount(notificaiton.notification.count);
         })
     }, [notificationContext]);
@@ -302,8 +318,10 @@ export default function Navbar(props: NavbarProps) {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            {loader &&<ContentLoader heading={`Applying theme !!!`}>
-                        </ContentLoader>}
+            {loader && <ContentLoader heading={`Applying theme !!!`}>
+            </ContentLoader>}
+            {currencyLoader && <ContentLoader heading={`Changing Currency!!!`}>
+            </ContentLoader>}
             <AppBar position="static">
                 <Toolbar>
                     <IconButton
@@ -336,30 +354,44 @@ export default function Navbar(props: NavbarProps) {
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <Stack direction={"row"} spacing={1}>
-                        <Button variant='text' startIcon={<MoneyOutlined></MoneyOutlined>}>Add Expense</Button>
-                        <IconButton
-                            size="large"
-                            aria-label="show 17 new notifications"
-                            color="inherit"
-                        >
-                            <Badge badgeContent={notificationCount} color="error">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                        <Tooltip title="Open settings">
+                        <Stack direction={"row"} spacing={1} sx={{ display: 'flex', alignItems: 'center' }}>
+                            <FormControl fullWidth margin="normal">
+                            <InputLabel sx={{color: 'white'}}id="currency">Currency: </InputLabel>  
+                                <Select
+                                    sx={{color: 'white'}}
+                                    labelId="currency"
+                                    id="currency-select"
+                                    defaultValue={user.profile?.selectedCurrency}
+                                    onChange={handleChangeCurrency}
+                                >
+                                    <MenuItem key={0} value={CurrencyType.INR}>INR (₹)</MenuItem>
+                                    <MenuItem key={1} value={CurrencyType.EUR}>EURO (Є)</MenuItem>
+                                    <MenuItem key={2} value={CurrencyType.USD}>U.S Dollar ($)</MenuItem>
+                                    <MenuItem key={3} value={CurrencyType.PLN}>Zlotty (zł)</MenuItem>
+                                </Select>
+                            </FormControl>
                             <IconButton
                                 size="large"
-                                edge="end"
-                                aria-label="account of current user"
-                                aria-controls={menuId}
-                                aria-haspopup="true"
-                                onClick={handleProfileMenuOpen}
+                                aria-label="show 17 new notifications"
                                 color="inherit"
                             >
-                                {<Avatar {...stringAvatar(`${user.user.name}`)} />}
+                                <Badge badgeContent={notificationCount} color="error">
+                                    <NotificationsIcon />
+                                </Badge>
                             </IconButton>
-                        </Tooltip>
+                            <Tooltip title="Open settings">
+                                <IconButton
+                                    size="large"
+                                    edge="end"
+                                    aria-label="account of current user"
+                                    aria-controls={menuId}
+                                    aria-haspopup="true"
+                                    onClick={handleProfileMenuOpen}
+                                    color="inherit"
+                                >
+                                    {<Avatar {...stringAvatar(`${user.user.name}`)} />}
+                                </IconButton>
+                            </Tooltip>
                         </Stack>
                     </Box>
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>

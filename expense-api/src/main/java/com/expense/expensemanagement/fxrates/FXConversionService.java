@@ -35,7 +35,7 @@ public class FXConversionService implements FXConversion{
         fxJSONFile.createNewFile();
         try(FileOutputStream fileOutputStream = new FileOutputStream(fxJSONFile)){
             fileOutputStream.write(new ObjectMapper().writeValueAsBytes(Arrays.asList(
-                    currency.get(CurrencyType.ZLOTTY.getSymbol()),
+                    currency.get(CurrencyType.PLN.getSymbol()),
                     currency.get(CurrencyType.EUR.getSymbol()),
                     currency.get(CurrencyType.USD.getSymbol()),
                     currency.get(CurrencyType.INR.getSymbol())
@@ -52,7 +52,7 @@ public class FXConversionService implements FXConversion{
         createJSONFile(CurrencyType.EUR);
         createJSONFile(CurrencyType.INR);
         createJSONFile(CurrencyType.USD);
-        createJSONFile(CurrencyType.ZLOTTY);
+        createJSONFile(CurrencyType.PLN);
     }
 
     @Override
@@ -67,5 +67,11 @@ public class FXConversionService implements FXConversion{
                 .findFirst()
                 .orElseThrow(() -> {throw new NoSuchElementException("FX Rate for currency type not configuer");})
                 .get("rate");
+    }
+
+    @Override
+    public List<Object> getRates(CurrencyType currencyType) throws Exception {
+        File file = new File("fx-"+currencyType.getSymbol()+".json");
+        return new ObjectMapper().readValue(file, List.class);
     }
 }

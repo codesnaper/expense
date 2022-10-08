@@ -1,5 +1,6 @@
 package com.expense.expensemanagement.service.profile;
 
+import com.expense.expensemanagement.model.CurrencyType;
 import com.expense.expensemanagement.model.ProfileModel;
 
 public interface IProfileService {
@@ -11,4 +12,6 @@ public interface IProfileService {
     ProfileModel updateProfile(ProfileModel profileModel);
 
     ProfileModel updateTheme(String userId, String theme);
+
+    ProfileModel updateSelectedCurrency(String userId, CurrencyType currencyType);
 }

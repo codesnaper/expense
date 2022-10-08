@@ -50,4 +50,12 @@ public class ProfileService implements IProfileService{
         this.profileDAO.save(profile);
         return profileModelEntity.getModel(profile);
     }
+
+    @Override
+    public ProfileModel updateSelectedCurrency(String userId, CurrencyType currencyType) {
+        Profile profile = this.profileDAO.findById(userId).orElseThrow(NoSuchElementException::new);
+        profile.setSelectedCurrency(currencyType);
+        this.profileDAO.save(profile);
+        return profileModelEntity.getModel(profile);
+    }
 }

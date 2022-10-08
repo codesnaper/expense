@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Checkbox, Chip, FormControl, Input, InputAdornment, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TextField, Toolbar, Tooltip, Typography } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import { Header, HeaderType } from "../../modal/Header";
 import { Operator, TableDataSet } from "../../modal/TableDataSet";
 import MenuFilter from "./menu/Filter";
@@ -13,6 +13,8 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import { AddBox, AddOutlined } from "@mui/icons-material";
+import { UserContext } from "../../context";
+import { getSymbol } from "../../modal/CurrencyType";
 interface ExpenseTableProps {
     dataset?: TableDataSet<Object>,
     showActionCallback?: (row: any) => void,
@@ -23,6 +25,7 @@ interface ExpenseTableProps {
 
 export default function ExpenseTable(props: ExpenseTableProps) {
     const [refresh, setRefresh] = React.useState<boolean>(false);
+    const user = useContext(UserContext);
 
     const toggleHiddenColumn = (header: Header) => {
         props.dataset?.toggleHiddenColumn(header);
@@ -143,6 +146,9 @@ export default function ExpenseTable(props: ExpenseTableProps) {
                                                         </>}
                                                         {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.number) && <>
                                                             {Number.isNaN(Number(data)) ? 0 : Number(data)}
+                                                        </>}
+                                                        {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.currency) && <>
+                                                            {`${Number.isNaN(Number(data)) ? 0 : Number(data)} ${getSymbol(user.profile?.selectedCurrency)}` } 
                                                         </>}
                                                         {(props.dataset?.getColumns()[index] && props.dataset?.getColumns()[index].type === HeaderType.custom) && <>
                                                             {props.dataset?.getColumns()[index].customDisplay?.(props.dataset?.rows[indexRow])}

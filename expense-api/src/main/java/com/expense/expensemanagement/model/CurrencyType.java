@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public enum CurrencyType {
 
-    INR("inr"), USD("usd"), EUR("eur"), ZLOTTY("pln");
+    INR("inr"), USD("usd"), EUR("eur"), PLN("pln");
     private String symbol;
 
 }

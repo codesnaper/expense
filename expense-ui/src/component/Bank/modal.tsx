@@ -9,6 +9,7 @@ import Draggable from 'react-draggable';
 import { OperationType } from "../../modal/OperationType";
 import TagSelect from "../Tag/TagSelect";
 import { ApiError, ErrorCode } from "../../modal/response/Error";
+import { CurrencyType } from "../../modal/CurrencyType";
 
 interface ModalBankProps {
     operationType: OperationType;
@@ -52,19 +53,13 @@ export default function ModalBank(props: ModalBankProps) {
         }
     }, [props.bank])
 
-    const currencies = [
-        { name: 'INR', value: 'INR' },
-        { name: 'EURO', value: 'EURO' },
-        { name: 'USD', value: 'USD' },
-        { name: 'PLN', value: 'PLN' }
-    ];
 
     const { handleSubmit, handleChange, handleSelectChange, handleTagValue, data, errors, refreshError } = useFormValidation<BankModal>({
         validations: {
             name: {
                 custom: {
                     isValid(value) {
-                        return value && value.length > 3 ? true : false;
+                        return value && value.length > 2 ? true : false;
                     },
                     message: `${localization.getString?.('Bank.error.form.name', localization.getLanguage?.())}`,
                 },
@@ -159,7 +154,7 @@ export default function ModalBank(props: ModalBankProps) {
                                 required
                                 id="bankName"
                                 error={errors.name || isNameError ? true : false}
-                                helperText={nameErrorText+".".concat(errors.name? errors.name:"")}
+                                helperText={nameErrorText.concat(errors.name? errors.name:"")}
                                 defaultValue={props.bank?.name}
                                 label={localization.getString?.('Bank.modal.form.label.name', localization.getLanguage?.())}
                                 variant="standard"
@@ -187,9 +182,10 @@ export default function ModalBank(props: ModalBankProps) {
                                 error={errors.currency ? true : false}
                                 onChange={handleSelectChange('currency')}
                             >
-                                {currencies.map((currency, index) => (
-                                    <MenuItem key={index} value={currency.value}>{currency.name}</MenuItem>
-                                ))}
+                                <MenuItem key={0} value={CurrencyType.INR}>INR (₹)</MenuItem>
+                                <MenuItem key={1} value={CurrencyType.EUR}>EURO (Є)</MenuItem>
+                                <MenuItem key={2} value={CurrencyType.USD}>U.S Dollar ($)</MenuItem>
+                                <MenuItem key={3} value={CurrencyType.PLN}>Zlotty (zł)</MenuItem>
                             </Select>
                             {errors.currency &&
                                 <Typography sx={{ color: red[700] }} variant="caption" display="block" gutterBottom>{errors.currency}</Typography>

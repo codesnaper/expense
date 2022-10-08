@@ -1,5 +1,6 @@
 package com.expense.expensemanagement.controller;
 
+import com.expense.expensemanagement.model.CurrencyType;
 import com.expense.expensemanagement.model.ProfileModel;
 import com.expense.expensemanagement.service.profile.IProfileService;
 import com.expense.expensemanagement.util.ExpenseUtil;
@@ -37,6 +38,11 @@ public class ProfileController {
     @PatchMapping(value = "/theme={theme}", produces= MediaType.APPLICATION_JSON_VALUE)
     public ProfileModel updateTheme(Principal principal, @PathVariable("theme") String theme){
         return this.profileService.updateTheme(ExpenseUtil.getUserId(principal), theme);
+    }
+
+    @PatchMapping(value = "/currency={currency}", produces= MediaType.APPLICATION_JSON_VALUE)
+    public ProfileModel updateTheme(Principal principal, @PathVariable("currency")CurrencyType currencyType){
+        return this.profileService.updateSelectedCurrency(ExpenseUtil.getUserId(principal), currencyType);
     }
 
 }
