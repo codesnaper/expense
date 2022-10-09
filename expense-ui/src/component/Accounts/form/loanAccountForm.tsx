@@ -46,6 +46,7 @@ export default function LoanAccountForm(props: LoanAccountFormProps) {
                     <Stack direction={'row'} spacing={2} >
                         <TextField
                             fullWidth={true}
+                            disabled={props.operationType === OperationType.EDIT ? true: false}
                             required
                             id="accountNumber"
                             error={props.form.errors.accountNumber ? true : false}

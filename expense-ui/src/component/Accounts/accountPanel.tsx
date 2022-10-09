@@ -3,6 +3,7 @@ import { Button, Card, CircularProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AlertContext, ServiceContext } from "../../context";
 import accountTableDataSet from "../../Dataset/AccountDataSet";
+import loanAccountDataSet from "../../Dataset/LoanAccountDataSet";
 import { AlertType } from "../../modal/ExpenseAlert";
 import { OperationType } from "../../modal/OperationType";
 import { Account, AccountResponse, AccountType, LoanAccount } from "../../modal/response/Account";
@@ -75,7 +76,7 @@ export default function AccountPannel(props: AccountPannelProps) {
                         setTotalElement(res.Count);
                         setPage(res.pageNo);
                         setPageSize(res.pageSize === 0 ? 10 : res.pageSize);
-                        const newtableDataSet = accountTableDataSet(res.Items.map((account: LoanAccount) => {
+                        const newtableDataSet = loanAccountDataSet(res.Items.map((account: LoanAccount) => {
                             const tagNames: Array<string> = [];
                             account.tags.forEach((tag: Tag) => {
                                 tagNames.push(tag.name);

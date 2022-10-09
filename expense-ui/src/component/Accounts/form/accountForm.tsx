@@ -48,6 +48,7 @@ export default function AccountForm(props: AccountFormProps) {
                             fullWidth={true}
                             required
                             id="accountNumber"
+                            disabled={props.operationType === OperationType.EDIT ? true: false}
                             error={props.form.errors.accountNumber ? true : false}
                             helperText={props.form.errors.accountNumber}
                             defaultValue={props.defaultValue?.accountNumber}

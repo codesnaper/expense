@@ -117,6 +117,8 @@ public class AccountService implements IAccountService {
         bank.setNAccount(bank.getNAccount() - 1);
         if(account.getAccountType().equals(AccountTypeValue.ACCOUNT)){
             bank.setCreditAmount(bank.getCreditAmount().add(account.getAmount().multiply(new BigDecimal(-1))));
+        } else if(account.getAccountType().equals(AccountTypeValue.LOAN)){
+            bank.setDebitAmount(bank.getDebitAmount().add(((LoanAccount)account).getTotalInterestAmount().multiply(new BigDecimal(-1))));
         }
         this.accountDAO.deleteById(account.getId());
     }
@@ -138,6 +140,7 @@ public class AccountService implements IAccountService {
     @Transactional
     public AccountModel updateAccount(AccountModel accountModel, String userId) {
         Account currentAccount = accountDAO.findByUserIdAndId(userId, accountModel.getId()).orElseThrow(NoSuchElementException:: new);
+        accountModel.setAccountNumber(currentAccount.getAccountNumber());
         Bank bank = bankService.findById(accountModel.getBank().getId());
         Account account = accountEntityModel.getEntity(accountModel);
         if(accountModel instanceof LoanAccountModel){

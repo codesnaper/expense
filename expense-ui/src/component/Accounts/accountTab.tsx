@@ -269,14 +269,9 @@ export default function AccountTab(props: AccountTabProps) {
         }
     );
 
-    const siAccountFormData: FormValidation<SIAccount> = useFormValidation<SIAccount>();
-
-    const sciAccountFormData: FormValidation<SCIAccount> = useFormValidation<SCIAccount>();
-
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
-
 
     const accountOperation = (operationType: OperationType, account: Account | LoanAccount | undefined, accountType: AccountType) => {
         if (operationType === OperationType.EDIT) {

@@ -1,5 +1,7 @@
 package com.expense.expensemanagement.model;
 
+import com.expense.expensemanagement.serializer.AccountNumberConvertor;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -12,6 +14,7 @@ public class AccountModel {
 
     private String name;
 
+    @JsonSerialize(converter = AccountNumberConvertor.class)
     private String accountNumber;
 
     private double amount;
