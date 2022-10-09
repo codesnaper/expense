@@ -10,12 +10,11 @@ import { FormValidation, useFormValidation } from '../../hooks/FormValidation';
 import { OperationType } from '../../modal/OperationType';
 import { BankModal } from '../../modal/response/Bank';
 import LoanAccountForm from './form/loanAccountForm';
-import SIAccountForm from './form/sIAccountForm';
-import SCIAccountForm from './form/sCIAccountForm';
 import { AlertContext, ServiceContext } from '../../context';
 import { AlertType } from '../../modal/ExpenseAlert';
 import { ApiError } from '../../modal/response/Error';
 import ContentLoader from '../ContentLoader';
+import { useNavigate } from 'react-router-dom';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -70,6 +69,7 @@ export default function AccountTab(props: AccountTabProps) {
     const [loanAccount, setLoanAccount] = React.useState<LoanAccount>();
     const service = React.useContext(ServiceContext);
     const expenseAlert = React.useContext(AlertContext);
+    const navigate = useNavigate();
     const accountFormData = useFormValidation<Account>({
         validations: {
             name: {
@@ -112,6 +112,7 @@ export default function AccountTab(props: AccountTabProps) {
                             accountFormData.refreshError();
                             setAccountModal(false);
                             props.onAccountChange?.();
+                            navigate(0);
                         })
                         .catch((err: ApiError) => {
                             expenseAlert.setAlert?.(err.message, AlertType.ERROR);
@@ -127,6 +128,7 @@ export default function AccountTab(props: AccountTabProps) {
                             accountFormData.refreshError();
                             setAccountModal(false);
                             props.onAccountChange?.();
+                            navigate(0);
                         })
                         .catch((err: ApiError) => {
                             expenseAlert.setAlert?.(err.message, AlertType.ERROR);
@@ -195,6 +197,7 @@ export default function AccountTab(props: AccountTabProps) {
                                 loanAccountFormData.refreshError();
                                 setLoanAccountModal(false);
                                 props.onAccountChange?.();
+                                navigate(0);
                             })
                             .catch((err: ApiError) => {
                                 expenseAlert.setAlert?.(err.message, AlertType.ERROR);
@@ -210,6 +213,7 @@ export default function AccountTab(props: AccountTabProps) {
                                 loanAccountFormData.refreshError();
                                 setLoanAccountModal(false);
                                 props.onAccountChange?.();
+                                navigate(0);
                             })
                             .catch((err: ApiError) => {
                                 expenseAlert.setAlert?.(err.message, AlertType.ERROR);
@@ -290,6 +294,7 @@ export default function AccountTab(props: AccountTabProps) {
                 .then(() => {
                     expenseAlert.setAlert?.('Account has been deleted successfully !!!', AlertType.SUCCESS);
                     props.onAccountChange?.();
+                    navigate(0);
                 })
                 .catch((err: ApiError) => {
                     expenseAlert.setAlert?.(err.message, AlertType.ERROR);

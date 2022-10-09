@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Divider, Grid, List, ListItem, Paper, Stack, Typography } from "@mui/material";
+import { Button, Card, CardContent, Divider, Grid, List, ListItem, Paper, Stack, SvgIcon, Typography } from "@mui/material";
 import { Box, Container } from "@mui/system";
 import { useContext, useEffect, useState } from "react";
 import { AlertContext, ServiceContext } from "../../context";
@@ -16,6 +16,7 @@ import { Category } from "../../modal/response/Category";
 import { TableDataSet } from "../../modal/TableDataSet";
 import limitDataSet from "../../Dataset/LimitDataSet";
 import ExpenseTable from "../Table";
+import { LimitMenuLink } from "../../modal/MenuLink";
 
 export default function LimitComponent() {
 
@@ -126,7 +127,14 @@ export default function LimitComponent() {
             }
             {!loader &&
                 <>
-                    <Box component={Container}>
+                   <Box component={Container} maxWidth={'false'} height={'100vh'} sx={{ paddingTop: '40px' }} >
+                   <Typography sx={{ marginBottom: '24px' }} variant="h4" letterSpacing={2}>
+                    <Stack direction={'row'} spacing={2}>
+                        <SvgIcon component={LimitMenuLink.icon} fontSize={'large'} />
+                        <span>Limits</span>
+                    </Stack>
+                   </Typography>
+
                         {limitTableDataset.rows.length === 0 ?
                             <>
                                 <Card raised sx={{ marginTop: '40px' }}>
@@ -141,7 +149,8 @@ export default function LimitComponent() {
                                     </PlaceholderCard>
                                 </Card>
                             </> : <>
-                                <Box component={Container} maxWidth={'false'} height={'100vh'} sx={{ paddingTop: '40px' }} >
+                                
+                                
                                     <Grid container spacing={2} sx={{ marginTop: '12px', width: '100%' }}>
                                         <Card raised sx={{ marginBottom: '40px', width: '100%' }}>
                                             <CardContent>
@@ -158,7 +167,6 @@ export default function LimitComponent() {
                                         </Card>
                                     </Grid>
                                     <Pagination page={page} pageSize={pageSize} totalElement={totalElement} onPageEvent={pageEvent}></Pagination>
-                                </Box>
                             </>
                         }
                     </Box>

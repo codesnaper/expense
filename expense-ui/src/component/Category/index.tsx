@@ -1,4 +1,4 @@
-import { Container, Divider, Grid, Paper, Typography } from "@mui/material";
+import { Container, Divider, Grid, Paper, Stack, SvgIcon, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useContext, useEffect, useState } from "react";
 import { AlertContext, ServiceContext } from "../../context";
@@ -11,6 +11,7 @@ import ContentLoader from "../ContentLoader";
 import Pagination from "../Pagination";
 import CategoryCard from "./CategoryCard";
 import CategoryIcon from '@mui/icons-material/Category';
+import { CategoryMenuLink } from "../../modal/MenuLink";
 
 export default function CategoryComponent() {
 
@@ -89,6 +90,12 @@ export default function CategoryComponent() {
             </ContentLoader>
         }
         <Box component={Container} sx={{ paddingTop: '40px' }} maxWidth={'false'}>
+            <Typography sx={{ marginBottom: '24px' }} variant="h4" letterSpacing={2}>
+                <Stack direction={'row'} spacing={2}>
+                    <SvgIcon component={CategoryMenuLink.icon} fontSize={'large'} />
+                    <span>{CategoryMenuLink.title}</span>
+                </Stack>
+            </Typography>
             <Paper elevation={6} sx={{ padding: '24px' }}>
                 <Typography variant="h5" component={'div'} sx={{ marginBottom: '12px' }}><CategoryIcon></CategoryIcon>  Category</Typography>
                 <Divider></Divider>

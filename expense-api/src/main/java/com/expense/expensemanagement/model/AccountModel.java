@@ -1,6 +1,6 @@
 package com.expense.expensemanagement.model;
 
-import com.expense.expensemanagement.serializer.AccountNumberConvertor;
+import com.expense.expensemanagement.conversion.AccountNumberConvertor;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;

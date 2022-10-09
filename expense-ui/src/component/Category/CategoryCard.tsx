@@ -51,11 +51,8 @@ export default function CategoryCard(props: CategoryCardProps) {
                 service.categoryService?.addCategory(categoryData)
                     .then((res: Category) => {
                         props.onEvent(res, OperationType.ADD);
-                        categoryData.name = '';
-                        categoryData.description = '';
                         refreshError();
                         expenseAlert.setAlert?.('Category Addedd Successfully', AlertType.SUCCESS);
-                        
                     })
                     .catch((err: ApiError) => {
                         if (ErrorCode[err.errorCode] === ErrorCode.DUPLICATE_FIELD) {

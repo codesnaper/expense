@@ -46,7 +46,7 @@ export default function LoanAccountForm(props: LoanAccountFormProps) {
                     <Stack direction={'row'} spacing={2} >
                         <TextField
                             fullWidth={true}
-                            disabled={props.operationType === OperationType.EDIT ? true: false}
+                            disabled={props.operationType === OperationType.EDIT ? true : false}
                             required
                             id="accountNumber"
                             error={props.form.errors.accountNumber ? true : false}
@@ -74,8 +74,9 @@ export default function LoanAccountForm(props: LoanAccountFormProps) {
                     <Stack direction={'row'} spacing={2} >
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <DatePicker
+                                disableFuture={true}
                                 label="Account Opening Date"
-                                value={props.form.data.openDate}
+                                value={props.defaultValue?.openDate?props.defaultValue?.openDate: props.form.data.openDate}
                                 onChange={(newValue) => {
                                     props.form.setValue('openDate', newValue)
                                 }}
@@ -84,8 +85,9 @@ export default function LoanAccountForm(props: LoanAccountFormProps) {
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <DatePicker
+                                disablePast={true}
                                 label="Account Closing Date"
-                                value={props.form.data.endDate}
+                                value={props.defaultValue?.endDate?props.defaultValue?.endDate: props.form.data.endDate}
                                 onChange={(newValue) => {
                                     props.form.setValue('endDate', newValue)
                                 }}
@@ -95,18 +97,18 @@ export default function LoanAccountForm(props: LoanAccountFormProps) {
                     </Stack>
                 </FormControl>
                 <FormControl margin="normal" fullWidth={true}>
-                        <TextField
-                            fullWidth={true}
-                            required
-                            id="rate"
-                            type={'number'}
-                            error={props.form.errors.rate ? true : false}
-                            helperText={props.form.errors.rate}
-                            defaultValue={props.form.data.rate}
-                            label='Interest Rate'
-                            variant="outlined"
-                            onChange={props.form.handleChange('rate')}
-                        />
+                    <TextField
+                        fullWidth={true}
+                        required
+                        id="rate"
+                        type={'number'}
+                        error={props.form.errors.rate ? true : false}
+                        helperText={props.form.errors.rate}
+                        defaultValue={props.form.data.rate}
+                        label='Interest Rate'
+                        variant="outlined"
+                        onChange={props.form.handleChange('rate')}
+                    />
                 </FormControl>
 
                 <FormControl margin="normal">

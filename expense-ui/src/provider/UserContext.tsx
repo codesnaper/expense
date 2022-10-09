@@ -6,7 +6,7 @@ import { ServiceContextProvider } from './ServiceContext';
 import { ServiceContext, UserContext } from '../context';
 import UserComponent from '../component/User';
 import ExpenseDrawer from '../component/HeaderBar/Drawer/Drawer';
-import { createTheme, PaletteMode, ThemeProvider } from '@mui/material';
+import { Box, createTheme, PaletteMode, ThemeProvider } from '@mui/material';
 import { Theme } from '@mui/system';
 import { brown, grey } from '@mui/material/colors';
 import { User } from '../modal/response/User';
@@ -92,7 +92,9 @@ const UserContextProvider = (props: UserContextProps) => {
                                     <NotificationContextProvider>
                                         <Navbar openDrawer={handleOpenDrawer} updateUserProfile={handleSetProfile}></Navbar>
                                         <ExpenseDrawer open={openDrawer} openDrawer={handleOpenDrawer}></ExpenseDrawer>
+                                        <Box component={'div'} sx={{marginTop: '64px'}}>
                                         {props.children}
+                                        </Box>
                                     </NotificationContextProvider>
                                 </>
                             }</>}

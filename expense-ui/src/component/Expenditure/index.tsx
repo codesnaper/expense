@@ -1,11 +1,12 @@
 import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined, ReceiptLong } from "@mui/icons-material";
-import { Box, Card, CardContent, Container, Divider, Typography, Stack, Button, Grid, LinearProgress, Fab } from "@mui/material";
+import { Box, Card, CardContent, Container, Divider, Typography, Stack, Button, Grid, LinearProgress, Fab, SvgIcon } from "@mui/material";
 import { blue, green, red } from "@mui/material/colors";
 import moment from "moment";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { AlertContext, ServiceContext, UserContext } from "../../context";
 import { getSymbol } from "../../modal/CurrencyType";
 import { AlertType } from "../../modal/ExpenseAlert";
+import { ExpenseMenuLink } from "../../modal/MenuLink";
 import { OperationType } from "../../modal/OperationType";
 import { ApiError } from "../../modal/response/Error";
 import { Expenditure, ExpenditureType } from "../../modal/response/Expenditure";
@@ -96,20 +97,20 @@ export default function ExpenditureComponent() {
     const habdleOnDelete = (expenditure: Expenditure) => {
         setDeleteLoader(true);
         service.expenditureService?.deleteExpenditureService(expenditure.id)
-        .then(() => {
-            const fetchIndex: number = expenditures.findIndex((loopExpenditure: Expenditure) => loopExpenditure.id === expenditure.id);
-            if (fetchIndex !== -1) {
-                expenditures.splice(fetchIndex, 1);
-            }
-            setExpenditures(expenditures);
-            expenseAlert.setAlert?.('Expenditure deleted successfully', AlertType.SUCCESS);
-        })
-        .catch((err: ApiError) => {
-            expenseAlert.setAlert?.(err.message, AlertType.ERROR);
-        })
-        .finally(() => {
-            setDeleteLoader(false);
-        })
+            .then(() => {
+                const fetchIndex: number = expenditures.findIndex((loopExpenditure: Expenditure) => loopExpenditure.id === expenditure.id);
+                if (fetchIndex !== -1) {
+                    expenditures.splice(fetchIndex, 1);
+                }
+                setExpenditures(expenditures);
+                expenseAlert.setAlert?.('Expenditure deleted successfully', AlertType.SUCCESS);
+            })
+            .catch((err: ApiError) => {
+                expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+            })
+            .finally(() => {
+                setDeleteLoader(false);
+            })
     }
 
     const handleOnView = (expenditure: Expenditure) => {
@@ -125,6 +126,12 @@ export default function ExpenditureComponent() {
             {deleteLoader && <ContentLoader heading={`Deleting Expenditure`}>
             </ContentLoader>}
             <Box component={Container} maxWidth={'false'} height={'100vh'} sx={{ paddingTop: '40px' }} >
+                <Typography sx={{ marginBottom: '24px' }} variant="h4" letterSpacing={2}>
+                    <Stack direction={'row'} spacing={2}>
+                        <SvgIcon component={ExpenseMenuLink.icon} fontSize={'large'} />
+                        <span>{ExpenseMenuLink.title}</span>
+                    </Stack>
+                </Typography>
                 <Grid container spacing={2}>
                     <InfoCardComponent header="Total Expense" secondaryText={`Month : ${moment(selectDate).format('MMMM')}`} value={'0'} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={red[700]} ></InfoCardComponent>
                     <InfoCardComponent header="Total Revenue" secondaryText={`Month : ${moment(selectDate).format('MMMM')}`} value={'0'} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={green[700]}></InfoCardComponent>
@@ -223,7 +230,7 @@ export default function ExpenditureComponent() {
             </Box>
             <ExpenditureForm
                 operation={operationType}
-                onClose={() => {setOpenExpenditureDialog(false); setOperationType(OperationType.ADD)}}
+                onClose={() => { setOpenExpenditureDialog(false); setOperationType(OperationType.ADD) }}
                 show={openExpenditureDialog}
                 onChange={handleExpenditure}
                 defaultValue={viewExpenditure}

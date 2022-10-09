@@ -24,13 +24,16 @@ cors:
       - Authorization
       - refreshToken
 spring:
-  config:
-    location: path.yaml
   datasource:
     url: jdbc:h2:file:~/em-new.db;DB_CLOSE_DELAY=-1;MODE=MySQL;NON_KEYWORDS=USER
     username: sa
     password: password
     driver-class-name: org.h2.Driver
+  hikari:
+    connectionTimeout: 30000
+    idleTimeout: 600000
+    maxLifetime: 1800000
+    maximum-pool-size: 10
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true

@@ -1,5 +1,5 @@
 import { ExpandMoreOutlined, SummarizeOutlined } from "@mui/icons-material";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Container, Fab, Grid, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Container, Fab, Grid, SvgIcon, Typography } from "@mui/material";
 import { blue, green, red } from "@mui/material/colors";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
@@ -14,7 +14,7 @@ import { Stack } from "@mui/system";
 import { AccountSummary } from "../../modal/response/AccountSummary";
 import { ApiError } from "../../modal/response/Error";
 import { AlertType } from "../../modal/ExpenseAlert";
-import { BankMenuLink } from "../../modal/MenuLink";
+import { AccountMenuLink, BankMenuLink } from "../../modal/MenuLink";
 import { getSymbol } from "../../modal/CurrencyType";
 
 export default function AccountComponent() {
@@ -98,14 +98,19 @@ export default function AccountComponent() {
                 </ContentLoader>
             </> : <>
                 <BankSelect
-                    onNoData={() => {setRedirectToBank(true)}}
+                    onNoData={() => { setRedirectToBank(true) }}
                     closeDisabled={bankSelectCloseDisable}
                     show={openBankModal}
                     onChange={selectBank}
                     onClose={bankSelectOnClose}
                 ></BankSelect>
                 <Box component={Container} maxWidth={'false'} height={'100vh'} sx={{ paddingTop: '40px' }} >
-                    <Typography sx={{marginBottom: '24px'}} variant="h4" letterSpacing={2}>{`Account Summary (${bank?.name})`} </Typography>
+                    <Typography sx={{ marginBottom: '24px' }} variant="h4" letterSpacing={2}>
+                        <Stack direction={'row'} spacing={2}>
+                            <SvgIcon component={AccountMenuLink.icon} fontSize={'large'} />
+                            <span>{AccountMenuLink.title}</span>
+                        </Stack>
+                    </Typography>
                     <Accordion sx={{ marginBottom: '40px' }}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreOutlined />}

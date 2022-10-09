@@ -30,10 +30,15 @@ const bankMenuLink:MenuLink =  new MenuLink('Bank', '/em/bank', AccountBalanceIc
 
 const accountMenuLink: MenuLink = new MenuLink('Account','/em/account', MoneyIcon);
 
+const limitMenuLink: MenuLink = new MenuLink('Limit','/em/limit', PermDataSettingIcon);
+
+const categoryMenuLink: MenuLink = new MenuLink('Category', '/em/category', CategoryIcon);
+
+const expenseMenuLink: MenuLink = new MenuLink('Expenditure','/em/expense', MoneyIcon);
 export const MenuLinks: Array<MenuLink> = [
-    new MenuLink('Expense','/em/expense', MoneyIcon),
-    new MenuLink('Limit', '/em/limit', PermDataSettingIcon),
-    new MenuLink('Category', '/em/category', CategoryIcon),
+    expenseMenuLink,
+    limitMenuLink,
+    categoryMenuLink,
     accountMenuLink,
     bankMenuLink
 ];
@@ -42,3 +47,6 @@ export const NotificationMenuLink:MenuLink =  new MenuLink('Notification', '/em/
 export const ProfileMenuLink:MenuLink =  new MenuLink('Profile', '/em/profile', AccountBox);
 export const BankMenuLink = bankMenuLink; 
 export const AccountMenuLink = accountMenuLink;
+export const LimitMenuLink= limitMenuLink;
+export const ExpenseMenuLink= expenseMenuLink;
+export const CategoryMenuLink= categoryMenuLink;

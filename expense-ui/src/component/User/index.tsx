@@ -103,12 +103,11 @@ export default function UserComponent() {
                     sm={4}
                     md={7}
                     sx={{
-                        backgroundImage: 'url(%PUBLIC_URL%)/banner.jpg',
+                        backgroundImage: `url(${process.env.PUBLIC_URL}/banner.jpg)`,
                         backgroundRepeat: 'no-repeat',
                         backgroundColor: (t) =>
                             t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
+                        backgroundSize: 'cover'
                     }}
                 />
                 {(formType === 'login' || !formType) &&

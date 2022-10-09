@@ -322,7 +322,7 @@ export default function Navbar(props: NavbarProps) {
             </ContentLoader>}
             {currencyLoader && <ContentLoader heading={`Changing Currency!!!`}>
             </ContentLoader>}
-            <AppBar position="static">
+            <AppBar position="fixed">
                 <Toolbar>
                     <IconButton
                         onClick={() => props.openDrawer?.(true)}

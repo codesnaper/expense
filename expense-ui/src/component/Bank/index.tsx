@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { Container, Button, Grid, Card, CardContent, Typography, Divider, Box } from "@mui/material";
+import { Container, Button, Grid, Card, CardContent, Typography, Divider, Box, Stack, SvgIcon } from "@mui/material";
 import { Navigate } from "react-router-dom";
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AddIcon from '@mui/icons-material/Add';
@@ -19,7 +19,7 @@ import { Tag } from "../../modal/response/Tag";
 import { CurrencyType, getSymbol } from "../../modal/CurrencyType";
 import { ApiError } from "../../modal/response/Error";
 import { FxRate } from "../../modal/response/FxRate";
-import { AccountMenuLink } from "../../modal/MenuLink";
+import { AccountMenuLink, BankMenuLink } from "../../modal/MenuLink";
 import Pagination from "../Pagination";
 
 export default function BankComponent() {
@@ -306,7 +306,12 @@ export default function BankComponent() {
             {deleteLoader && <ContentLoader heading={`Deleting Bank Item`}>
             </ContentLoader>}
             <Box component={Container} maxWidth={'false'} height={'100vh'} sx={{ paddingTop: '40px' }} >
-                <Typography sx={{ marginBottom: '24px' }} variant="h4" letterSpacing={2}>Banks Details</Typography>
+                <Typography sx={{ marginBottom: '24px' }} variant="h4" letterSpacing={2}>
+                    <Stack direction={'row'} spacing={2}>
+                        <SvgIcon component={BankMenuLink.icon} fontSize={'large'} />
+                        <span>{BankMenuLink.title}</span>
+                    </Stack>
+                </Typography>
                 {loader ? <>
                     <ContentLoader heading={`${localization.getString?.('Bank.appLoading', localization.getLanguage?.(), true)}`}>
                     </ContentLoader>

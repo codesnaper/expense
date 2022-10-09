@@ -6,6 +6,7 @@ import { Account } from "../../../modal/response/Account";
 import TagSelect from "../../Tag/TagSelect";
 import AccountModal from "../modal";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { useEffect } from "react";
 
 
 export interface AccountFormProps {
@@ -36,7 +37,7 @@ export default function AccountForm(props: AccountFormProps) {
                         id="accountName"
                         error={props.form.errors.name ? true : false}
                         helperText={props.form.errors.name}
-                        defaultValue={props.defaultValue?.name}
+                        value={props.defaultValue?.name}
                         label='Account Name'
                         variant="outlined"
                         onChange={props.form.handleChange('name')}
@@ -51,7 +52,7 @@ export default function AccountForm(props: AccountFormProps) {
                             disabled={props.operationType === OperationType.EDIT ? true: false}
                             error={props.form.errors.accountNumber ? true : false}
                             helperText={props.form.errors.accountNumber}
-                            defaultValue={props.defaultValue?.accountNumber}
+                            value={props.defaultValue?.accountNumber}
                             label='Account Number'
                             variant="outlined"
                             onChange={props.form.handleChange('accountNumber')}
@@ -63,7 +64,7 @@ export default function AccountForm(props: AccountFormProps) {
                             id="amount"
                             error={props.form.errors.amount ? true : false}
                             helperText={props.form.errors.amount}
-                            defaultValue={props.defaultValue?.amount}
+                            value={props.defaultValue?.amount}
                             label='Amount'
                             variant="outlined"
                             onChange={props.form.handleChange('amount')}
@@ -73,8 +74,9 @@ export default function AccountForm(props: AccountFormProps) {
                 <FormControl fullWidth margin="normal">
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
+                            disableFuture={true}
                             label="Account Opening Date"
-                            value={props.defaultValue?.openDate}
+                            value={props.defaultValue?.openDate?props.defaultValue?.openDate: props.form.data.openDate}
                             onChange={(newValue) => {
                                 props.form.setValue('openDate', newValue)
                             }}
