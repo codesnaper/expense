@@ -93,6 +93,13 @@ export default function CategoryComponent() {
                 <Typography variant="h5" component={'div'} sx={{ marginBottom: '12px' }}><CategoryIcon></CategoryIcon>  Category</Typography>
                 <Divider></Divider>
                 <Grid container spacing={2} sx={{ marginTop: '12px' }}>
+                    <Grid item key={'new'} xs={4}>
+                        <CategoryCard
+                            categoryId={-1}
+                            editable={true}
+                            onEvent={operationEvent}
+                        />
+                    </Grid>
                     {categories.map((category: Category, index: number) =>
                         <>
                             <Grid item key={index} xs={4}>
@@ -106,13 +113,6 @@ export default function CategoryComponent() {
                             </Grid>
                         </>
                     )}
-                    <Grid item key={'new'} xs={4}>
-                        <CategoryCard
-                            categoryId={-1}
-                            editable={true}
-                            onEvent={operationEvent}
-                        />
-                    </Grid>
                 </Grid>
                 <Pagination page={page} pageSize={pageSize} totalElement={totalElement} onPageEvent={pageEvent}></Pagination>
             </Paper>

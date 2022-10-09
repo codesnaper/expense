@@ -1,9 +1,10 @@
 import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined, ReceiptLong } from "@mui/icons-material";
 import { Box, Card, CardContent, Container, Divider, Typography, Stack, Button, Grid, LinearProgress, Fab } from "@mui/material";
-import { blue } from "@mui/material/colors";
+import { blue, green, red } from "@mui/material/colors";
 import moment from "moment";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { AlertContext, ServiceContext } from "../../context";
+import { AlertContext, ServiceContext, UserContext } from "../../context";
+import { getSymbol } from "../../modal/CurrencyType";
 import { AlertType } from "../../modal/ExpenseAlert";
 import { OperationType } from "../../modal/OperationType";
 import { ApiError } from "../../modal/response/Error";
@@ -42,6 +43,8 @@ export default function ExpenditureComponent() {
     const [totalExpenseRangeDate, setTotalExpenseRangeDate] = useState<number>(0);
 
     const [totalRevenueRangeDate, setTotalRevenueRangeDate] = useState<number>(0);
+
+    const user = useContext(UserContext);
 
     const [expenditureSummaries, setExpenditureSummaries] = useState<ExpenditureSummary[]>([]);
 
@@ -123,10 +126,10 @@ export default function ExpenditureComponent() {
             </ContentLoader>}
             <Box component={Container} maxWidth={'false'} height={'100vh'} sx={{ paddingTop: '40px' }} >
                 <Grid container spacing={2}>
-                    <InfoCardComponent header="Total Expense" secondaryText={`Month : ${moment(selectDate).format('MMMM')}`} value={'0'} ></InfoCardComponent>
-                    <InfoCardComponent header="Total Revenue" secondaryText={`Month : ${moment(selectDate).format('MMMM')}`} value={'0'} ></InfoCardComponent>
-                    <InfoCardComponent header="Total Expense " secondaryText={`Date : ${moment(selectDate).format('DD,MMMM')} - ${moment(selectDate).add(5, 'day').format('DD,MMMM')}`} value={`- ${totalExpenseRangeDate} INR`} ></InfoCardComponent>
-                    <InfoCardComponent header="Total Revenue " secondaryText={`Date : ${moment(selectDate).format('DD,MMMM')} - ${moment(selectDate).add(5, 'day').format('DD,MMMM')}`} value={`${totalRevenueRangeDate}`} ></InfoCardComponent>
+                    <InfoCardComponent header="Total Expense" secondaryText={`Month : ${moment(selectDate).format('MMMM')}`} value={'0'} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={red[700]} ></InfoCardComponent>
+                    <InfoCardComponent header="Total Revenue" secondaryText={`Month : ${moment(selectDate).format('MMMM')}`} value={'0'} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={green[700]}></InfoCardComponent>
+                    <InfoCardComponent header="Total Expense " secondaryText={`Date : ${moment(selectDate).format('DD,MMMM')} - ${moment(selectDate).add(5, 'day').format('DD,MMMM')}`} value={`- ${totalExpenseRangeDate}`} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={red[700]} ></InfoCardComponent>
+                    <InfoCardComponent header="Total Revenue " secondaryText={`Date : ${moment(selectDate).format('DD,MMMM')} - ${moment(selectDate).add(5, 'day').format('DD,MMMM')}`} value={`${totalRevenueRangeDate}`} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={green[700]}></InfoCardComponent>
                 </Grid>
                 <Card raised sx={{ marginTop: '40px', marginBottom: '40px' }}>
                     <CardContent>
