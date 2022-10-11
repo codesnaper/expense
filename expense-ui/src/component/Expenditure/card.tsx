@@ -2,6 +2,7 @@ import { DeleteForever, Preview } from "@mui/icons-material";
 import { Button, Card, CardActionArea, CardContent, Chip, Divider, Typography } from "@mui/material";
 import { green, grey, indigo, lime, red } from "@mui/material/colors";
 import { Stack } from "@mui/system";
+import { getSymbol } from "../../modal/CurrencyType";
 import { Expenditure, ExpenditureType } from "../../modal/response/Expenditure";
 
 interface ExpenditureCardProps{
@@ -52,7 +53,7 @@ export default function ExpenditureCard(props: ExpenditureCardProps) {
                     </Typography>
                     <Divider/>
                     <Typography  sx={{color: `${getColor(props.expenditure.type)}`, marginBottom: '8px'}}>
-                        {`${props.expenditure.type === ExpenditureType.EXPENSE? '-':''}${props.expenditure.amount} INR`}
+                        {`${props.expenditure.type === ExpenditureType.EXPENSE? '-':''}${props.expenditure.amount} ${getSymbol(props.expenditure.account.bank.currency)}`}
                     </Typography>
                     {props.expenditure.category && <>
                         <Chip sx={{ mb: 1.5 }} label={props.expenditure.category.name}></Chip>

@@ -41,18 +41,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-logging:
-  level:
-    com:
-      expense: DEBUG
-    org:
-      springframework:
-        web: DEBUG
-      hibernate:
-        SQL: debug
-        type:
-          descriptor:
-            sql: trace
 react:
   router: /em/bank,/em/limit,/em/expense,/em/category,/em/account,/em/notification,/em/profile
 expense:

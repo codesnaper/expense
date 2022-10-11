@@ -22,6 +22,5 @@ public class ReactRouterFilter implements Filter {
         if(Arrays.asList(reactRouters).indexOf(req.getRequestURI()) != -1){
             servletRequest.getRequestDispatcher("/em/index.html").forward(servletRequest, servletResponse);
         }
-        filterChain.doFilter(servletRequest,servletResponse);
     }
 }
