@@ -66,7 +66,7 @@ public class FXConversionService implements FXConversion{
                 .filter(stringObjectMap -> stringObjectMap.get("code").toString().equalsIgnoreCase(currencyType.getSymbol()))
                 .findFirst()
                 .orElseThrow(() -> {throw new NoSuchElementException("FX Rate for currency type not configuer");})
-                .get("rate");
+                .get("inverseRate");
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.expense.expensemanagement.controller;
 
 import com.expense.expensemanagement.exception.AmountInsufficientException;
 import com.expense.expensemanagement.exception.MaxLimitException;
+import com.expense.expensemanagement.model.CurrencyType;
 import com.expense.expensemanagement.model.ExpenditureModel;
 import com.expense.expensemanagement.model.ExpenditureSummary;
 import com.expense.expensemanagement.service.expenditure.ExpenditureService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -48,11 +50,12 @@ public class ExpenditureController {
     public List<ExpenditureModel> getExpenditureFromRange(
             Principal principal,
             @PathVariable("toDate") String toDate,
-            @PathVariable("fromDate") String fromDate
+            @PathVariable("fromDate") String fromDate,
+            @RequestParam("userCurrencyType")CurrencyType currencyType
             ){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         try {
-            return this.expenditureService.fetchExpenditureBetweenDate(simpleDateFormat.parse(toDate), simpleDateFormat.parse(fromDate));
+            return this.expenditureService.fetchExpenditureBetweenDate(simpleDateFormat.parse(toDate), simpleDateFormat.parse(fromDate), ExpenseUtil.getUserId(principal), currencyType);
         } catch (ParseException e) {
             throw new IllegalArgumentException("Date should be in format of dd-MM-yyyy");
         }
@@ -62,8 +65,9 @@ public class ExpenditureController {
     public List<ExpenditureSummary> getExpenditureSummary(
             Principal principal,
             @PathVariable("month") int month,
-            @PathVariable("year") String year
+            @PathVariable("year") String year,
+            @RequestParam("userCurrencyType")CurrencyType currencyType
     ){
-        return expenditureService.getExpenditureSummary(month, year);
+        return expenditureService.getExpenditureSummary(month, year, ExpenseUtil.getUserId(principal),currencyType);
     }
 }

@@ -13,6 +13,7 @@ export interface Expenditure{
     category: Category;
     date: Date;
     fromAccount: Account;
+    localeCurrency: number;
 }
 
 export enum ExpenditureType{

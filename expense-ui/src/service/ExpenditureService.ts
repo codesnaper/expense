@@ -1,4 +1,5 @@
 import { Configuration } from "../config/Configuration";
+import { CurrencyType } from "../modal/CurrencyType";
 import { Expenditure } from "../modal/response/Expenditure";
 import { ExpenditureSummary } from "../modal/response/ExpenditureSummary";
 import api from "./Api";
@@ -52,9 +53,9 @@ export class ExpenditureService {
         });
     }
 
-    public fetchExpenditureByDateRange(toDate: string, fromDate: string): Promise<Expenditure[]>{
+    public fetchExpenditureByDateRange(toDate: string, fromDate: string, currencyType?: CurrencyType): Promise<Expenditure[]>{
         return new Promise((resolve, reject) => {
-            api.get(`${this.baseUrl}expenditure/'${toDate}'-'${fromDate}'`)
+            api.get(`${this.baseUrl}expenditure/'${toDate}'-'${fromDate}'?userCurrencyType=${currencyType}`)
             .then(res => resolve(res.data))
             .catch(err => reject({
                 status: err.response.data?.status,
@@ -66,9 +67,9 @@ export class ExpenditureService {
         });
     }
 
-    public fetchExpenditureSummary(month: string, year: string): Promise<ExpenditureSummary[]>{
+    public fetchExpenditureSummary(month: string, year: string, currencyType?: CurrencyType): Promise<ExpenditureSummary[]>{
         return new Promise((resolve, reject) => {
-            api.get(`${this.baseUrl}expenditure/summary/${month}-${year}`)
+            api.get(`${this.baseUrl}expenditure/summary/${month}-${year}?userCurrencyType=${currencyType}`)
             .then(res => resolve(res.data))
             .catch(err => reject({
                 status: err.response.data?.status,

@@ -28,6 +28,8 @@ public class ExpenditureModel {
 
     private Date date;
 
+    private double localeCurrency;
+
     @JsonIgnore
     private transient String userId;
 

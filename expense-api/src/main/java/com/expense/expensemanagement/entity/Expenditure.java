@@ -59,6 +59,7 @@ public class Expenditure {
     private Category category;
 
     @Column(name="log_date")
+    @Temporal(TemporalType.DATE)
     private Date loggedDate;
 
     @Column(name = "user_id")

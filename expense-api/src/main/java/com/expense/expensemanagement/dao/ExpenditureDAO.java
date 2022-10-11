@@ -11,9 +11,11 @@ import java.util.Optional;
 
 public interface ExpenditureDAO extends PagingAndSortingRepository<Expenditure, Long> {
 
-    List<Expenditure> findByLoggedDateBetween(Date startDate, Date endDate);
+    List<Expenditure> findByLoggedDateBetweenAndUserId(Date startDate, Date endDate, String userId);
 
     Optional<Expenditure> findByUserIdAndId(String userId, long id);
+
+    List<Expenditure> findByLoggedDateBetweenAndUserIdAndType(Date startDate, Date endDate, String userId, ExpenditureType expenditureType);
 
     @Query("SELECT SUM(amount) from Expenditure where FUNC('YEAR', c_Date)=:year and FUNC('MONTH', c_Date)=:month and type=:type")
     long groupByMonthAndYear(int month, String year, ExpenditureType type);

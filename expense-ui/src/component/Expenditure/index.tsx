@@ -21,6 +21,8 @@ export default function ExpenditureComponent() {
 
     const [loader, setLoader] = useState<boolean>(false);
 
+    const [summaryLoader, setSummaryLoader] = useState<boolean>(false);
+
     const [deleteLoader, setDeleteLoader] = useState<boolean>(false);
 
     const [selectDate, setSelectDate] = useState<Date>(new Date());
@@ -45,9 +47,11 @@ export default function ExpenditureComponent() {
 
     const [totalRevenueRangeDate, setTotalRevenueRangeDate] = useState<number>(0);
 
-    const user = useContext(UserContext);
+    const [totalExpenseRangeMonth, setTotalExpenseRangeMonth] = useState<number>(0);
 
-    const [expenditureSummaries, setExpenditureSummaries] = useState<ExpenditureSummary[]>([]);
+    const [totalRevenueRangeMonth, setTotalRevenueRangeMonth] = useState<number>(0);
+
+    const user = useContext(UserContext);
 
     const handleOnSelect = (date: Date) => {
         setSelectDate(date);
@@ -55,35 +59,47 @@ export default function ExpenditureComponent() {
 
     useEffect(() => {
         setLoader(true);
-        setTotalExpenseRangeDate(0);
-        setTotalRevenueRangeDate(0)
-        service.expenditureService?.fetchExpenditureByDateRange(moment(selectDate).format('DD-MM-yyyy'), moment(selectDate).add(5, 'days').format('DD-MM-yyyy'))
+        service.expenditureService?.fetchExpenditureByDateRange(moment(selectDate).format('DD-MM-yyyy'), moment(selectDate).add(5, 'days').format('DD-MM-yyyy'), user.profile?.selectedCurrency)
             .then((res: Expenditure[]) => {
                 setExpenditures(res);
+                let totalExpense = 0;
+                let totalRevenue = 0;
                 res.filter((expenditure: Expenditure) => expenditure.type === ExpenditureType.EXPENSE).
                     forEach((expenditure: Expenditure) => {
-                        setTotalExpenseRangeDate(totalExpenseRangeDate + expenditure.amount);
+                        totalExpense += expenditure.localeCurrency;
                     });
                 res.filter((expenditure: Expenditure) => expenditure.type === ExpenditureType.REVENUE).
                     forEach((expenditure: Expenditure) => {
-                        setTotalRevenueRangeDate(totalRevenueRangeDate + expenditure.amount);
+                        totalRevenue += expenditure.localeCurrency;
                     })
+                setTotalRevenueRangeDate(totalRevenue);
+                setTotalExpenseRangeDate(totalExpense);
             }).catch((err: ApiError) => {
                 expenseAlert.setAlert?.(err.message, AlertType.ERROR);
             }).finally(() => {
                 setLoader(false);
             });
-    }, [service, selectDate])
+    }, [service, selectDate, user.profile?.selectedCurrency])
 
-    useMemo(() => {
-        service.expenditureService?.fetchExpenditureSummary(moment(selectDate).format("MM"), moment(selectDate).format("YYYY"))
+    useEffect(() => {
+        setSummaryLoader(true);
+        service.expenditureService?.fetchExpenditureSummary(moment(selectDate).format("MM"), moment(selectDate).format("YYYY"), user.profile?.selectedCurrency)
             .then((res: ExpenditureSummary[]) => {
-                setExpenditureSummaries(res);
+                res.forEach((expenditureSummary: ExpenditureSummary) => {
+                    if(expenditureSummary.type === ExpenditureType.EXPENSE){
+                        setTotalExpenseRangeMonth(expenditureSummary.amount);
+                    } else if(expenditureSummary.type === ExpenditureType.REVENUE) {
+                        setTotalRevenueRangeDate(expenditureSummary.amount);
+                    }
+                })
             })
             .catch((err: ApiError) => {
                 expenseAlert.setAlert?.(err.message, AlertType.ERROR);
             })
-    }, [moment(selectDate).format("MM"), moment(selectDate).format("YYYY")]);
+            .finally(() =>{
+                setSummaryLoader(false);
+            })
+    }, [moment(selectDate).format("MM"), moment(selectDate).format("YYYY"), user.profile?.selectedCurrency]);
 
     const handleExpenditure = (expenditure: Expenditure) => {
         if (operationType === OperationType.ADD) {
@@ -133,10 +149,10 @@ export default function ExpenditureComponent() {
                     </Stack>
                 </Typography>
                 <Grid container spacing={2}>
-                    <InfoCardComponent header="Total Expense" secondaryText={`Month : ${moment(selectDate).format('MMMM')}`} value={'0'} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={red[700]} ></InfoCardComponent>
-                    <InfoCardComponent header="Total Revenue" secondaryText={`Month : ${moment(selectDate).format('MMMM')}`} value={'0'} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={green[700]}></InfoCardComponent>
-                    <InfoCardComponent header="Total Expense " secondaryText={`Date : ${moment(selectDate).format('DD,MMMM')} - ${moment(selectDate).add(5, 'day').format('DD,MMMM')}`} value={`- ${totalExpenseRangeDate}`} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={red[700]} ></InfoCardComponent>
-                    <InfoCardComponent header="Total Revenue " secondaryText={`Date : ${moment(selectDate).format('DD,MMMM')} - ${moment(selectDate).add(5, 'day').format('DD,MMMM')}`} value={`${totalRevenueRangeDate}`} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={green[700]}></InfoCardComponent>
+                    <InfoCardComponent header="Total Expense" loader={summaryLoader} secondaryText={`Month : ${moment(selectDate).format('MMMM')}`} value={totalExpenseRangeMonth.toFixed(2)} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={red[700]} ></InfoCardComponent>
+                    <InfoCardComponent header="Total Revenue" loader={summaryLoader} secondaryText={`Month : ${moment(selectDate).format('MMMM')}`} value={totalRevenueRangeMonth.toFixed(2)} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={green[700]}></InfoCardComponent>
+                    <InfoCardComponent header="Total Expense " loader={loader} secondaryText={`Date : ${moment(selectDate).format('DD,MMMM')} - ${moment(selectDate).add(5, 'day').format('DD,MMMM')}`} value={`${totalExpenseRangeDate.toFixed(2)}`} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={red[700]} ></InfoCardComponent>
+                    <InfoCardComponent header="Total Revenue " loader={loader} secondaryText={`Date : ${moment(selectDate).format('DD,MMMM')} - ${moment(selectDate).add(5, 'day').format('DD,MMMM')}`} value={`${totalRevenueRangeDate.toFixed(2)}`} suffixCurrency={getSymbol(user.profile?.selectedCurrency)} color={green[700]}></InfoCardComponent>
                 </Grid>
                 <Card raised sx={{ marginTop: '40px', marginBottom: '40px' }}>
                     <CardContent>
