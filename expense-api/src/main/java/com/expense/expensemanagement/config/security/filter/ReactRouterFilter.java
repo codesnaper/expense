@@ -20,12 +20,16 @@ public class ReactRouterFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
+        boolean match = false;
         Matcher matcher = null;
         for(String reactPath: reactRouters){
             Pattern pattern = Pattern.compile(reactPath);
             matcher = pattern.matcher(req.getRequestURI());
+            if(matcher.find()){
+                match = true;
+            }
         }
-        if(matcher.find()){
+        if(match){
             servletRequest.getRequestDispatcher("/em/index.html").forward(servletRequest, servletResponse);
         } else {
             filterChain.doFilter(servletRequest,servletResponse);
