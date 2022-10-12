@@ -7,13 +7,16 @@ import com.expense.expensemanagement.entity.Account;
 import com.expense.expensemanagement.entity.Bank;
 import com.expense.expensemanagement.entity.Limit;
 import com.expense.expensemanagement.exception.AmountInsufficientException;
+import com.expense.expensemanagement.fxrates.FXConversion;
 import com.expense.expensemanagement.model.AccountType;
+import com.expense.expensemanagement.model.CurrencyType;
 import com.expense.expensemanagement.model.ExpenditureModel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 @Service("addTransaction")
@@ -25,6 +28,8 @@ public class AddTransaction implements Transaction{
     BankDAO bankDAO;
 
     LimitDao limitDao;
+
+    FXConversion fxConversion;
 
     @Transactional
     public void expenseTransaction(ExpenditureModel expenditureModel) throws AmountInsufficientException {
@@ -62,33 +67,48 @@ public class AddTransaction implements Transaction{
     }
 
     @Transactional
-    public void transferTransaction(ExpenditureModel expenditureModel) throws AmountInsufficientException {
-        double amount = 0;
-        double fromAmount = 0;
+    public void transferTransaction(ExpenditureModel expenditureModel) throws Exception {
+        double fromAmount,rate= 0, toAmount;
+        BigDecimal amount;
         if(expenditureModel.getAccount().getAmount() < expenditureModel.getAmount()){
             throw new AmountInsufficientException("Account don't have much amount to transfer");
         }
-        double toAmount = expenditureModel.getAccount().getAmount() - expenditureModel.getAmount();
-        Account account = accountDAO.findById(expenditureModel.getAccount().getId()).orElseThrow(() -> {throw new NoSuchElementException("Transfer from Account is not found");});
-        account.setAmount(new BigDecimal(toAmount));
-        accountDAO.save(account);
-        account = accountDAO.findById(expenditureModel.getFromAccount().getId()).orElseThrow(() -> {throw new NoSuchElementException("Transfer to Account is not found");});
-        if(account.getAccountType().equalsIgnoreCase(AccountType.LOAN.getAccountType())){
-            fromAmount = expenditureModel.getFromAccount().getAmount() - expenditureModel.getAmount();
-            Bank bank = bankDAO.findById(expenditureModel.getFromAccount().getBankId()).orElseThrow(()-> {throw new NoSuchElementException("Bank Not found");});
-            amount = bank.getDebitAmount().doubleValue() - expenditureModel.getAmount();
-            bank.setDebitAmount(new BigDecimal(amount));
-            if(expenditureModel.getAccount().getBankId() == expenditureModel.getFromAccount().getBankId()){
-                bankDAO.save(bank);
-                bank = bankDAO.findById(expenditureModel.getAccount().getBankId()).orElseThrow(()-> {throw new NoSuchElementException("Bank Not found");});
-            }
-            amount = bank.getCreditAmount().doubleValue() - expenditureModel.getAmount();
-            bank.setCreditAmount(new BigDecimal(amount));
-            bankDAO.save(bank);
-        } else {
-            fromAmount = expenditureModel.getFromAccount().getAmount() + expenditureModel.getAmount();
+        Bank toBank = bankDAO.findById(expenditureModel.getAccount().getBankId()).orElseThrow(()-> {throw new NoSuchElementException("Bank Not found");});
+        Bank fromBank = expenditureModel.getAccount().getBankId() == expenditureModel.getFromAccount().getBankId() ?
+                toBank: bankDAO.findById(expenditureModel.getFromAccount().getBankId()).orElseThrow(()-> {throw new NoSuchElementException("Bank Not found");});
+        Account toAccount = accountDAO.findById(expenditureModel.getAccount().getId()).orElseThrow(() -> {throw new NoSuchElementException("Transfer from Account is not found");});
+        Account fromAccount = accountDAO.findById(expenditureModel.getFromAccount().getId()).orElseThrow(() -> {throw new NoSuchElementException("Transfer from Account is not found");});
+        toAmount = expenditureModel.getAmount();
+        CurrencyType fromBankCurrencyType = bankDAO.findById(expenditureModel.getFromAccount().getBankId()).orElseThrow(() -> {throw new NoSuchElementException("Bank Not found");})
+                .getCurrency();
+        CurrencyType toBankCurrencyType = bankDAO.findById(expenditureModel.getAccount().getBankId()).orElseThrow(() -> {throw new NoSuchElementException("Bank Not found");})
+                .getCurrency();
+        if(toBankCurrencyType != fromBankCurrencyType){
+            rate = fxConversion.getRate(toBankCurrencyType, fromBankCurrencyType);
         }
-        account.setAmount(new BigDecimal(fromAmount));
-        accountDAO.save(account);
+        fromAmount = expenditureModel.getAmount() * rate;
+        if(fromAccount.getAccountType().equalsIgnoreCase(AccountType.LOAN.getAccountType())){
+            amount = toAccount.getAmount().add(new BigDecimal(toAmount * -1));
+            toAccount.setAmount(amount);
+            amount = fromAccount.getAmount().add(new BigDecimal(fromAmount * -1));
+            fromAccount.setAmount(amount);
+            accountDAO.saveAll(Arrays.asList(toAccount, fromAccount));
+            amount = toBank.getCreditAmount().add(new BigDecimal(toAmount * -1));
+            toBank.setCreditAmount(amount);
+            amount = fromBank.getDebitAmount().add(new BigDecimal(fromAmount * -1));
+            fromBank.setDebitAmount(amount);
+            bankDAO.saveAll(Arrays.asList(toBank, fromBank));
+        } else {
+            amount = toAccount.getAmount().add(new BigDecimal(toAmount * -1));
+            toAccount.setAmount(amount);
+            amount = fromAccount.getAmount().add(new BigDecimal(fromAmount));
+            fromAccount.setAmount(amount);
+            accountDAO.saveAll(Arrays.asList(toAccount, fromAccount));
+            amount = toBank.getCreditAmount().add(new BigDecimal(toAmount * -1));
+            toBank.setCreditAmount(amount);
+            amount = fromBank.getCreditAmount().add(new BigDecimal(fromAmount));
+            fromBank.setCreditAmount(amount);
+            bankDAO.saveAll(Arrays.asList(toBank, fromBank));
+        }
     }
 }

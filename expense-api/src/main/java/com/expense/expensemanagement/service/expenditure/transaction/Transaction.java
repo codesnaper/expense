@@ -9,5 +9,5 @@ public interface Transaction {
 
     void revenueTransaction(ExpenditureModel expenditureModel);
 
-    void transferTransaction(ExpenditureModel expenditureModel) throws AmountInsufficientException;
+    void transferTransaction(ExpenditureModel expenditureModel) throws Exception;
 }

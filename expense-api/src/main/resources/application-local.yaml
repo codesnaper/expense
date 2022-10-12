@@ -25,7 +25,7 @@ cors:
       - refreshToken
 spring:
   datasource:
-    url: jdbc:h2:file:~/em-new.db;DB_CLOSE_DELAY=-1;MODE=MySQL;NON_KEYWORDS=USER
+    url: jdbc:h2:file:~/em-new1.db;DB_CLOSE_DELAY=-1;MODE=MySQL;NON_KEYWORDS=USER
     username: sa
     password: password
     driver-class-name: org.h2.Driver

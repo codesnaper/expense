@@ -1,6 +1,7 @@
 package com.expense.expensemanagement.config.security.filter;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
 
 @Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
+@Profile("prod")
 public class ReactRouterFilter implements Filter {
 
     @Value("${react.router}")
