@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
@@ -19,8 +20,19 @@ public class ReactRouterFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
-        if(Arrays.asList(reactRouters).indexOf(req.getRequestURI()) != -1){
+        boolean match = false;
+        Matcher matcher = null;
+        for(String reactPath: reactRouters){
+            Pattern pattern = Pattern.compile(reactPath);
+            matcher = pattern.matcher(req.getRequestURI());
+            if(matcher.find()){
+                match = true;
+            }
+        }
+        if(match){
             servletRequest.getRequestDispatcher("/em/index.html").forward(servletRequest, servletResponse);
+        } else {
+            filterChain.doFilter(servletRequest,servletResponse);
         }
     }
 }
