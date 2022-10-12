@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ExpenditureService {
 
-    ExpenditureModel addExpenditure(ExpenditureModel expenditureModel ) throws MaxLimitException, AmountInsufficientException;
+    ExpenditureModel addExpenditure(ExpenditureModel expenditureModel ) throws Exception;
 
     List<ExpenditureModel> fetchExpenditureBetweenDate(Date toDate, Date fromDate, String userId, CurrencyType currencyType);
 

@@ -29,7 +29,7 @@ public class ExpenditureController {
 
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ExpenditureModel addExpenditure(Principal principal, @RequestBody ExpenditureModel expenditureModel) throws MaxLimitException, AmountInsufficientException {
+    public ExpenditureModel addExpenditure(Principal principal, @RequestBody ExpenditureModel expenditureModel) throws Exception {
         expenditureModel.setUserId(ExpenseUtil.getUserId(principal));
         return this.expenditureService.addExpenditure(expenditureModel);
     }

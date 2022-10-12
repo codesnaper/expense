@@ -3,7 +3,6 @@ package com.expense.expensemanagement.service.expenditure;
 import com.expense.expensemanagement.conversion.EntityModalConversion;
 import com.expense.expensemanagement.dao.ExpenditureDAO;
 import com.expense.expensemanagement.entity.Expenditure;
-import com.expense.expensemanagement.exception.AmountInsufficientException;
 import com.expense.expensemanagement.exception.MaxLimitException;
 import com.expense.expensemanagement.fxrates.FXConversion;
 import com.expense.expensemanagement.model.*;
@@ -38,7 +37,7 @@ public class ExpenditureServiceImpl implements ExpenditureService {
     @Qualifier("ExpenditureConversion")
     EntityModalConversion<Expenditure, ExpenditureModel> expenditureConversion;
 
-    private void rollbackTransaction(Expenditure expenditure) throws AmountInsufficientException {
+    private void rollbackTransaction(Expenditure expenditure) throws Exception {
         expenditure.setAmount(expenditure.getAmount().multiply(new BigDecimal((-1))));
         ExpenditureModel expenditureModel = expenditureConversion.getModel(expenditure);
         switch (expenditureModel.getType()) {
@@ -85,7 +84,7 @@ public class ExpenditureServiceImpl implements ExpenditureService {
         }
     }
 
-    private void transaction(ExpenditureModel expenditureModel) throws AmountInsufficientException {
+    private void transaction(ExpenditureModel expenditureModel) throws Exception {
         switch (expenditureModel.getType()) {
             case EXPENSE:
                 addTransaction.expenseTransaction(expenditureModel);
@@ -141,7 +140,7 @@ public class ExpenditureServiceImpl implements ExpenditureService {
         expenditureDAO.delete(expenditure);
     }
 
-    public ExpenditureModel addExpenditure(ExpenditureModel expenditureModel) throws MaxLimitException, AmountInsufficientException {
+    public ExpenditureModel addExpenditure(ExpenditureModel expenditureModel) throws Exception {
         preInitializeExpenditureModel(expenditureModel);
         transaction(expenditureModel);
         return expenditureConversion.getModel(expenditureDAO.save(expenditureConversion.getEntity(expenditureModel)));
