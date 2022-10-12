@@ -83,7 +83,7 @@ export default function loanAccountDataSet(accounts: Array<LoanAccount>) : Table
                 type: HeaderType.number
             },
             interestAmount: {
-                alias: 'Interest Amount',
+                alias: 'Monthly Interest Amount',
                 display: HeaderDisplay.NONE,
                 isPrimaryKey: false,
                 isVisible: true,
@@ -102,6 +102,13 @@ export default function loanAccountDataSet(accounts: Array<LoanAccount>) : Table
                 isPrimaryKey: false,
                 isVisible: true,
                 type: HeaderType.boolean
+            },
+            totalInterestAmount:{
+                alias: 'Total Interest Amount',
+                display: HeaderDisplay.NONE,
+                isPrimaryKey: false,
+                isVisible: true,
+                type: HeaderType.number
             }
         },
         accounts

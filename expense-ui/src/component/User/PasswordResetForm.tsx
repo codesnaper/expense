@@ -1,9 +1,11 @@
-import { Box, Button, CircularProgress, CssBaseline, Grid, Paper, Step, StepContent, StepLabel, Stepper, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, CssBaseline, Grid, Paper, Step, StepContent, StepLabel, Stepper, SvgIcon, TextField, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { error } from "console";
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { LocalizationContext } from "../../context";
 import { useFormValidation } from "../../hooks/FormValidation";
+import { LoginLink } from "../../modal/MenuLink";
 import { PasswordReset } from "../../modal/PasswordReset";
 
 interface PasswordResetFormProps{
@@ -18,6 +20,7 @@ export default function PasswordResetForm(props: PasswordResetFormProps) {
     const localization = useContext(LocalizationContext);
     const [firstStepInitiated, setFirstStepInitiated] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
+    const navigate = useNavigate();
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -158,6 +161,11 @@ export default function PasswordResetForm(props: PasswordResetFormProps) {
                         </StepContent>
                     </Step>
                 </Stepper>
+                <Grid container justifyContent="flex-end">
+                            <Grid item>
+                            <Button variant='text' startIcon={<SvgIcon component={LoginLink.icon} inheritViewBox />} onClick={() => {navigate( LoginLink.link,{replace: false})}}>{LoginLink.title}</Button>
+                            </Grid>
+                        </Grid>
             </Box>
         </Grid>
     </>)

@@ -1,5 +1,6 @@
 package com.expense.expensemanagement.controller;
 
+import com.expense.expensemanagement.model.ForgotPassord;
 import com.expense.expensemanagement.model.User;
 import com.expense.expensemanagement.service.cognito.CognitoService;
 import com.expense.expensemanagement.service.profile.IProfileService;
@@ -30,11 +31,26 @@ public class UserController {
 //		this.profileService.newProfile(authUser.getUser().getUsername());
 		return authUser;
 	}
-	@PostMapping(value = "/forgotPassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+
+	@GetMapping(value = "/confirmationCode", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> forgotPassword(@RequestParam(name = "username") String username) {
 		ResponseEntity<?> response;
 		try {
 			if (cognitoService.forgotPassword(username))
+				response = new ResponseEntity<Object>(HttpStatus.OK);
+			else
+				response = new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception exception) {
+			response = new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return response;
+	}
+
+	@PostMapping(value ="/forgotPassword" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> confirmForgotPassword(@RequestBody ForgotPassord forgotPassord){
+		ResponseEntity<?> response;
+		try {
+			if (cognitoService.confirmForgotPassword(forgotPassord.getUsername(), forgotPassord.getPassword(), forgotPassord.getCode()))
 				response = new ResponseEntity<Object>(HttpStatus.OK);
 			else
 				response = new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);

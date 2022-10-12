@@ -2,19 +2,18 @@ import * as React from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import { Auth } from 'aws-amplify';
 import { CircularProgress } from '@mui/material';
-import { AlertContext, LocalizationContext, ServiceContext } from '../../context';
+import { AlertContext, ServiceContext } from '../../context';
 import { AlertType } from '../../modal/ExpenseAlert';
-import { UserLogin } from '../../modal/UserLogin';
 import useQuery from '../../hooks/Query';
 import { SignUp } from '../../modal/SignUp';
 import LoginForm from './LoginForm';
 import SignUpForm from './SignupForm';
 import PasswordResetForm from './PasswordResetForm';
 import { PasswordReset } from '../../modal/PasswordReset';
-import { LoginCredential } from '../../modal/response/User';
+import { LoginCredential, User } from '../../modal/response/User';
 import { ApiError, ErrorCode } from '../../modal/response/Error';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserComponent() {
     const query = useQuery();
@@ -24,9 +23,9 @@ export default function UserComponent() {
     const [loader, setLoader] = React.useState(false);
     const [isVerifyFail, setIsVerifyFail] = React.useState<boolean>(false);
     const [failedVerifyMessage, setFailedVerifyMessage] = React.useState(undefined);
-    const localization = React.useContext(LocalizationContext);
     const expenseAlertModal = React.useContext(AlertContext);
     const service = React.useContext(ServiceContext);
+    const navigate = useNavigate();
 
     const loginCallback =  (loginCredential: LoginCredential, rememberFlag: boolean) => {
         setLoader(true);
@@ -48,49 +47,43 @@ export default function UserComponent() {
 
     const signUpCallback = async (signUp: SignUp) => {
         setLoader(true);
-        try {
-            const user =  await Auth.signUp({
-                username: signUp.email,
-                password: signUp.password,
-                attributes: {
-                    email: signUp.email,
-                    phone_number: '+15555555555',
-                    name: `${signUp.firstName} ${signUp.lastName}`,
-                },
-                autoSignIn: {
-                    enabled: true,
-                }
-            });
-            window.sessionStorage.setItem('user', JSON.stringify(user));
-            setLoader(false);
-            expenseAlertModal.setAlert?.(`Welcome ${signUp.firstName} ${signUp.lastName}!! Your Account is set up successfully`, AlertType.SUCCESS );
-        } catch (error: any) {
-            expenseAlertModal.setAlert?.(error.message, AlertType.ERROR);
-            setLoader(false);
-        }
-    }
-
-    const passwordResetCallback = async (passwordReset: PasswordReset) => {
-        Auth.forgotPasswordSubmit(passwordReset.username, passwordReset.code, passwordReset.password)
+        const user: User = {
+            name: `${signUp.firstName} ${signUp.lastName}`,
+            phone_number: '+15555555555',
+            username: signUp.email,
+            user: {}
+        };
+        service.userService?.newUser(user)
         .then(() => {
-            expenseAlertModal.setAlert?.('Password Change Successfully', AlertType.SUCCESS);
-        })
-        .catch(err => {
+            expenseAlertModal?.setAlert?.('User Created Successfully.', AlertType.SUCCESS);
+        }).catch(err => {
             expenseAlertModal.setAlert?.(err, AlertType.ERROR);
-            console.error(JSON.stringify(err));
+        })
+        .finally(() => {
+            setLoader(false);
         });
     }
 
+    const passwordResetCallback = async (passwordReset: PasswordReset) => {
+        setLoader(true);
+        service.userService?.forgotPassword(passwordReset)
+        .then(() => {
+            expenseAlertModal?.setAlert?.('Password changed successfully.', AlertType.SUCCESS);
+        }).catch(err => {
+            expenseAlertModal.setAlert?.(err, AlertType.ERROR);
+        })
+        .finally(() => {
+            setLoader(false);
+        })
+    }
+
     const sendConfirmationCodeCallback = (passwordReset: PasswordReset) => {
-        Auth.forgotPassword(passwordReset.username)
-            .then(() => {
-                expenseAlertModal.setAlert?.('Verification mail have been sent successfully to mail id', AlertType.SUCCESS);
-            })
-            .catch(err => {
-                setIsVerifyFail(true);
-                setFailedVerifyMessage(err);
-                expenseAlertModal.setAlert?.(err, AlertType.ERROR);
-            });
+        service.userService?.sendForgotPasswordCode(passwordReset.username)
+        .then(() => {
+            expenseAlertModal?.setAlert?.('Code has been sent successfully to your registered mail id.', AlertType.SUCCESS);
+        }).catch(err => {
+            expenseAlertModal.setAlert?.(err, AlertType.ERROR);
+        });
     }
 
     return (

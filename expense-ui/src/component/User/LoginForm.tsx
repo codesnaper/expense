@@ -13,9 +13,12 @@ import Typography from '@mui/material/Typography';
 import { useFormValidation } from '../../hooks/FormValidation';
 import { UserLogin } from '../../modal/UserLogin';
 import { LocalizationContext } from '../../context';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, SvgIcon } from '@mui/material';
 import { grey, red } from '@mui/material/colors';
 import { LoginCredential } from '../../modal/response/User';
+import { useNavigate } from 'react-router-dom';
+import { ForgotPasswordLink, NewUserLink } from '../../modal/MenuLink';
+import { Login } from '@mui/icons-material';
 
 interface LoginFormProps {
     loginLoader: boolean,
@@ -26,6 +29,7 @@ interface LoginFormProps {
 export default function LoginForm(props: LoginFormProps) {
     const localization = React.useContext(LocalizationContext);
     const [rememberFlag, setRememberFlag] = React.useState<boolean>(false);
+    const navigate = useNavigate();
 
     const { handleSubmit, handleChange, data: credential, errors } = useFormValidation<LoginCredential>({
         validations: {
@@ -103,6 +107,7 @@ export default function LoginForm(props: LoginFormProps) {
                     <Button
                         data-testid="signInCta"
                         type="submit"
+                        startIcon={<Login/>}
                         fullWidth
                         disabled={props.loginLoader}
                         variant="contained"
@@ -120,14 +125,10 @@ export default function LoginForm(props: LoginFormProps) {
                     </Button>
                     <Grid container>
                         <Grid item xs>
-                            <Link href="#" test-id="fo" variant="body2">
-                                Forgot password?
-                            </Link>
+                            <Button variant='text' startIcon={<SvgIcon component={ForgotPasswordLink.icon} inheritViewBox />} onClick={() => {navigate( ForgotPasswordLink.link,{replace: false})}}>{ForgotPasswordLink.title}</Button>
                         </Grid>
                         <Grid item>
-                            <Link href="register" variant="body2">
-                                {"Don't have an account? Sign Up"}
-                            </Link>
+                        <Button variant='text' startIcon={<SvgIcon component={NewUserLink.icon} inheritViewBox />} onClick={() => {navigate( NewUserLink.link,{replace: false})}}>{NewUserLink.title}</Button>
                         </Grid>
                     </Grid>
                 </Box>

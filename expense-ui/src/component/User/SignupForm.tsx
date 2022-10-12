@@ -13,8 +13,11 @@ import Typography from '@mui/material/Typography';
 import { SignUp } from '../../modal/SignUp';
 import { useFormValidation } from '../../hooks/FormValidation';
 import { LocalizationContext } from '../../context';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, SvgIcon } from '@mui/material';
 import { blue } from '@mui/material/colors';
+import { Face } from '@mui/icons-material';
+import { LoginLink } from '../../modal/MenuLink';
+import { useNavigate } from 'react-router-dom';
 
 interface SingupFormProps{
     loader: boolean,
@@ -23,6 +26,7 @@ interface SingupFormProps{
 
 export default function SignUpForm(props: SingupFormProps) {
     const localization = React.useContext(LocalizationContext);
+    const navigate = useNavigate();
 
     const { handleSubmit, handleChange, data: signUp, errors } = useFormValidation<SignUp>({
         validations: {
@@ -108,28 +112,12 @@ export default function SignUpForm(props: SingupFormProps) {
                                     onChange={handleChange('email')}
                                 />
                             </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    name="password"
-                                    label="Password"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="new-password"
-                                    onChange={handleChange('password')}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <FormControlLabel
-                                    control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                    label="I want to receive inspiration, marketing promotions and updates via email."
-                                />
-                            </Grid>
+                            
                         </Grid>
                         <Button
                             type="submit"
                             fullWidth
+                            startIcon={<Face/>}
                             disabled={props.loader}
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
@@ -146,9 +134,7 @@ export default function SignUpForm(props: SingupFormProps) {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="#" variant="body2">
-                                    Already have an account? Sign in
-                                </Link>
+                            <Button variant='text' startIcon={<SvgIcon component={LoginLink.icon} inheritViewBox />} onClick={() => {navigate( LoginLink.link,{replace: false})}}>{LoginLink.title}</Button>
                             </Grid>
                         </Grid>
                     </Box>

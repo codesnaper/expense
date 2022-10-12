@@ -19,6 +19,13 @@ public class User {
 
     private List<String> groups;
 
+    private String username;
+
+    private String name;
+
+    private String phone_number;
+
+
     /**
      * The method reads the value of the user attribute
      *
@@ -37,7 +44,7 @@ public class User {
         return null;
     }
 
-    public String getName(){
+    public String getNameFromAttribute(){
         return getAttribute("name");
     }
 

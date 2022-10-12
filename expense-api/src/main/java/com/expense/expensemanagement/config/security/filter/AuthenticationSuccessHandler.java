@@ -68,7 +68,7 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 		} catch(Exception ex){
 			throw ex;
 		}
-		userDetail.put("name", user.getName());
+		userDetail.put("name", user.getNameFromAttribute());
 		userDetail.put("email", user.getEmail());
 		responseMap.put("user", userDetail);
 		responseMap.put("profile", profileModel);

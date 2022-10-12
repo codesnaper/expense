@@ -1,4 +1,4 @@
-import { AccountBox, NotificationAdd, SvgIconComponent } from "@mui/icons-material";
+import { AccountBox, Face, LockReset, Login, NotificationAdd, SvgIconComponent } from "@mui/icons-material";
 import { NavigateFunction } from "react-router-dom";
 import CategoryIcon from '@mui/icons-material/Category';
 import MoneyIcon from '@mui/icons-material/Money';
@@ -35,6 +35,13 @@ const limitMenuLink: MenuLink = new MenuLink('Limit','/em/limit', PermDataSettin
 const categoryMenuLink: MenuLink = new MenuLink('Category', '/em/category', CategoryIcon);
 
 const expenseMenuLink: MenuLink = new MenuLink('Expenditure','/em/expense', MoneyIcon);
+
+const forgotPassword: MenuLink = new MenuLink('Forgot Password','?form=passwordReset', LockReset);
+
+const newUser: MenuLink = new MenuLink('Sign Up','?form=signup', Face);
+
+const login: MenuLink = new MenuLink('Log In','?form=login', Login);
+
 export const MenuLinks: Array<MenuLink> = [
     expenseMenuLink,
     limitMenuLink,
@@ -50,3 +57,6 @@ export const AccountMenuLink = accountMenuLink;
 export const LimitMenuLink= limitMenuLink;
 export const ExpenseMenuLink= expenseMenuLink;
 export const CategoryMenuLink= categoryMenuLink;
+export const ForgotPasswordLink = forgotPassword;
+export const NewUserLink = newUser;
+export const LoginLink = login;

@@ -1,9 +1,6 @@
 package com.expense.expensemanagement.service.cognito;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -167,15 +164,21 @@ public class CognitoServiceImpl implements CognitoService {
 	public User createUser(User user) {
 		AdminCreateUserRequest createUserRequest = new AdminCreateUserRequest();
 		createUserRequest.setUserPoolId(cognitoConfiguration.getUserPoolId());
-		createUserRequest.setUsername(user.getUser().getUsername());
-		createUserRequest.setUserAttributes(user.getUser().getAttributes());
-		// Set the email verified flag
+		createUserRequest.setUsername(user.getUsername());
+		AttributeType nameAttributeType = new AttributeType();
+		nameAttributeType.setName("name");
+		nameAttributeType.setValue(user.getName());
+		AttributeType emailAttribute = new AttributeType();
+		emailAttribute.setName("email");
+		emailAttribute.setValue(user.getUsername());
+		AttributeType phoneNumberAttribute = new AttributeType();
+		phoneNumberAttribute.setName("phone_number");
+		phoneNumberAttribute.setValue(user.getPhone_number());
+		createUserRequest.setUserAttributes(Arrays.asList(nameAttributeType, emailAttribute, phoneNumberAttribute));
 		createUserRequest.getUserAttributes().add(new AttributeType().withName("email_verified").withValue("true"));
-
 		String temporaryPassword = PasswordUtil.generateTemporaryPassword();
 		createUserRequest.withTemporaryPassword(temporaryPassword);
 		createUserRequest.withDesiredDeliveryMediums(DeliveryMediumType.EMAIL);
-
 		try {
 			AdminCreateUserResult createUserResult = cognitoIdentityProvider.adminCreateUser(createUserRequest);
 			if (createUserResult != null) {

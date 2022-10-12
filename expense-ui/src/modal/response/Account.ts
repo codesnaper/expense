@@ -20,6 +20,7 @@ export interface LoanAccount extends Account{
     tenure: number;
     interestAmount: number;
     isLendType: boolean
+    totalInterestAmount: number;
 }
 
 export interface SCIAccount extends Account{

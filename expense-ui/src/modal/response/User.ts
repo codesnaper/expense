@@ -6,6 +6,9 @@ export interface User{
         email?: string;
     }
     profile?: Profile
+    username?: string;
+    name?: string;
+    phone_number?: string;
 }
 
 export interface LoginCredential{

@@ -62,7 +62,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 					group -> new SimpleGrantedAuthority(ROLE_PREFIX + group.toUpperCase()));
 
 			User user = cognitoService.getUser(username);
-			String name = user.getName();
+			String name = user.getNameFromAttribute();
 			UserContext context = UserContext.create(username, name, grantedAuthorities);
 			return new JwtAuthenticationToken(context, context.getAuthorities());
 		} catch (JWTVerificationException exception) {
