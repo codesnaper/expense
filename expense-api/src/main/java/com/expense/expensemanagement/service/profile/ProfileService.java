@@ -4,6 +4,7 @@ import com.expense.expensemanagement.conversion.EntityModalConversion;
 import com.expense.expensemanagement.dao.ProfileDAO;
 import com.expense.expensemanagement.entity.Profile;
 import com.expense.expensemanagement.model.CurrencyType;
+import com.expense.expensemanagement.model.ErrorConstantMessage;
 import com.expense.expensemanagement.model.ProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,7 +35,7 @@ public class ProfileService implements IProfileService{
     }
 
     public ProfileModel getProfile(String userId){
-        Profile profile = this.profileDAO.findById(userId).orElseThrow(() -> new NoSuchElementException("Profile not found"));
+        Profile profile = this.profileDAO.findById(userId).orElseThrow(() -> new NoSuchElementException(ErrorConstantMessage.PROFILE_NOT_FOUND));
         return this.profileModelEntity.getModel(profile);
     }
 

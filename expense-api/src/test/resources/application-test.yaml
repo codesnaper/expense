@@ -1,0 +1,75 @@
+server:
+  port: 8090
+app:
+  secret: expense
+  user:
+    email: test@gmail.com
+    password: test
+    name: Local user
+cors:
+  origin: http://localhost:8090
+  allowCredentials: true
+  maxAge: 36000L
+  allow:
+    methods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      - PATCH
+    header:
+      - Authorization
+      - refreshToken
+    exposedHeader:
+      - Authorization
+      - refreshToken
+spring:
+  main:
+    lazy-initialization: true
+  datasource:
+    url: jdbc:h2:file:~/em-new1.db;DB_CLOSE_DELAY=-1;MODE=MySQL;NON_KEYWORDS=USER
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  hikari:
+    connectionTimeout: 30000
+    idleTimeout: 600000
+    maxLifetime: 1800000
+    maximum-pool-size: 10
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
+react:
+  router: /em/bank,/em/limit,/em/expense,/em/category,/em/account,/em/notification,/em/profile
+expense:
+  base: /expense/api
+  version: /v1
+  bank:
+    variable:
+      bankId: bank-id
+    base: /bank
+    post: /
+    get: /
+    update: /
+    delete: /{${expense.bank.variable.bankId}}
+  account:
+    bank:
+      variable:
+        accountId: account-id
+        accountType: account-type
+      base: /bank/{${expense.bank.variable.bankId}}/account
+      add: /type={${expense.account.bank.variable.accountType}}
+      update: /type={${expense.account.bank.variable.accountType}}
+      delete: /{${expense.account.bank.variable.accountId}}
+      get: /{${expense.account.bank.variable.accountId}}
+      getAll: /type={${expense.account.bank.variable.accountType}}
+fx:
+  api: http://www.floatrates.com/daily/
+management:
+  endpoint:
+    loggers:
+      enabled: true

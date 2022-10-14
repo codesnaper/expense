@@ -28,7 +28,7 @@ public class LimitModel {
 
     private double usedAmount;
 
-    private Category category;
+    private CategoryModal categoryModal;
 
     private AccountModel account;
 }

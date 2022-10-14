@@ -24,7 +24,7 @@ public class ExpenditureModel {
 
     private AccountModel fromAccount;
 
-    private Category category;
+    private CategoryModal categoryModal;
 
     private Date date;
 

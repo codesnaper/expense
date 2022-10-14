@@ -3,15 +3,16 @@ package com.expense.expensemanagement.config.security.auth;
 import java.util.Collection;
 
 import com.expense.expensemanagement.model.UserContext;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
-
+@EqualsAndHashCode(callSuper = false)
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 	private static final long serialVersionUID = -8325940479892138927L;
 
 	private String token;
-	private UserContext userContext;
+	private transient UserContext userContext;
 
 	public JwtAuthenticationToken(String unsafeToken) {
 		super(null);

@@ -4,9 +4,15 @@ import com.expense.expensemanagement.entity.Profile;
 import com.expense.expensemanagement.model.ProfileModel;
 import org.springframework.stereotype.Component;
 
+/**
+ * Conversion Class for Profile POJO
+ */
 @Component("ProfileConversion")
 public class ProfileConversion implements EntityModalConversion<Profile, ProfileModel> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ProfileModel getModel(Profile profile) {
         ProfileModel profileModel = new ProfileModel();
@@ -16,6 +22,9 @@ public class ProfileConversion implements EntityModalConversion<Profile, Profile
         return profileModel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Profile getEntity(ProfileModel profileModel) {
         Profile profile = new Profile();

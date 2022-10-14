@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.persistence.Column;
 
 @Data
-public class Category {
+public class CategoryModal {
     private Long id;
 
     private String userID;

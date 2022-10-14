@@ -41,7 +41,7 @@ public class TagMappingService implements TagMapping {
         List<Tag> tagEntities = this.tagService.findAllByIds(tagIds).stream().filter(tag -> tag.getUserId().equalsIgnoreCase(user))
                 .collect(Collectors.toList());
         if (tagIds.size() != tagEntities.size()) {
-            throw new IllegalArgumentException("Provided Tag Id is not found or missing. Please create tag first.");
+            throw new IllegalArgumentException(ErrorConstantMessage.TAG_NOT_CREATED);
         }
         tagEntities.parallelStream().forEach(tag -> {
             com.expense.expensemanagement.entity.TagMapping tagMapping = new com.expense.expensemanagement.entity.TagMapping();

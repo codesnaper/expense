@@ -9,11 +9,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Conversion Class for Bank POJO
+ */
 @Component("BankEntityModel")
 public class BankConversion implements EntityModalConversion<Bank, BankModel> {
 
@@ -21,10 +22,12 @@ public class BankConversion implements EntityModalConversion<Bank, BankModel> {
     @Qualifier("TagEntityModel")
     private EntityModalConversion<Tag, TagModel> tagEntityModalConversion;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BankModel getModel(Bank bankEntity) {
         BankModel bankModel = new BankModel();
-//        bankModel.setAccounts(bankEntity.getAccounts());
         bankModel.setCreditAmount(bankEntity.getCreditAmount());
         bankModel.setDebitAmount(bankEntity.getDebitAmount());
         bankModel.setCurrencyType(bankEntity.getCurrency());
@@ -34,7 +37,6 @@ public class BankConversion implements EntityModalConversion<Bank, BankModel> {
         bankModel.setTotalAccount(bankEntity.getNAccount());
         bankModel.setUserId(bankEntity.getUserId());
         bankModel.setHoldAmount(bankEntity.getHoldAmount());
-        List<TagModel> tagModels = new ArrayList<>();
         bankModel.setTagModels(
                 bankEntity.getTagMappings().parallelStream().
                         map(tagMapping -> tagEntityModalConversion.getModel(tagMapping.getTags())).
@@ -43,13 +45,16 @@ public class BankConversion implements EntityModalConversion<Bank, BankModel> {
         return bankModel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Bank getEntity(BankModel bankModel) {
         Bank bankEntity = new Bank();
         bankEntity.setCurrency(bankModel.getCurrencyType());
         bankEntity.setCreditAmount(bankModel.getCreditAmount());
         bankEntity.setDebitAmount(bankModel.getDebitAmount());
-        bankEntity.setHoldAmount(Optional.ofNullable(bankModel.getHoldAmount()).orElse(new BigDecimal(0)));
+        bankEntity.setHoldAmount(Optional.ofNullable(bankModel.getHoldAmount()).orElse(BigDecimal.valueOf(0)));
         bankEntity.setName(bankModel.getName());
         bankEntity.setLocation(bankModel.getLocation());
         bankEntity.setNAccount(0);

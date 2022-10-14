@@ -10,29 +10,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * Conversion class for TagMapping POJO
+ */
 @Component("TagMappingModelConversion")
-public class TagMappingConversion implements EntityModalConversion<TagMapping, TagMappingModal>{
+public class TagMappingConversion implements EntityModalConversion<TagMapping, TagMappingModal> {
 
     @Autowired
     @Qualifier("TagEntityModel")
     private EntityModalConversion<Tag, TagModel> tagConversion;
 
-    @Autowired
-    @Qualifier("BankEntityModel")
-    private EntityModalConversion<Bank, BankModel> bankConversion;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TagMappingModal getModel(TagMapping tagMappingEntity) {
         TagMappingModal tagMappingModal = new TagMappingModal();
-        if(tagConversion != null){
-            tagMappingModal.setTagModel(tagConversion.getModel(tagMappingEntity.getTags()));
-        }
+        tagMappingModal.setTagModel(tagConversion.getModel(tagMappingEntity.getTags()));
         return tagMappingModal;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TagMapping getEntity(TagMappingModal tagMappingModal) {
         return null;

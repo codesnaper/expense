@@ -3,15 +3,14 @@ package com.expense.expensemanagement.service.category;
 import com.expense.expensemanagement.conversion.EntityModalConversion;
 import com.expense.expensemanagement.dao.CategoryDao;
 import com.expense.expensemanagement.entity.Category;
+import com.expense.expensemanagement.model.CategoryModal;
 import com.expense.expensemanagement.model.ResponseList;
-import com.expense.expensemanagement.util.ExpenseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -27,7 +26,7 @@ public class CategoryService implements ICategoryService{
     private CategoryDao categoryDao;
     @Autowired
     @Qualifier("CategoryConversion")
-    private EntityModalConversion<Category, com.expense.expensemanagement.model.Category> categoryConversion;
+    private EntityModalConversion<Category, CategoryModal> categoryConversion;
 
 
     @Override
@@ -42,20 +41,20 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public com.expense.expensemanagement.model.Category addCategory(com.expense.expensemanagement.model.Category category) {
-        Category entity=categoryDao.save(categoryConversion.getEntity(category));
+    public CategoryModal addCategory(CategoryModal categoryModal) {
+        Category entity=categoryDao.save(categoryConversion.getEntity(categoryModal));
         return categoryConversion.getModel(entity);
 
     }
 
     @Override
-    public Category updateCategory(com.expense.expensemanagement.model.Category category) {
-         Category categoryDto = categoryDao.findByUserIDAndId(category.getUserID(), category.getId()).orElseThrow(NoSuchElementException::new);
+    public Category updateCategory(CategoryModal categoryModal) {
+         Category categoryDto = categoryDao.findByUserIDAndId(categoryModal.getUserID(), categoryModal.getId()).orElseThrow(NoSuchElementException::new);
         if (categoryDto.getUserID() == null) {
             throw new IllegalStateException("Category not exist ");
         }
-             category.setId(categoryDto.getId());
-            return categoryDao.save(categoryConversion.getEntity(category));
+             categoryModal.setId(categoryDto.getId());
+            return categoryDao.save(categoryConversion.getEntity(categoryModal));
 
     }
 
@@ -66,7 +65,7 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public List<com.expense.expensemanagement.model.Category> fetchAllCategory(String userId) {
+    public List<CategoryModal> fetchAllCategory(String userId) {
         return this.categoryDao.findByUserID(userId).stream()
                 .map(categoryConversion::getModel)
                 .collect(Collectors.toList());

@@ -4,9 +4,15 @@ import com.expense.expensemanagement.entity.Tag;
 import com.expense.expensemanagement.model.TagModel;
 import org.springframework.stereotype.Component;
 
+/**
+ * Conversion class for Tag POJO
+ */
 @Component("TagEntityModel")
 public class TagConversion implements EntityModalConversion<Tag, TagModel> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TagModel getModel(Tag tagEntity) {
         TagModel tagModel = new TagModel();
@@ -17,6 +23,9 @@ public class TagConversion implements EntityModalConversion<Tag, TagModel> {
         return tagModel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Tag getEntity(TagModel tagModel) {
         Tag tag = new Tag();

@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Conversion class for Account POJO
+ */
 @Component("AccountEntityModel")
 public class AccountConversion implements EntityModalConversion<Account, AccountModel> {
 
@@ -22,30 +25,33 @@ public class AccountConversion implements EntityModalConversion<Account, Account
     @Qualifier("TagEntityModel")
     private EntityModalConversion<Tag, TagModel> tagEntityModalConversion;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AccountModel getModel(Account account) {
         AccountModel accountModel = new AccountModel();
         if (account instanceof LoanAccount) {
             accountModel = new LoanAccountModel();
-            ((LoanAccountModel) accountModel).setLendType(Optional.ofNullable(((LoanAccount) account).isLendAccount()).orElse(false));
-            ((LoanAccountModel) accountModel).setTotalInterestAmount(Optional.ofNullable(((LoanAccount) account).getTotalInterestAmount().doubleValue()).orElse((double) 0));
-            ((LoanAccountModel) accountModel).setTotalPayment(Optional.ofNullable(((LoanAccount) account).getTotalPayment().doubleValue()).orElse((double) 0));
+            ((LoanAccountModel) accountModel).setLendType(Optional.of(((LoanAccount) account).isLendAccount()).orElse(false));
+            ((LoanAccountModel) accountModel).setTotalInterestAmount(Optional.ofNullable(((LoanAccount) account).getTotalInterestAmount()).orElse(BigDecimal.valueOf(0)).doubleValue());
+            ((LoanAccountModel) accountModel).setTotalPayment(Optional.ofNullable(((LoanAccount) account).getTotalPayment()).orElse(BigDecimal.valueOf(0)).doubleValue());
             ((LoanAccountModel) accountModel).setTotalEMI(((LoanAccount) account).getTotalEMI());
-            ((LoanAccountModel) accountModel).setEmiPaid(Optional.ofNullable(((LoanAccount) account).getEmiPaid()).orElse(0));
-            ((LoanAccountModel) accountModel).setInterestAmount(Optional.ofNullable(((LoanAccount) account).getInterestAmount()).orElse((double) 0));
-            ((LoanAccountModel) accountModel).setRate(Optional.ofNullable(((LoanAccount) account).getRate()).orElse(0f));
-            ((LoanAccountModel) accountModel).setTenure(Optional.ofNullable(((LoanAccount) account).getTenure()).orElse(0f));
+            ((LoanAccountModel) accountModel).setEmiPaid(Optional.of(((LoanAccount) account).getEmiPaid()).orElse(0));
+            ((LoanAccountModel) accountModel).setInterestAmount(Optional.of(((LoanAccount) account).getInterestAmount()).orElse((double) 0));
+            ((LoanAccountModel) accountModel).setRate(Optional.of(((LoanAccount) account).getRate()).orElse(0f));
+            ((LoanAccountModel) accountModel).setTenure(Optional.of(((LoanAccount) account).getTenure()).orElse(0f));
         } else if (account instanceof SavingInterestAccount) {
             accountModel = new SIAccountModel();
             ((SIAccountModel) accountModel).setRate(((SavingInterestAccount) account).getRate());
             ((SIAccountModel) accountModel).setTenure(((SavingInterestAccount) account).getTenure());
-            ((SIAccountModel) accountModel).setMaturityAmount(((SavingInterestAccount) account).getMaturityAmount().doubleValue());
+            ((SIAccountModel) accountModel).setMaturityAmount(Optional.ofNullable(((SavingInterestAccount) account).getMaturityAmount()).orElse(BigDecimal.valueOf(0)).doubleValue());
         } else if (account instanceof SavingCompoundInterestAccount) {
             accountModel = new SavingCompoundInterestModel();
             ((SavingCompoundInterestModel) accountModel).setRate(((SavingCompoundInterestAccount) account).getRate());
             ((SavingCompoundInterestModel) accountModel).setTenure(((SavingCompoundInterestAccount) account).getTenure());
-            ((SavingCompoundInterestModel) accountModel).setMaturityAmount(((SavingCompoundInterestAccount) account).getMaturityAmount().doubleValue());
-            ((SavingCompoundInterestModel) accountModel).setCompoundYear(Optional.ofNullable(((SavingCompoundInterestAccount) account).getCompoundYear()).orElse(0));
+            ((SavingCompoundInterestModel) accountModel).setMaturityAmount(Optional.ofNullable(((SavingCompoundInterestAccount) account).getMaturityAmount()).orElse(BigDecimal.valueOf(0)).doubleValue());
+            ((SavingCompoundInterestModel) accountModel).setCompoundYear(Optional.of(((SavingCompoundInterestAccount) account).getCompoundYear()).orElse(0));
         }
         accountModel.setId(account.getId());
         accountModel.setAccountNumber(account.getAccountNumber());
@@ -66,36 +72,41 @@ public class AccountConversion implements EntityModalConversion<Account, Account
         return accountModel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Account getEntity(AccountModel accountModel) {
         Account account = new Account();
         if (accountModel instanceof LoanAccountModel) {
             account = new LoanAccount();
-            ((LoanAccount) account).setTotalInterestAmount(new BigDecimal(Optional.ofNullable(((LoanAccountModel) accountModel).getTotalInterestAmount()).orElse((double) 0)));
-            ((LoanAccount) account).setTotalPayment(new BigDecimal(Optional.ofNullable(((LoanAccountModel) accountModel).getTotalPayment()).orElse((double) 0)));
-            ((LoanAccount) account).setLendAccount(Optional.ofNullable(((LoanAccountModel) accountModel).isLendType()).orElse(false));
+            ((LoanAccount) account).setTotalInterestAmount(BigDecimal.valueOf(Optional.of(((LoanAccountModel) accountModel).getTotalInterestAmount()).orElse((double) 0)));
+            ((LoanAccount) account).setTotalPayment(BigDecimal.valueOf(Optional.of(((LoanAccountModel) accountModel).getTotalPayment()).orElse((double) 0)));
+            ((LoanAccount) account).setLendAccount(Optional.of(((LoanAccountModel) accountModel).isLendType()).orElse(false));
             ((LoanAccount) account).setTotalEMI(((LoanAccountModel) accountModel).getTotalEMI());
-            ((LoanAccount) account).setEmiPaid(Optional.ofNullable(((LoanAccountModel) accountModel).getEmiPaid()).orElse(0));
-            ((LoanAccount) account).setInterestAmount(Optional.ofNullable(((LoanAccountModel) accountModel).getInterestAmount()).orElse((double) 0));
-            ((LoanAccount) account).setRate(Optional.ofNullable(((LoanAccountModel) accountModel).getRate()).orElse(0f));
+            ((LoanAccount) account).setEmiPaid(Optional.of(((LoanAccountModel) accountModel).getEmiPaid()).orElse(0));
+            ((LoanAccount) account).setInterestAmount(Optional.of(((LoanAccountModel) accountModel).getInterestAmount()).orElse((double) 0));
+            ((LoanAccount) account).setRate(Optional.of(((LoanAccountModel) accountModel).getRate()).orElse(0f));
             ((LoanAccount) account).setTenure(((LoanAccountModel) accountModel).getTenure());
         } else if (accountModel instanceof SIAccountModel) {
             account = new SavingInterestAccount();
             ((SavingInterestAccount) account).setRate(((SIAccountModel) accountModel).getRate());
             ((SavingInterestAccount) account).setTenure(((SIAccountModel) accountModel).getTenure());
-            ((SavingInterestAccount) account).setMaturityAmount(new BigDecimal(((SIAccountModel) accountModel).getMaturityAmount()));
+            ((SavingInterestAccount) account).setMaturityAmount(BigDecimal.valueOf(((SIAccountModel) accountModel).getMaturityAmount()));
         } else if (accountModel instanceof SavingCompoundInterestModel) {
             account = new SavingCompoundInterestAccount();
             ((SavingCompoundInterestAccount) account).setRate(((SavingCompoundInterestModel) accountModel).getRate());
             ((SavingCompoundInterestAccount) account).setTenure(((SavingCompoundInterestModel) accountModel).getTenure());
-            ((SavingCompoundInterestAccount) account).setMaturityAmount(new BigDecimal(((SavingCompoundInterestModel) accountModel).getMaturityAmount()));
+            ((SavingCompoundInterestAccount) account).setMaturityAmount(BigDecimal.valueOf(((SavingCompoundInterestModel) accountModel).getMaturityAmount()));
             ((SavingCompoundInterestAccount) account).setCompoundYear(((SavingCompoundInterestModel) accountModel).getCompoundYear());
         }
-        account.setBank(bankEntityModelConversion.getEntity(Optional.ofNullable(accountModel.getBank()).orElse(new BankModel())));
+        account.setBank(bankEntityModelConversion.getEntity(Optional.ofNullable(accountModel.getBank()).orElseThrow(() -> {
+            throw new IllegalArgumentException(ErrorConstantMessage.BANK_DATA_NOT_PROVIDED);
+        })));
         account.setOpenDate(accountModel.getOpenDate());
         account.setAccountNumber(accountModel.getAccountNumber());
-        account.setAmount(new BigDecimal(accountModel.getAmount()));
-        account.setId(Optional.ofNullable(accountModel.getId()).orElse(null));
+        account.setAmount(BigDecimal.valueOf(accountModel.getAmount()));
+        account.setId(Optional.of(accountModel.getId()).orElse(null));
         account.setName(accountModel.getName());
         account.setUserId(accountModel.getUserId());
         account.setOpenDate(accountModel.getOpenDate());

@@ -2,27 +2,37 @@ package com.expense.expensemanagement.conversion;
 
 
 import com.expense.expensemanagement.entity.Category;
+import com.expense.expensemanagement.model.CategoryModal;
 import org.springframework.stereotype.Component;
 
+/**
+ * Conversion Class for Category POJO
+ */
 @Component("CategoryConversion")
-public class CategoryConversion implements EntityModalConversion<Category, com.expense.expensemanagement.model.Category>{
+public class CategoryConversion implements EntityModalConversion<Category, CategoryModal> {
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public com.expense.expensemanagement.model.Category getModel(Category categoryDto) {
-        com.expense.expensemanagement.model.Category category=new com.expense.expensemanagement.model.Category();
-        category.setName(categoryDto.getName());
-        category.setId(categoryDto.getId());
-        category.setDescription(categoryDto.getDescription());
-        category.setUserID(categoryDto.getUserID());
-        return category;
+    public CategoryModal getModel(Category categoryDto) {
+        CategoryModal categoryModal = new CategoryModal();
+        categoryModal.setName(categoryDto.getName());
+        categoryModal.setId(categoryDto.getId());
+        categoryModal.setDescription(categoryDto.getDescription());
+        categoryModal.setUserID(categoryDto.getUserID());
+        return categoryModal;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Category getEntity(com.expense.expensemanagement.model.Category category) {
-        Category categoryDto=new Category();
-        categoryDto.setId(category.getId());
-        categoryDto.setUserID(category.getUserID());
-        categoryDto.setName(category.getName());
-        categoryDto.setDescription(category.getDescription());
+    public Category getEntity(CategoryModal categoryModal) {
+        Category categoryDto = new Category();
+        categoryDto.setId(categoryModal.getId());
+        categoryDto.setUserID(categoryModal.getUserID());
+        categoryDto.setName(categoryModal.getName());
+        categoryDto.setDescription(categoryModal.getDescription());
         return categoryDto;
     }
 }

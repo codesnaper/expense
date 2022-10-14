@@ -59,8 +59,8 @@ public class ExpenditureServiceImpl implements ExpenditureService {
     }
 
     private void preInitializeExpenditureModel(ExpenditureModel expenditureModel) throws MaxLimitException {
-        if (expenditureModel.getLimit() != null && expenditureModel.getCategory() == null) {
-            expenditureModel.setCategory(expenditureModel.getLimit().getCategory());
+        if (expenditureModel.getLimit() != null && expenditureModel.getCategoryModal() == null) {
+            expenditureModel.setCategoryModal(expenditureModel.getLimit().getCategoryModal());
         }
         if (expenditureModel.getLimit() != null && expenditureModel.getAccount() == null) {
             expenditureModel.setAccount(expenditureModel.getLimit().getAccount());

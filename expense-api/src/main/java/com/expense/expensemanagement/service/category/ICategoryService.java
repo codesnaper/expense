@@ -1,9 +1,9 @@
 package com.expense.expensemanagement.service.category;
 
 import com.expense.expensemanagement.entity.Category;
+import com.expense.expensemanagement.model.CategoryModal;
 import com.expense.expensemanagement.model.ResponseList;
 
-import java.security.Principal;
 import java.util.List;
 
 public interface ICategoryService {
@@ -18,17 +18,17 @@ public interface ICategoryService {
 
     /**
      *
-     * @param category
+     * @param categoryModal
      * @return its return category after the add category
      */
-    public com.expense.expensemanagement.model.Category addCategory(com.expense.expensemanagement.model.Category category);
+    public CategoryModal addCategory(CategoryModal categoryModal);
 
     /**
      *
      *
-     * @param category
+     * @param categoryModal
      */
-    public Category updateCategory(com.expense.expensemanagement.model.Category category);
+    public Category updateCategory(CategoryModal categoryModal);
 
     /**
      *
@@ -37,5 +37,5 @@ public interface ICategoryService {
      */
     public void deleteCategory(long id, String userId);
 
-    public List<com.expense.expensemanagement.model.Category> fetchAllCategory(String userId);
+    public List<CategoryModal> fetchAllCategory(String userId);
 }

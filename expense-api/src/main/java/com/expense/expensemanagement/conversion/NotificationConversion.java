@@ -4,9 +4,15 @@ import com.expense.expensemanagement.entity.Notification;
 import com.expense.expensemanagement.model.NotificationModel;
 import org.springframework.stereotype.Component;
 
+/**
+ * Conversion Class for Notification POJO
+ */
 @Component("notificationConversion")
 public class NotificationConversion implements EntityModalConversion<Notification, NotificationModel>{
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public NotificationModel getModel(Notification notification) {
         NotificationModel notificationModel = new NotificationModel();
@@ -20,6 +26,9 @@ public class NotificationConversion implements EntityModalConversion<Notificatio
         return notificationModel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Notification getEntity(NotificationModel notificationModel) {
         Notification notification = new Notification();

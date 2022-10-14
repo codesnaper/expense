@@ -4,6 +4,7 @@ import com.expense.expensemanagement.conversion.EntityModalConversion;
 import com.expense.expensemanagement.dao.TagDAO;
 import com.expense.expensemanagement.dao.TagMappingDAO;
 import com.expense.expensemanagement.entity.Tag;
+import com.expense.expensemanagement.model.ErrorConstantMessage;
 import com.expense.expensemanagement.model.ResponseList;
 import com.expense.expensemanagement.model.TagModel;
 import com.expense.expensemanagement.service.tagMapping.TagMapping;
@@ -49,10 +50,10 @@ public class TagService implements ITagService {
 
     public void deleteTag(Long id) {
         Tag tag = tagDAO.findById(id).orElseThrow(
-                () -> new NoSuchElementException("Tag Not found")
+                () -> new NoSuchElementException(ErrorConstantMessage.TAG_NOT_FOUND)
         );
         if(this.tagMappingDAO.findByTags(tag).size() != 0){
-            throw new IllegalStateException("Tag is being in used");
+            throw new IllegalStateException(ErrorConstantMessage.TAG_IN_USED);
         }
         this.tagDAO.deleteById(tag.getId());
     }
@@ -64,7 +65,7 @@ public class TagService implements ITagService {
             return tagModel;
         }
         catch (DataIntegrityViolationException ex){
-            throw new DuplicateKeyException("name:Tag already exits. Tag name should be unique");
+            throw new DuplicateKeyException(ErrorConstantMessage.TAG_CONSTRAINT_ERROR);
         }
     }
 
@@ -79,6 +80,6 @@ public class TagService implements ITagService {
 
     @Override
     public TagModel findTags(long tagId, String userId) {
-        return this.tagEntityModel.getModel(this.tagDAO.findByUserIdAndId(userId, tagId).orElseThrow(() -> new NoSuchElementException("Tag id not found for the user")));
+        return this.tagEntityModel.getModel(this.tagDAO.findByUserIdAndId(userId, tagId).orElseThrow(() -> new NoSuchElementException(ErrorConstantMessage.TAG_NOT_FOUND)));
     }
 }
