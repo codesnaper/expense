@@ -65,16 +65,7 @@ class TagMappingServiceTest {
     }
 
     @Test
-    void addTagMappingForBank() {
-        tagMappingService.addTagMapping(bankModel);
-    }
-
-    @Test
-    void addTagMappingForAccount() {
-        tagMappingService.addTagMapping(accountModel);
-    }
-
-    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void expectExceptionWhenTagNotCreated() {
         Mockito.when(tagService.findAllByIds(Mockito.any())).thenReturn(new ArrayList<>());
         try {
