@@ -41,8 +41,8 @@ public class TagService implements ITagService {
     public ResponseList<TagModel> getTags(String userId, int page, int size) {
         Page<Tag> tagModels = this.tagDAO.findByUserId( userId,PageRequest.of(page, size));
         ResponseList<TagModel> tagResponseList = new ResponseList<>();
-        tagResponseList.setPageNo(tagModels.getNumber());
-        tagResponseList.setTotalPage(tagModels.getTotalPages());
+        tagResponseList.setPageNo(tagModels.getPageable().getPageNumber());
+        tagResponseList.setPageSize(tagModels.getPageable().getPageSize());
         tagResponseList.setTotalCount(tagModels.getTotalElements());
         tagResponseList.setData(tagModels.stream().map((tagEntity) -> tagEntityModel.getModel(tagEntity)).collect(Collectors.toList()));
         return tagResponseList;

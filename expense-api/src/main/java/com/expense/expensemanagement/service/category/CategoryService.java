@@ -33,8 +33,8 @@ public class CategoryService implements ICategoryService{
     public ResponseList<Category> getCategory(int pageNo, int pageSize, String userid) {
         Page page= categoryDao.findByUserID(userid,PageRequest.of(pageNo,pageSize));
         ResponseList<Category> responseList=new ResponseList<>();
-        responseList.setPageNo(page.getNumber());
-        responseList.setTotalPage(page.getTotalPages());
+        responseList.setPageNo(page.getTotalPages());
+        responseList.setPageSize(page.getPageable().getPageSize());
         responseList.setTotalCount(page.getTotalElements());
         responseList.setData(page.getContent());
         return responseList;

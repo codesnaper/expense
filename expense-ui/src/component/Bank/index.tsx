@@ -158,8 +158,8 @@ export default function BankComponent() {
         setBankDataSet(dataSet);
     }
 
-    const fetchBank = () => {
-        service.bankService?.fetchBanks(page, size)
+    const fetchBank = (pageNo: number = page, pageSize : number = size) => {
+        service.bankService?.fetchBanks(pageNo, pageSize)
             .then((response: BankModalsResponse) => {
                 let banks: BankModal[] = [];
                 let sumCreditAmount: number = 0;
@@ -175,6 +175,9 @@ export default function BankComponent() {
                     sumDebitAmount += Number(bank.debitAmount);
                 });
                 setTotalBank(response.Count);
+                setSize(response.pageSize);
+                setTotalElement(response.Count);
+                setPage(response.pageNo);
                 createBankDataSet(banks);
                 updateSummary(banks);
                 setLoader(false);
@@ -187,7 +190,7 @@ export default function BankComponent() {
     const pageEvent = (pageNo: number, pageSize: number) => {
         setPage(pageNo);
         setSize(pageSize);
-        fetchBank();
+        fetchBank(pageNo, pageSize);
     }
 
     const updateSummary = (banks: BankModal[] | undefined = bankDataSet?.rows) => {

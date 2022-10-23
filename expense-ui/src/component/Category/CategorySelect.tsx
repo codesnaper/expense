@@ -51,9 +51,9 @@ export default function CategorySelect(props: CategorySelectProps) {
         props.onClose?.();
     };
 
-    const fetchCategory = () => {
+    const fetchCategory = (pageNo: number= page, pageSize: number= size) => {
         setLoader(true);
-        service.categoryService?.fetchCategory(page, size)
+        service.categoryService?.fetchCategory(pageNo, pageSize)
             .then((response: ResponseList<Category>) => {
                 setTotalElement(response.Count);
                 setPage(response.pageNo);
@@ -69,7 +69,7 @@ export default function CategorySelect(props: CategorySelectProps) {
     const pageEvent = (pageNo: number, pageSize: number) => {
         setPage(pageNo);
         setSize(pageSize);
-        fetchCategory();
+        fetchCategory(pageNo, pageSize);
     }
 
     return (<>

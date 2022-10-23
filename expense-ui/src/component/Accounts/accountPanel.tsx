@@ -33,12 +33,12 @@ export default function AccountPannel(props: AccountPannelProps) {
     const service = useContext(ServiceContext);
     const expenseAlert = useContext(AlertContext);
 
-    const fetchAccount = () => {
+    const fetchAccount = (pageNo: number = page, size : number = pageSize) => {
         setLoader(true);
         switch (props.accountType) {
             case AccountType.ACCOUNT:
             case AccountType.ALL:
-                service.accountService?.fetchAccounts<Account>(props.bankId ? props.bankId : '', props.accountType, page, pageSize)
+                service.accountService?.fetchAccounts<Account>(props.bankId ? props.bankId : '', props.accountType, pageNo, size)
                     .then((res: AccountResponse<Account>) => {
                         setTotalElement(res.Count);
                         setPage(res.pageNo);
@@ -137,7 +137,7 @@ export default function AccountPannel(props: AccountPannelProps) {
     const pageEvent = (pageNo: number, pageSize: number) => {
         setPage(pageNo);
         setPageSize(pageSize);
-        fetchAccount();
+        fetchAccount(pageNo, pageSize);
     }
 
     const sendOperation = (row: any, operationType: OperationType) => {

@@ -9,24 +9,17 @@ interface PaginationProps {
 }
 export default function Pagination(props: PaginationProps) {
 
-    const [page, setPage] = useState<number>(props.page);
-
-    const [pageSize, setPageSize] = useState<number>(props.pageSize);
-
     const handleChangePage = (
         event: React.MouseEvent<HTMLButtonElement> | null,
         newPage: number,
     ) => {
-        setPage(newPage);
-        props.onPageEvent(newPage, pageSize);
+        props.onPageEvent(newPage, props.pageSize);
     };
 
     const handleChangeRowsPerPage = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
       ) => {
-        setPageSize(parseInt(event.target.value, 10));
-        setPage(0);
-        props.onPageEvent(page, pageSize);
+        props.onPageEvent(props.page, parseInt(event.target.value, 10));
       };
 
     return (<>
@@ -39,9 +32,9 @@ export default function Pagination(props: PaginationProps) {
             }}
             component="div"
             count={props.totalElement}
-            page={page}
+            page={props.page}
             onPageChange={handleChangePage}
-            rowsPerPage={pageSize}
+            rowsPerPage={props.pageSize}
             onRowsPerPageChange={handleChangeRowsPerPage}
         />
     </>)

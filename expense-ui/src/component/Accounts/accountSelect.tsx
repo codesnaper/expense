@@ -61,9 +61,9 @@ export default function AccountSelect(props: AccountSelectProps) {
         props.onClose?.();
     };
 
-    const fetchAccount = (accountType: AccountType) => {
+    const fetchAccount = (accountType: AccountType, pageNo: number = page, pageSize: number = size) => {
         setLoader(true);
-        service.accountService?.fetchAccounts<Account>(`${bankId}`, accountType, page, size)
+        service.accountService?.fetchAccounts<Account>(`${bankId}`, accountType, pageNo, pageSize)
             .then((response: AccountResponse<Account>) => {
                 setTotalElement(response.Count);
                 setPage(response.pageNo);

@@ -36,7 +36,8 @@ public class LimitService implements ILimitService {
         responseList.setData(
                 page.getContent().stream().map(limitConversion::getModel).collect(Collectors.toList())
         );
-        responseList.setTotalPage(page.getTotalPages());
+        responseList.setPageNo(page.getPageable().getPageNumber());
+        responseList.setPageSize(page.getPageable().getPageSize());
         responseList.setTotalCount(page.getTotalElements());
         responseList.setPageNo(page.getNumber());
         return responseList;

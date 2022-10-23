@@ -72,7 +72,7 @@ export default function limitDataSet(limits: EnhancedLimit[]){
                 type: HeaderType.custom,
                 customDisplay(value) {
                     const limit = value as EnhancedLimit;
-                    return limit.category.name;
+                    return limit.category ? limit.category.name: '';
                 },
             },
             account: {

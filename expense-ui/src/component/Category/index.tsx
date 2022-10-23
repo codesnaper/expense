@@ -29,9 +29,8 @@ export default function CategoryComponent() {
 
     const [totalElement, setTotalElement] = useState<number>(0);
 
-    useEffect(() => {
-        setLoader(true);
-        service.categoryService?.fetchCategory(page, pageSize)
+    const fetchCategory = (pageNo: number = page, size: number = pageSize) => {
+        service.categoryService?.fetchCategory(pageNo, size)
             .then((res: ResponseList<Category>) => {
                 setCategories(res.Items);
                 setPage(res.pageNo);
@@ -44,7 +43,12 @@ export default function CategoryComponent() {
             .finally(() => {
                 setLoader(false);
             })
-    }, [service])
+    }
+
+    useEffect(() => {
+        setLoader(true);
+        fetchCategory();
+    }, [service]);
 
     const operationEvent = (newCategory: Category, operation: OperationType) => {
         switch (operation) {
@@ -82,6 +86,7 @@ export default function CategoryComponent() {
     const pageEvent = (pageNo: number, pageSize: number) => {
         setPage(pageNo);
         setPageSize(pageSize);
+        fetchCategory(pageNo, pageSize);
     }
 
     return (<>

@@ -60,8 +60,8 @@ public class BankService implements IBankService {
     public ResponseList<BankModel> getAllBanks(String userId, int page, int size) {
         Page<Bank> bankPage = this.bankDAO.findByUserId(userId, PageRequest.of(page, size));
         ResponseList<BankModel> responseList = new ResponseList<>();
-        responseList.setPageNo(bankPage.getNumber());
-        responseList.setTotalPage(bankPage.getTotalPages());
+        responseList.setPageNo(bankPage.getPageable().getPageNumber());
+        responseList.setPageSize(bankPage.getPageable().getPageSize());
         responseList.setTotalCount(bankPage.getTotalElements());
         responseList.setData(bankPage.stream().map(bankModelEntity -> bankEntityModalConversion.getModel(bankModelEntity)).collect(Collectors.toList()));
         return responseList;

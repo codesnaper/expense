@@ -51,9 +51,9 @@ export default function LimitSelect(props: LimitSelectProps) {
         props.onClose?.();
     };
 
-    const fetchLimits = () => {
+    const fetchLimits = (pageNo: number = page, pageSize : number = size) => {
         setLoader(true);
-        service.limitService?.fetchLimits(page, size)
+        service.limitService?.fetchLimits(pageNo, pageSize)
             .then((response: ResponseList<Limit>) => {
                 setTotalElement(response.Count);
                 setPage(response.pageNo);
@@ -69,7 +69,7 @@ export default function LimitSelect(props: LimitSelectProps) {
     const pageEvent = (pageNo: number, pageSize: number) => {
         setPage(pageNo);
         setSize(pageSize);
-        fetchLimits();
+        fetchLimits(pageNo, pageSize);
     }
 
     return (<>

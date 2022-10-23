@@ -53,45 +53,50 @@ export default function LimitComponent() {
         setOpenModel(false);
     }
 
+    const fetchLimit = (pageNo: number = page, size: number = pageSize) => {
+        service.limitService?.fetchLimits(pageNo, size)
+        .then((res: ResponseList<EnhancedLimit>) => {
+            setTotalElement(res.Count);
+            setPage(res.pageNo);
+            setPageSize(res.pageSize);
+            setLimits(res.Items);
+            const limitTableDataSet = limitDataSet(res.Items);
+            limitTableDataSet.action = {
+                add: true,
+                show: false,
+                delete: true,
+                edit: true
+            }
+            setLimitTableDataset(limitTableDataSet);
+
+            service.categoryService?.fetchAllCategory().then((categories: Category[]) => {
+                setCategories(categories);
+                setLoader(false);
+            })
+                .catch((err: ApiError) => {
+                    expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+                })
+                .finally(() => {
+                    setLoader(false);
+                });
+        })
+        .catch((err: ApiError) => {
+            expenseAlert.setAlert?.(err.message, AlertType.ERROR);
+        })
+        .finally(() => {
+            setLoader(false);
+        });
+    }
+
     useEffect(() => {
         setLoader(true);
-        service.limitService?.fetchLimits(page, pageSize)
-            .then((res: ResponseList<EnhancedLimit>) => {
-                setTotalElement(res.Count);
-                setPage(res.pageNo);
-                setPageSize(res.pageSize);
-                setLimits(res.Items);
-                const limitTableDataSet = limitDataSet(res.Items);
-                limitTableDataSet.action = {
-                    add: true,
-                    show: false,
-                    delete: true,
-                    edit: true
-                }
-                setLimitTableDataset(limitTableDataSet);
-
-                service.categoryService?.fetchAllCategory().then((categories: Category[]) => {
-                    setCategories(categories);
-                    setLoader(false);
-                })
-                    .catch((err: ApiError) => {
-                        expenseAlert.setAlert?.(err.message, AlertType.ERROR);
-                    })
-                    .finally(() => {
-                        setLoader(false);
-                    });
-            })
-            .catch((err: ApiError) => {
-                expenseAlert.setAlert?.(err.message, AlertType.ERROR);
-            })
-            .finally(() => {
-                setLoader(false);
-            });
+        fetchLimit();
     }, [service])
 
     const pageEvent = (pageNo: number, pageSize: number) => {
         setPage(pageNo);
         setPageSize(pageSize);
+        fetchLimit(pageNo, pageSize);
     }
 
     const deleteLimit = (deletedLimit: Limit) => {

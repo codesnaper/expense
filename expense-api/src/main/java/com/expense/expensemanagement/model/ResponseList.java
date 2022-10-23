@@ -14,7 +14,7 @@ public class ResponseList<T>{
     private int pageNo;
 
     @JsonProperty("pageSize")
-    private int totalPage;
+    private int pageSize;
 
     @JsonProperty("Count")
     private long totalCount;

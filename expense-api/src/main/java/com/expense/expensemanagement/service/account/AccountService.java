@@ -101,8 +101,8 @@ public class AccountService implements IAccountService {
         }
         ResponseList<AccountModel> accountResponseList = new ResponseList<>();
         accountResponseList.setData(accounts.stream().parallel().map(account -> accountEntityModel.getModel(account)).collect(Collectors.toList()));
-        accountResponseList.setPageNo(accounts.getNumber());
-        accountResponseList.setTotalPage(accounts.getTotalPages());
+        accountResponseList.setPageNo(accounts.getPageable().getPageNumber());
+        accountResponseList.setPageSize(accounts.getPageable().getPageSize());
         accountResponseList.setTotalCount(accounts.getTotalElements());
         return accountResponseList;
     }

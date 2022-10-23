@@ -51,9 +51,9 @@ export default function BankSelect(props: BankSelectProps) {
         props.onClose?.();
     };
 
-    const fetchBank = () => {
+    const fetchBank = (pageNo: number = page, pageSize : number = size) => {
         setLoader(true);
-        service.bankService?.fetchBanks(page, size)
+        service.bankService?.fetchBanks(pageNo, pageSize)
             .then((response: BankModalsResponse) => {
                 if(response.Count === 0){
                     props.onNoData?.();
@@ -72,7 +72,7 @@ export default function BankSelect(props: BankSelectProps) {
     const pageEvent = (pageNo: number, pageSize: number) => {
         setPage(pageNo);
         setSize(pageSize);
-        fetchBank();
+        fetchBank(pageNo, pageSize);
     }
 
     return (<>
