@@ -1,7 +1,7 @@
 [![Release Pipeline](https://github.com/codesnaper/expense/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/codesnaper/expense/actions/workflows/release.yml)
 [![Develop PR](https://github.com/codesnaper/expense/actions/workflows/develop.yml/badge.svg?branch=develop)](https://github.com/codesnaper/expense/actions/workflows/develop.yml)
-# expense-management
-Expense Management application help you to track and manage all of your expenditure and accounts. You can add multiple banks and account like (Saving account, loan account) which calculate total interest and accumulate the total credit and debit and give short summary. You can define rule to limit out the expenditure for particular  category.
+# Cashflow
+Cashflow application help you to track and manage all of your expenditure and accounts. You can add multiple banks and account like (Saving account, loan account) which calculate total interest and accumulate the total credit and debit and give short summary. You can define rule to limit out the expenditure for particular  category.
 
 ## Live Application
 ![expense Management URL](expense-api/README.md)
